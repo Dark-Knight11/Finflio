@@ -97,8 +97,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                     )
                 }
             )
-        },
-        backgroundColor = Color.Black
+        }
     ) {
         Box {
             Column(
@@ -106,7 +105,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                     .fillMaxSize()
                     .gradientBackground(
                         colorStops = arrayOf(
-                            0.0f to Gold,
+                            0.0f to Gold.copy(0.5f),
                             0.2f to MainBackground
                         ),
                         angle = -70f,

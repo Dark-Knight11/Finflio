@@ -32,23 +32,23 @@ class MainActivity : ComponentActivity() {
                     systemUiController.setStatusBarColor(color = Color.Transparent)
                     systemUiController.setNavigationBarColor(color = BottomNavBlue.copy(0.1f))
                 }
-            }
-            val navHostEngine = rememberAnimatedNavHostEngine(
-                rootDefaultAnimations = RootNavGraphDefaultAnimations(
-                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                ),
-                defaultAnimationsForNestedNavGraph = mapOf(
-                    NavGraphs.main to NestedNavGraphDefaultAnimations(
-                        enterTransition = { scaleIn(animationSpec = tween(2000)) },
-                        exitTransition = { scaleOut(animationSpec = tween(2000)) }
+                val navHostEngine = rememberAnimatedNavHostEngine(
+                    rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                        enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                        exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                    ),
+                    defaultAnimationsForNestedNavGraph = mapOf(
+                        NavGraphs.main to NestedNavGraphDefaultAnimations(
+                            enterTransition = { scaleIn(animationSpec = tween(2000)) },
+                            exitTransition = { scaleOut(animationSpec = tween(2000)) }
+                        )
                     )
                 )
-            )
-            DestinationsNavHost(
-                navGraph = NavGraphs.root,
-                engine = navHostEngine
-            )
+                DestinationsNavHost(
+                    navGraph = NavGraphs.root,
+                    engine = navHostEngine
+                )
+            }
         }
     }
 }
