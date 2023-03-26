@@ -1,9 +1,6 @@
 package com.finflio.core.presentation.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.skydoves.cloudy.Cloudy
@@ -16,7 +13,7 @@ fun Glow(
     secondTrigger: Any? = null,
     content: @Composable () -> Unit
 ) {
-    Box(modifier.height(IntrinsicSize.Min)) {
+    Box(modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) {
         Cloudy(
             radius = radius,
             key1 = trigger,
