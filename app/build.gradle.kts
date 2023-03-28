@@ -90,8 +90,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Compose Destinations
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.37-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.37-beta")
+    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.38-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.38-beta")
 
     // dagger hilt
     implementation("com.google.dagger:hilt-android:2.45")
