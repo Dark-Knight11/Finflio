@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +18,11 @@ import com.finflio.ui.theme.Inter
 import com.finflio.ui.theme.SecondaryText
 
 @Composable
-fun Header(trigger: Boolean) {
+fun Header(
+    trigger: Boolean,
+    total: Float,
+    onSelect: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .padding(top = 50.dp)
@@ -29,7 +30,7 @@ fun Header(trigger: Boolean) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        MonthDropDown(modifier = Modifier.fillMaxWidth())
+        MonthDropDown(Modifier.fillMaxWidth()) { onSelect(it) }
         Text(
             text = "This month you spent",
             fontFamily = Inter,
@@ -37,15 +38,13 @@ fun Header(trigger: Boolean) {
             fontWeight = FontWeight.Medium,
             color = SecondaryText
         )
-        val text by remember { mutableStateOf("₹9400") }
         Glow(
             modifier = Modifier.padding(bottom = 20.dp),
-            radius = 16,
-            trigger = text,
+            trigger = total,
             secondTrigger = trigger
         ) {
             Text(
-                text = text,
+                text = "₹" + total.toString().removeSuffix(".0"),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = Inter,

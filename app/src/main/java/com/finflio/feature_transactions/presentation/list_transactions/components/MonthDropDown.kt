@@ -21,18 +21,23 @@ import androidx.compose.ui.unit.dp
 import com.finflio.feature_transactions.presentation.list_transactions.util.shortToLongMonth
 import com.finflio.ui.theme.Gold
 import com.finflio.ui.theme.OrangeRed
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun MonthDropDown(modifier: Modifier = Modifier) {
+fun MonthDropDown(
+    modifier: Modifier = Modifier,
+    onSelect: (String) -> Unit
+) {
     val months = DateFormatSymbols.getInstance(Locale.ENGLISH).shortMonths.toList()
     val dateFormat: DateFormat = SimpleDateFormat("MMMM", Locale.ENGLISH)
     var selectedText by remember { mutableStateOf(dateFormat.format(Date())) }
     var mExpanded by remember { mutableStateOf(false) }
-
+    val scope = rememberCoroutineScope()
     ExposedDropdownMenuBox(
         expanded = mExpanded,
         onExpandedChange = { }
@@ -112,6 +117,11 @@ fun MonthDropDown(modifier: Modifier = Modifier) {
                                             remember { MutableInteractionSource() }, null
                                         ) {
                                             selectedText = shortToLongMonth(month)
+                                            onSelect(selectedText)
+                                            scope.launch {
+                                                delay(300)
+                                                mExpanded = !mExpanded
+                                            }
                                         },
                                         color = Color.White,
                                     )

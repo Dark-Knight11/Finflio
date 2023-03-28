@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 @Entity(tableName = "transactions")
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
-    var transactionId: Int? = 0,
+    var transactionId: Int = 0,
     val timestamp: LocalDateTime,
     val type: String,
     val category: String,

@@ -3,7 +3,7 @@ package com.finflio.feature_transactions.domain.model
 import java.time.LocalDateTime
 
 data class Transaction(
-    val transactionId: Int? = null,
+    val transactionId: Int = 0,
     val timestamp: LocalDateTime,
     val type: String,
     val category: String,
