@@ -26,3 +26,8 @@ val Expense = Color(0xFFE33C3C)
 
 val BottomNavBlue = Color(0xFF141326)
 val MainBackground = BottomNavBlue
+
+val ExpenseBG = Color(0xFF6E2631)
+val IncomeBG = Color(0xFF316D4B)
+
+val OffWhite = Color(0xFFFCFCFC)
