@@ -24,12 +24,15 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.finflio.NavGraphs
 import com.finflio.R
+import com.finflio.appCurrentDestinationAsState
 import com.finflio.core.presentation.components.BottomNav
 import com.finflio.core.presentation.components.DiamondFab
 import com.finflio.core.presentation.components.FabWithoutIndication
 import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.AddExpenseScreenDestination
 import com.finflio.destinations.AddIncomeScreenDestination
+import com.finflio.destinations.ListTransactionsDestination
+import com.finflio.destinations.ShowStatsDestination
 import com.finflio.ui.theme.*
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -67,36 +70,55 @@ fun BaseScreen(navigator: DestinationsNavigator) {
             easing = LinearEasing
         )
     )
+    val currentDestination = navController.appCurrentDestinationAsState().value
+    val routesWithBottomNav = listOf(ListTransactionsDestination, ShowStatsDestination)
+    val bottomBarVisibility = currentDestination in routesWithBottomNav
     Scaffold(
         bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(105.dp),
-                backgroundColor = Color.Transparent,
-                elevation = 22.dp,
-                cutoutShape = DiamondShape(86.dp.toPx()),
-                contentPadding = PaddingValues(0.dp)
+            AnimatedVisibility(
+                visible = bottomBarVisibility,
+                enter = slideInVertically(animationSpec = tween(),
+                    initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(animationSpec = tween(),
+                    targetOffsetY = { it }) + fadeOut()
             ) {
-                BottomNav(navController)
+                BottomAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(105.dp),
+                    backgroundColor = Color.Transparent,
+                    elevation = 22.dp,
+                    cutoutShape = DiamondShape(86.dp.toPx()),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    BottomNav(navController)
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.Center,
         isFloatingActionButtonDocked = true,
         floatingActionButton = {
-            DiamondFab(
-                modifier = Modifier.rotate(button),
-                onClick = { fabVisibility = !fabVisibility },
-                size = 56.dp,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Show Options",
-                        tint = Color.White,
-                        modifier = Modifier.rotate(angle)
-                    )
-                }
-            )
+            AnimatedVisibility(
+                visible = bottomBarVisibility,
+                enter = slideInVertically(animationSpec = tween(),
+                    initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(animationSpec = tween(),
+                    targetOffsetY = { it }) + fadeOut()
+            ) {
+                DiamondFab(
+                    modifier = Modifier.rotate(button),
+                    onClick = { fabVisibility = !fabVisibility },
+                    size = 56.dp,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Show Options",
+                            tint = Color.White,
+                            modifier = Modifier.rotate(angle)
+                        )
+                    }
+                )
+            }
         }
     ) {
         Box {
@@ -153,7 +175,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                 clip = true
                             }
                             .background(Income),
-                        onClick = { navigator.navigate(AddIncomeScreenDestination)  }
+                        onClick = { navigator.navigate(AddIncomeScreenDestination) }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_income),
