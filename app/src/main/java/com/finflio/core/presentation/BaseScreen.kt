@@ -141,6 +141,18 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                     navGraph = NavGraphs.main
                 )
             }
+            AnimatedVisibility(
+                visible = fabVisibility,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(0.5f))
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
