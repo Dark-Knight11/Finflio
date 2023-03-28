@@ -1,8 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 plugins {
     id("com.android.application")
-    id("com.google.devtools.ksp") version "1.8.10-1.0.9"
     id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp") version "1.8.10-1.0.9"
     kotlin("android")
     kotlin("kapt")
 }
@@ -47,7 +47,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.4.4"
     }
     packagingOptions {
         resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -56,24 +56,24 @@ android {
 
 dependencies {
     // Compose BOM
-    val composeBom = platform ("androidx.compose:compose-bom:2023.01.00")
+    val composeBom = platform ("androidx.compose:compose-bom:2023.03.00")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.activity:activity-compose:1.7.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.0")
 
     // Lifecycle
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
     // Tests
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -90,8 +90,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Compose Destinations
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.7.36-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.7.36-beta")
+    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.37-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.37-beta")
 
     // dagger hilt
     implementation("com.google.dagger:hilt-android:2.45")
