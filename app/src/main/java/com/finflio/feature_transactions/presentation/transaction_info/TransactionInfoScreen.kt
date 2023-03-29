@@ -67,7 +67,15 @@ fun TransactionInfoScreen(
                 modifier = Modifier.padding(top = 45.dp)
             )
         },
-        backgroundColor = if (transaction?.type == "Expense") ExpenseBG else IncomeBG
+        backgroundColor = if (transaction?.type == "Expense") ExpenseBG else IncomeBG,
+        bottomBar = {
+            EditButton(
+                modifier = Modifier
+                    .padding(vertical = 25.dp, horizontal = 30.dp)
+                    .navigationBarsPadding(),
+                type = transaction?.type ?: "Expense"
+            )
+        }
     ) {
         Column(
             modifier = Modifier
@@ -146,11 +154,6 @@ fun TransactionInfoScreen(
                     )
                 }
             }
-            EditButton(
-                modifier = Modifier
-                    .padding(vertical = 25.dp, horizontal = 30.dp),
-                type = transaction?.type ?: "Expense"
-            )
         }
     }
 }
