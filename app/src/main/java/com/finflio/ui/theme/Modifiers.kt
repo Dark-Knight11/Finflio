@@ -6,6 +6,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.pointerInput
 import kotlin.math.*
 
 fun Modifier.glow(isGlow: Boolean, color: Color): Modifier {
@@ -60,3 +63,14 @@ fun Modifier.gradientBackground(
         }
     }
 )
+
+fun Modifier.gesturesDisabled() = pointerInput(Unit) {
+    awaitPointerEventScope {
+        // we should wait for all new pointer events
+        while (true) {
+            awaitPointerEvent(pass = PointerEventPass.Initial)
+                .changes
+                .forEach(PointerInputChange::consume)
+        }
+    }
+}
