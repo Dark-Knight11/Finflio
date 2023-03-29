@@ -33,7 +33,7 @@ class TransactionInfoViewModel @Inject constructor(
         when (event) {
             is TransactionInfoEvent.DeleteTransaction -> {
                 viewModelScope.launch {
-                    useCase.deleteTransactionUseCase(event.transaction)
+                    useCase.deleteTransactionUseCase(event.transaction ?: return@launch)
                 }
             }
         }

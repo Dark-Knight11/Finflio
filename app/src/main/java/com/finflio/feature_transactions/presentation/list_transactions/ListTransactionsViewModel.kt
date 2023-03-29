@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finflio.feature_transactions.domain.model.TransactionDisplay
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
+import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -52,6 +53,15 @@ class ListTransactionViewModel @Inject constructor(
                 viewModelScope.launch {
                     useCases.getMonthTotalUseCase(event.month).collectLatest {
                         _monthTotal.value = it
+                    }
+                }
+            }
+            is TransactionEvent.RestoreTransaction -> {
+                viewModelScope.launch {
+                    try {
+                        useCases.addTransactionUseCase(event.transaction)
+                    } catch (e: InvalidTransactionException) {
+                        println(e.message)
                     }
                 }
             }

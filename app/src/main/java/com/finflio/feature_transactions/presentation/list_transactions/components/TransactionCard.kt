@@ -37,7 +37,6 @@ fun TransactionCard(
 ) {
     val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
     val formattedDateTime = time.format(formatter)
-    println(formattedDateTime)
     Row(
         modifier = modifier
             .fillMaxWidth()
