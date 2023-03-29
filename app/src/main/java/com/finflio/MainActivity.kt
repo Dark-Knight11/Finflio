@@ -6,8 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
@@ -15,7 +13,6 @@ import com.finflio.ui.theme.BottomNavBlue
 import com.finflio.ui.theme.FinflioTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,12 +35,6 @@ class MainActivity : ComponentActivity() {
                     rootDefaultAnimations = RootNavGraphDefaultAnimations(
                         enterTransition = { fadeIn(animationSpec = tween(1000)) },
                         exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                    ),
-                    defaultAnimationsForNestedNavGraph = mapOf(
-                        NavGraphs.main to NestedNavGraphDefaultAnimations(
-                            enterTransition = { scaleIn(animationSpec = tween(2000)) },
-                            exitTransition = { scaleOut(animationSpec = tween(2000)) }
-                        )
                     )
                 )
                 DestinationsNavHost(

@@ -24,10 +24,13 @@ val TransactionsLazyCol = Color(0xFF1F1D3D)
 val Income = Color(0xFF00A86B)
 val Expense = Color(0xFFE33C3C)
 
-val BottomNavBlue = Color(0xFF141326)
-val MainBackground = BottomNavBlue
+val BottomNavBlue = TransactionCardBg
+val MainBackground = TransactionCardBg
 
 val ExpenseBG = Color(0xFF6E2631)
 val IncomeBG = Color(0xFF316D4B)
+
+val AddExpenseBG = Color(0xFFE84040)
+val AddIncomeBG = Color(0xFF59E07D)
 
 val OffWhite = Color(0xFFFCFCFC)
