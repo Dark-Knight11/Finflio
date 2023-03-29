@@ -150,6 +150,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(0.5f))
+                        .gesturesDisabled()
                 )
             }
 
