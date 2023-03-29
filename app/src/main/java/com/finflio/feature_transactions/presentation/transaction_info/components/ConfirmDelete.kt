@@ -52,10 +52,10 @@ fun DeleteConfirmation(
                 },
                 border = BorderStroke(0.1.dp, Color.White.copy(0.5f)),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Transparent
+                    backgroundColor = MainBackground
                 )
             ) {
-                Text(text = "NO")
+                Text(text = "No")
             }
             Button(
                 onClick = {
