@@ -80,8 +80,6 @@ fun BottomNav(navController: NavController) {
                             launchSingleTop = true
                             // Restore state when reselecting a previously selected item
                             restoreState = true
-
-                            navController.popBackStack()
                         }
                     }
                 )
