@@ -37,6 +37,13 @@ fun TransactionCard(
 ) {
     val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
     val formattedDateTime = time.format(formatter)
+    val display = if (type == "Income") {
+        if (from.isNullOrBlank()) category
+        else from
+    } else {
+        if (to.isNullOrBlank()) category
+        else to
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -59,7 +66,6 @@ fun TransactionCard(
                         1f to Expense
                     )
                 )
-//                else Modifier.background(TransactionCardBg)
             )
             .padding(15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -76,7 +82,7 @@ fun TransactionCard(
             )
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(
-                    text = if (type == "Income") from ?: category else to ?: category,
+                    text = display,
                     fontSize = 13.sp,
                     color = Color.White.copy(0.87f),
                     fontFamily = DMSans,
@@ -101,9 +107,8 @@ fun TransactionCard(
                 .padding(vertical = 7.dp, horizontal = 20.dp)
         ) {
             Text(
-                text = if (type == "Income") "+₹$amount".removeSuffix(".0") else "-₹$amount".removeSuffix(
-                    ".0"
-                ),
+                text = if (type == "Income") "+₹$amount".removeSuffix(".0")
+                else "-₹$amount".removeSuffix(".0"),
                 fontSize = 12.sp,
                 color = Color.White.copy(0.87f),
                 fontFamily = DMSans,
