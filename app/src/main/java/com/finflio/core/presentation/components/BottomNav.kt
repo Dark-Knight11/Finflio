@@ -1,10 +1,7 @@
 package com.finflio.core.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -36,14 +33,14 @@ fun BottomNav(navController: NavController) {
         BottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(105.dp)
+                .height(70.dp + navigationBarHeight)
                 .background(
                     brush = Brush.verticalGradient(
                         0.0f to BottomNavBlue.copy(0.7f),
                         0.4f to BottomNavBlue
                     )
                 )
-                .padding(bottom = 40.dp),
+                .padding(bottom = navigationBarHeight),
             backgroundColor = Color.Transparent,
             elevation = 0.dp
         ) {

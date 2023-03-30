@@ -8,12 +8,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.finflio.R
 import com.finflio.core.presentation.navigation.HomeNavGraph
+import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.DeleteConfirmationDestination
 import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
@@ -48,6 +52,14 @@ fun TransactionInfoScreen(
 ) {
     val scrollState = rememberScrollState()
     val transaction = viewModel.transaction.value
+    var infoBarPositionOffset by remember { mutableStateOf(0f) }
+    var infoBarHeight by remember { mutableStateOf(0f) }
+    var infoBarPositionSnapshot = 0f
+
+    SideEffect {
+        infoBarPositionSnapshot = infoBarPositionOffset
+    }
+
     resultRecipient.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> println("canceled!!")
@@ -64,40 +76,36 @@ fun TransactionInfoScreen(
                     navigator.navigate(DeleteConfirmationDestination(transaction?.type))
                 },
                 onBackPress = { navigator.popBackStack() },
-                modifier = Modifier.padding(top = 45.dp)
+                modifier = Modifier.statusBarsPadding()
             )
         },
-        backgroundColor = if (transaction?.type == "Expense") ExpenseBG else IncomeBG
+        backgroundColor = if (transaction?.type == "Expense") ExpenseBG else IncomeBG,
+        bottomBar = {
+            EditButton(
+                modifier = Modifier
+                    .padding(vertical = 25.dp, horizontal = 30.dp)
+                    .navigationBarsPadding(),
+                type = transaction?.type ?: "Expense"
+            )
+        }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
                 .background(MainBackground)
-                .then(
-                    if (transaction?.type == "Expense") {
-                        Modifier
-                            .background(
-                                brush = Brush.radialGradient(
-                                    0.8f to ExpenseBG,
-                                    1f to Color.Transparent,
-                                    radius = 1500f,
-                                    center = Offset(500f, -400f)
-                                )
-                            )
-                    } else {
-                        Modifier
-                            .background(
-                                brush = Brush.radialGradient(
-                                    0.8f to IncomeBG,
-                                    1f to Color.Transparent,
-                                    radius = 1500f,
-                                    center = Offset(500f, -400f)
-                                )
-                            )
-                    }
+                .background(
+                    brush = Brush.radialGradient(
+                        0.8f to if (transaction?.type == "Expense") ExpenseBG else IncomeBG,
+                        1f to Color.Transparent,
+                        radius = (2 * infoBarPositionSnapshot).coerceAtLeast(1f),
+                        center = Offset(
+                            screenSize.width.value.toPx / 2f,
+                            -(infoBarPositionSnapshot - (infoBarHeight/2))
+                        )
+                    )
                 )
-                .padding(bottom = navigationBarHeight),
+                .padding(bottom = navigationBarHeight + 100.dp),
             horizontalAlignment = CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(30.dp))
@@ -106,7 +114,14 @@ fun TransactionInfoScreen(
                 timestamp = transaction?.timestamp ?: LocalDateTime.now(),
                 type = transaction?.type ?: "Expense",
                 category = transaction?.category ?: "Other",
-                paymentMethod = transaction?.paymentMethod ?: "Gpay"
+                paymentMethod = transaction?.paymentMethod ?: "Gpay",
+                infoBarModifier = Modifier
+                    .onGloballyPositioned {
+                        infoBarPositionOffset = it.positionInWindow().y
+                    }
+                    .onSizeChanged {
+                        infoBarHeight = it.height.toFloat()
+                    }
             )
             Spacer(modifier = Modifier.height(15.dp))
             Column(
@@ -146,11 +161,6 @@ fun TransactionInfoScreen(
                     )
                 }
             }
-            EditButton(
-                modifier = Modifier
-                    .padding(vertical = 25.dp, horizontal = 30.dp),
-                type = transaction?.type ?: "Expense"
-            )
         }
     }
 }

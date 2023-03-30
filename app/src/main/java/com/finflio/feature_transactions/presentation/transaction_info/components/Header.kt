@@ -23,6 +23,7 @@ fun Header(
     type: String,
     category: String,
     paymentMethod: String,
+    infoBarModifier: Modifier,
 ) {
     val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy K:mm a")
     val formattedDateTime = timestamp.format(formatter)
@@ -45,7 +46,12 @@ fun Header(
         textAlign = TextAlign.Center
     )
     Spacer(modifier = Modifier.height(30.dp))
-    InfoBar(type = type, category = category, paymentMethod = paymentMethod)
+    InfoBar(
+        modifier = infoBarModifier,
+        type = type,
+        category = category,
+        paymentMethod = paymentMethod
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()

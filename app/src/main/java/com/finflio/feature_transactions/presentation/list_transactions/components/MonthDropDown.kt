@@ -16,12 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.finflio.core.presentation.util.toDp
 import com.finflio.feature_transactions.presentation.list_transactions.util.shortToLongMonth
 import com.finflio.ui.theme.Gold
 import com.finflio.ui.theme.OrangeRed
 import com.finflio.ui.theme.TransactionCardBg
+import com.finflio.ui.theme.screenSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -39,12 +45,21 @@ fun MonthDropDown(
     var selectedText by remember { mutableStateOf(dateFormat.format(Date())) }
     var mExpanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    var dropdownWidth by remember {mutableStateOf(0.dp)}
+    val screenWidth = screenSize.width
+    var monthSelectorPositionX by remember {mutableStateOf(0.dp)}
+    val calculatedOffset = remember {derivedStateOf {-monthSelectorPositionX + (screenWidth - dropdownWidth)/2}}
+
     ExposedDropdownMenuBox(
         expanded = mExpanded,
         onExpandedChange = { }
     ) {
         Row(
             modifier = Modifier
+                .onGloballyPositioned {
+                    monthSelectorPositionX = it.positionInWindow().x.toDp
+                }
                 .padding(bottom = 10.dp)
                 .clickable(remember { MutableInteractionSource() }, null) {
                     mExpanded = !mExpanded
@@ -77,7 +92,9 @@ fun MonthDropDown(
             DropdownMenu(
                 expanded = mExpanded,
                 onDismissRequest = { mExpanded = false },
-                modifier = modifier
+                modifier = modifier.exposedDropdownSize(false)
+                    .onSizeChanged { dropdownWidth = it.width.toDp },
+                offset = DpOffset(calculatedOffset.value, 0.dp),
             ) {
                 months.windowed(3, 3, true).forEach {
                     Row(

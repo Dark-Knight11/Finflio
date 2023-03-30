@@ -85,7 +85,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                 BottomAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(105.dp),
+                        .height(70.dp + navigationBarHeight),
                     backgroundColor = Color.Transparent,
                     elevation = 22.dp,
                     cutoutShape = DiamondShape(86.dp.toPx()),
@@ -131,7 +131,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                             0.2f to MainBackground
                         ),
                         angle = -70f,
-                        extraY = -120f
+                        extraY = -50.dp.toPx()
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
