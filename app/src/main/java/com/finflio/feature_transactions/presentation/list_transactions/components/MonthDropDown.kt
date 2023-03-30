@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.finflio.feature_transactions.presentation.list_transactions.util.shortToLongMonth
 import com.finflio.ui.theme.Gold
 import com.finflio.ui.theme.OrangeRed
+import com.finflio.ui.theme.TransactionCardBg
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -65,7 +66,14 @@ fun MonthDropDown(
             )
             Text(text = selectedText, color = Color.White)
         }
-        MaterialTheme(MaterialTheme.colors.copy(surface = Color(0xFF141326))) {
+
+        MaterialTheme(
+            MaterialTheme.colors.copy(
+                background = TransactionCardBg,
+                surface = TransactionCardBg,
+                onBackground = TransactionCardBg,
+            )
+        ) {
             DropdownMenu(
                 expanded = mExpanded,
                 onDismissRequest = { mExpanded = false },
