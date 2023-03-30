@@ -24,7 +24,7 @@ fun Header(
     category: String,
     paymentMethod: String,
 ) {
-    val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy HH:mm")
+    val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy K:mm a")
     val formattedDateTime = timestamp.format(formatter)
     // "Saturday 4 June 2021 16:20"
     Text(
