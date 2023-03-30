@@ -17,7 +17,7 @@ fun Modifier.glow(isGlow: Boolean, color: Color): Modifier {
             Modifier.drawBehind {
                 drawCircle(
                     brush = Brush.radialGradient(
-                        0.0f to color.copy(0.5f), 1.0f to Color.Transparent, radius = 100f
+                        0.0f to color.copy(0.5f), 1.0f to Color.Transparent, radius = size.height/2
                     ), blendMode = BlendMode.Lighten, radius = size.width
                 )
             })

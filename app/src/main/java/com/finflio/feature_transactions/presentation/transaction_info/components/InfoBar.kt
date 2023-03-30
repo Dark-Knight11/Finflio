@@ -17,12 +17,13 @@ import com.finflio.ui.theme.DMSans
 
 @Composable
 fun InfoBar(
+    modifier: Modifier = Modifier,
     type: String,
     category: String,
     paymentMethod: String
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(25.dp)
             .graphicsLayer {
