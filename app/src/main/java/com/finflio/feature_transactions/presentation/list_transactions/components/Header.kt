@@ -30,7 +30,7 @@ fun Header(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        MonthDropDown(Modifier.fillMaxWidth()) { onSelect(it) }
+        MonthDropDown(Modifier.fillMaxWidth(0.8f)) { onSelect(it) }
         Text(
             text = "This month you spent",
             fontFamily = Inter,
