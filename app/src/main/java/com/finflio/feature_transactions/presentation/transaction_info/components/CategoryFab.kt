@@ -13,24 +13,27 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CategoryFab(
     icon: Int,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    size: Dp = 50.dp,
+    colors: List<Color> = listOf(Color(0xFF61D8D8), Color(0xFF3972D4))
 ) {
     Box(
         modifier = modifier
-            .size(50.dp)
+            .size(size)
             .graphicsLayer {
                 shape = CircleShape
                 clip = true
             }
             .background(
                 brush = Brush.verticalGradient(
-                    0.0f to Color(0xFF61D8D8),
-                    1.0f to Color(0xFF3972D4)
+                    0.0f to colors[0],
+                    1.0f to colors[1]
                 )
             )
             .padding(10.dp),
@@ -39,7 +42,8 @@ fun CategoryFab(
         Icon(
             painter = painterResource(id = icon),
             contentDescription = "category",
-            tint = Color.Black
+            tint = Color.Black,
+            modifier = Modifier.size(size)
         )
     }
 }

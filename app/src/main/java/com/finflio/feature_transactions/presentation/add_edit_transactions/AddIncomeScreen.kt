@@ -152,7 +152,7 @@ fun AddIncomeScreen(navigator: DestinationsNavigator) {
             AddImageCard() {
                 link = "https://i.imgur.com/eGUPkzW.jpeg"
             }
-            SaveCancelButtons(Modifier.fillMaxWidth())
+            SaveCancelButtons(Modifier.fillMaxWidth(), {}, {})
         }
     }
 }

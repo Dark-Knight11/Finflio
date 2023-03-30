@@ -104,4 +104,9 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    //material dialogs
+    implementation("io.github.vanpra.compose-material-dialogs:core:0.9.0")
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
+
 }

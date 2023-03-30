@@ -10,8 +10,9 @@ class AddTransactionUseCase @Inject constructor(
     private val repository: TransactionsRepository
 ) {
     @Throws(InvalidTransactionException::class)
-    suspend operator fun invoke(transaction: Transaction) {
+    suspend operator fun invoke(transaction: Transaction): Boolean {
         errors(transaction)
         repository.addTransaction(transaction)
+        return true
     }
 }

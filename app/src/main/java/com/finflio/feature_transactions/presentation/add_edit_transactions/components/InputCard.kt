@@ -3,22 +3,28 @@ package com.finflio.feature_transactions.presentation.add_edit_transactions.comp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.finflio.ui.theme.DMSans
-import com.finflio.ui.theme.GoldIcon
 
 @Composable
 fun InputCard(
     title: String,
     content: @Composable () -> Unit
 ) {
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = Transparent,
+        backgroundColor = Transparent
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,10 +41,10 @@ fun InputCard(
                 fontFamily = DMSans,
                 fontWeight = FontWeight.Medium
             )
-            Spacer(modifier = Modifier.height(30.dp))
-            content()
-            Spacer(modifier = Modifier.height(5.dp))
-            Divider(color = GoldIcon, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(15.dp))
+            CompositionLocalProvider(
+                LocalTextSelectionColors provides customTextSelectionColors,
+            ) { content() }
         }
     }
 }

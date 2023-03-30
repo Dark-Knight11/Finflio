@@ -14,6 +14,7 @@ val GoldGradient = listOf(Gold.copy(0.5f), Color.Transparent)
 val GreenGradient = listOf(Color(0xFF7FF6A0), Color(0xFF34D360))
 
 val SecondaryText = Color(0xFF91919F)
+val PrimaryText = Color(0xFFECF4FF)
 val OrangeRed = Color(0xFFE4833C)
 
 val TransactionDate = Color(0xFFCAC9DF)
