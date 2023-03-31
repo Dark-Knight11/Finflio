@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.finflio.R
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.ui.theme.Inter
 import com.finflio.ui.theme.OffWhite
 import java.time.LocalDateTime
@@ -21,7 +21,7 @@ fun Header(
     amount: Float,
     timestamp: LocalDateTime,
     type: String,
-    category: String,
+    category: Categories,
     paymentMethod: String,
     infoBarModifier: Modifier,
 ) {
@@ -49,7 +49,7 @@ fun Header(
     InfoBar(
         modifier = infoBarModifier,
         type = type,
-        category = category,
+        category = category.category,
         paymentMethod = paymentMethod
     )
     Box(
@@ -65,6 +65,11 @@ fun Header(
             intervals = floatArrayOf(30f, 30f),
             phase = 20f
         )
-        CategoryFab(icon = R.drawable.ic_cart, modifier = Modifier.align(Alignment.CenterEnd))
+        CategoryFab(
+            icon = category.icon,
+            colors = category.colors,
+            size = 50.dp,
+            modifier = Modifier.align(Alignment.CenterEnd)
+        )
     }
 }

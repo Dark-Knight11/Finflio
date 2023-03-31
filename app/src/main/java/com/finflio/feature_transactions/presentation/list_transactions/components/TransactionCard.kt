@@ -1,6 +1,5 @@
 package com.finflio.feature_transactions.presentation.list_transactions.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.finflio.R
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
+import com.finflio.feature_transactions.presentation.transaction_info.components.CategoryFab
 import com.finflio.ui.theme.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -27,7 +26,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionCard(
     modifier: Modifier = Modifier,
-    category: String,
+    category: Categories,
     to: String? = null,
     from: String? = null,
     time: LocalDateTime,
@@ -38,10 +37,10 @@ fun TransactionCard(
     val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
     val formattedDateTime = time.format(formatter)
     val display = if (type == "Income") {
-        if (from.isNullOrBlank()) category
+        if (from.isNullOrBlank()) category.category
         else from
     } else {
-        if (to.isNullOrBlank()) category
+        if (to.isNullOrBlank()) category.category
         else to
     }
     Row(
@@ -75,11 +74,7 @@ fun TransactionCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.shell),
-                contentDescription = "Image",
-                modifier = Modifier.size(35.dp)
-            )
+            CategoryFab(icon = category.icon, colors = category.colors, size = 35.dp)
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(
                     text = display,

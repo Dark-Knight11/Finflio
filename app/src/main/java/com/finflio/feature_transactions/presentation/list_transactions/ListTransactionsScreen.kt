@@ -20,6 +20,7 @@ import com.finflio.core.presentation.components.CommonSnackBar
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.destinations.TransactionInfoScreenDestination
 import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.list_transactions.components.Header
 import com.finflio.feature_transactions.presentation.list_transactions.components.TransactionCard
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
@@ -106,7 +107,7 @@ fun ListTransactions(
                     items(transactions) { transaction ->
                         TransactionCard(
                             modifier = Modifier.align(Alignment.CenterHorizontally),
-                            category = transaction.category,
+                            category = Categories.valueOf(transaction.category),
                             amount = transaction.amount,
                             time = transaction.timestamp,
                             to = transaction.to,
