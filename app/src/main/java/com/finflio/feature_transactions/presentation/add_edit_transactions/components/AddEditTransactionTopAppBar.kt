@@ -19,18 +19,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.finflio.ui.theme.DMSans
+import com.finflio.ui.theme.GreenGradient
 import com.finflio.ui.theme.RedGradient
 
 @Composable
-fun AddExpenseTopAppBar(
+fun AddEditTransactionTopAppBar(
     modifier: Modifier = Modifier,
+    type: String,
     onBackPressed: () -> Unit
 ) {
     Box(
         modifier = modifier
             .padding(top = 70.dp)
             .background(
-                brush = Brush.linearGradient(RedGradient)
+                brush = Brush.linearGradient(if (type == "Expense") RedGradient else GreenGradient)
             )
             .padding(vertical = 13.dp)
             .fillMaxWidth()
@@ -46,7 +48,7 @@ fun AddExpenseTopAppBar(
                 }
         )
         Text(
-            text = "Expense",
+            text =  type,
             fontFamily = DMSans,
             fontWeight = FontWeight.Medium,
             color = Color.White,

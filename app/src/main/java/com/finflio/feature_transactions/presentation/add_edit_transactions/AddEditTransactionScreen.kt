@@ -25,28 +25,31 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.finflio.R
 import com.finflio.core.presentation.components.CommonSnackBar
+import com.finflio.core.presentation.navigation.MainNavGraph
 import com.finflio.feature_transactions.presentation.add_edit_transactions.components.*
-import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddExpenseEvent
-import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddExpenseUiEvent
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionEvent
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionUiEvent
 import com.finflio.ui.theme.*
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.flow.collectLatest
 import java.time.format.DateTimeFormatter
 
 @Destination
-@RootNavGraph
+@MainNavGraph
 @Composable
-fun AddExpenseScreen(
+fun AddEditTransactionScreen(
     navigator: DestinationsNavigator,
+    type: String,
+    transactionId: Int = 0,
     viewModel: AddEditTransactionViewModel = hiltViewModel()
 ) {
     val formatter = DateTimeFormatter.ofPattern("K:mm a - MMM d, yyyy")
     val formattedDateTime = viewModel.timestamp.value.format(formatter)
     val amount = viewModel.amount.value
     val to = viewModel.to.value
+    val from = viewModel.from.value
     val description = viewModel.description.value
     val category = viewModel.category.value
     val paymentMethod = viewModel.paymentMethod.value
@@ -56,14 +59,18 @@ fun AddExpenseScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     DateTimePicker(dateTimePicker, initialDateTime = viewModel.timestamp.value) {
-        viewModel.onEvent(AddExpenseEvent.ChangeTimestamp(it))
+        viewModel.onEvent(AddEditTransactionEvent.ChangeTimestamp(it))
     }
 
     LaunchedEffect(true) {
-        viewModel.eventFlow.collectLatest {event ->
-            when(event) {
-                is AddExpenseUiEvent.NavigateBack -> navigator.popBackStack()
-                is AddExpenseUiEvent.ShowSnackBar -> {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is AddEditTransactionUiEvent.NavigateBack -> {
+                    if (transactionId != 0)
+                        navigator.popBackStack("list_transactions", false)
+                    else navigator.popBackStack()
+                }
+                is AddEditTransactionUiEvent.ShowSnackBar -> {
                     snackbarHostState.showSnackbar(event.message)
                 }
             }
@@ -79,23 +86,25 @@ fun AddExpenseScreen(
                 .fillMaxSize()
                 .gradientBackground(
                     colorStops = arrayOf(
-                        0.0f to AddExpenseBG.copy(0.9f),
+                        0.0f to if (type == "Expense") AddExpenseBG.copy(0.9f)
+                        else AddIncomeBG.copy(0.9f),
                         0.2f to TransactionCardBg
-                    ), angle = -70f, extraY = -120f
+                    ),
+                    angle = -70f,
+                    extraY = -120f
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            AddExpenseTopAppBar() {
-                navigator.popBackStack()
-            }
+            AddEditTransactionTopAppBar(type = type) { navigator.popBackStack() }
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         brush = Brush.radialGradient(
-                            0.0f to AddExpenseBG.copy(0.5f),
+                            0.0f to if (type == "Expense") AddExpenseBG.copy(0.5f)
+                            else AddIncomeBG.copy(0.5f),
                             1f to Color.Transparent,
                             radius = 1700f,
                             center = Offset(2000f, 1000f)
@@ -125,7 +134,7 @@ fun AddExpenseScreen(
                 InputCard(title = "Amount") {
                     CustomTextField(
                         value = amount.removeSuffix(".0"),
-                        onValueChange = { viewModel.onEvent(AddExpenseEvent.ChangeAmount(it)) },
+                        onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeAmount(it)) },
                         placeholder = {
                             Text(
                                 text = "0",
@@ -147,25 +156,41 @@ fun AddExpenseScreen(
                 }
 
                 CategoryDropDown(category) {
-                    viewModel.onEvent(AddExpenseEvent.ChangeCategory(it))
+                    viewModel.onEvent(AddEditTransactionEvent.ChangeCategory(it))
                 }
 
                 PaymentMethodDropdown(paymentMethod) {
-                    viewModel.onEvent(AddExpenseEvent.ChangePaymentMethod(it))
+                    viewModel.onEvent(AddEditTransactionEvent.ChangePaymentMethod(it))
                 }
 
-                InputCard(title = "To") {
-                    CustomTextField(
-                        value = to,
-                        placeholder = {
-                            Text(
-                                text = "To",
-                                fontFamily = DMSans,
-                                fontSize = 15.sp
-                            )
-                        },
-                        onValueChange = { viewModel.onEvent(AddExpenseEvent.ChangeTo(it)) }
-                    )
+                if (type == "Expense") {
+                    InputCard(title = "To") {
+                        CustomTextField(
+                            value = to,
+                            placeholder = {
+                                Text(
+                                    text = "To",
+                                    fontFamily = DMSans,
+                                    fontSize = 15.sp
+                                )
+                            },
+                            onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeTo(it)) }
+                        )
+                    }
+                } else {
+                    InputCard(title = "From") {
+                        CustomTextField(
+                            value = from,
+                            placeholder = {
+                                Text(
+                                    text = "From",
+                                    fontFamily = DMSans,
+                                    fontSize = 15.sp
+                                )
+                            },
+                            onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeFrom(it)) }
+                        )
+                    }
                 }
 
                 InputCard(title = "Description") {
@@ -178,7 +203,7 @@ fun AddExpenseScreen(
                                 fontSize = 15.sp
                             )
                         },
-                        onValueChange = { viewModel.onEvent(AddExpenseEvent.ChangeDescription(it)) },
+                        onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeDescription(it)) },
                         singleLine = false
                     )
                 }
@@ -201,8 +226,13 @@ fun AddExpenseScreen(
 
                 SaveCancelButtons(
                     Modifier.fillMaxWidth(),
-                    onCancel = { viewModel.onEvent(AddExpenseEvent.CancelTransaction) },
-                    onSave = { viewModel.onEvent(AddExpenseEvent.AddTransactionEvent) }
+                    type = type,
+                    onCancel = { viewModel.onEvent(AddEditTransactionEvent.CancelTransaction) },
+                    onSave = {
+                        if (transactionId == 0)
+                            viewModel.onEvent(AddEditTransactionEvent.AddTransactionEvent)
+                        else viewModel.onEvent(AddEditTransactionEvent.EditTransactionEvent)
+                    }
                 )
             }
         }

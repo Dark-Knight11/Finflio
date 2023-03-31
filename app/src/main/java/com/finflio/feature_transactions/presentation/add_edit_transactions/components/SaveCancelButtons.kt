@@ -16,11 +16,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finflio.ui.theme.GreenGradient
 import com.finflio.ui.theme.RedGradient
 
 @Composable
 fun SaveCancelButtons(
     modifier: Modifier = Modifier,
+    type: String,
     onCancel: () -> Unit,
     onSave: () -> Unit
 ) {
@@ -57,7 +59,7 @@ fun SaveCancelButtons(
                     shape = RoundedCornerShape(15.dp)
                     clip = true
                 }
-                .background(brush = Brush.linearGradient(RedGradient))
+                .background(brush = Brush.linearGradient(if (type == "Expense") RedGradient else GreenGradient))
                 .clickable(remember { MutableInteractionSource() }, null) {
                     onSave()
                 }

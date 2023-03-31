@@ -8,8 +8,9 @@ import javax.inject.Inject
 class UpdateTransactionUseCase @Inject constructor(
     private val repo: TransactionsRepository
 ) {
-    suspend operator fun invoke(transaction: Transaction) {
+    suspend operator fun invoke(transaction: Transaction): Boolean {
         errors(transaction)
         repo.updateTransaction(transaction)
+        return true
     }
 }

@@ -1,15 +1,15 @@
 package com.finflio.feature_transactions.presentation.add_edit_transactions
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
-import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddExpenseEvent
-import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddExpenseUiEvent
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionEvent
+import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionUiEvent
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.PaymentMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +20,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditTransactionViewModel @Inject constructor(
-    private val useCase: TransactionUseCases
+    private val useCase: TransactionUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val _transactionId = mutableStateOf<Int>(0)
+    val transactionId: State<Int> = _transactionId
+
     private val _timestamp = mutableStateOf<LocalDateTime>(LocalDateTime.now())
     val timestamp: State<LocalDateTime> = _timestamp
 
@@ -34,76 +39,113 @@ class AddEditTransactionViewModel @Inject constructor(
     private val _to = mutableStateOf<String>("")
     val to: State<String> = _to
 
+    private val _from = mutableStateOf<String>("")
+    val from: State<String> = _from
+
+    private val _type = mutableStateOf<String>("")
+    val type: State<String> = _type
+
     private val _description = mutableStateOf<String>("")
     val description: State<String> = _description
 
     private val _paymentMethod = mutableStateOf<PaymentMethods>(PaymentMethods.GPay)
     val paymentMethod: State<PaymentMethods> = _paymentMethod
 
-    val eventFlow = MutableSharedFlow<AddExpenseUiEvent>()
+    val eventFlow = MutableSharedFlow<AddEditTransactionUiEvent>()
 
-    fun onEvent(event: AddExpenseEvent) {
+    init {
+        viewModelScope.launch {
+            savedStateHandle.get<String>("type")?.let {
+                _type.value = it
+            }
+            savedStateHandle.get<Int>("transactionId")?.let {
+                _transactionId.value = it
+            }
+            if (transactionId.value != 0) {
+                useCase.getTransactionUseCase(transactionId.value).also {
+                    _type.value = it.type
+                    _amount.value = it.amount.toString()
+                    _paymentMethod.value = PaymentMethods.valueOf(it.paymentMethod)
+                    _category.value = Categories.valueOf(it.category)
+                    _description.value = it.description
+                    _to.value = it.to ?: ""
+                    _from.value = it.from ?: ""
+                    _timestamp.value = it.timestamp
+                }
+            }
+        }
+    }
+
+    fun onEvent(event: AddEditTransactionEvent) {
         when (event) {
-            is AddExpenseEvent.ChangeTimestamp -> {
+            is AddEditTransactionEvent.ChangeTimestamp -> {
                 _timestamp.value = event.timestamp
             }
-            is AddExpenseEvent.ChangeAmount -> {
+            is AddEditTransactionEvent.ChangeAmount -> {
                 _amount.value = event.amount
             }
-            is AddExpenseEvent.ChangeCategory -> {
+            is AddEditTransactionEvent.ChangeCategory -> {
                 _category.value = event.categories
             }
-            is AddExpenseEvent.ChangeDescription -> {
+            is AddEditTransactionEvent.ChangeDescription -> {
                 _description.value = event.description
             }
-            is AddExpenseEvent.ChangeTo -> {
+            is AddEditTransactionEvent.ChangeTo -> {
                 _to.value = event.to
             }
-            is AddExpenseEvent.ChangePaymentMethod -> {
+            is AddEditTransactionEvent.ChangeFrom -> {
+                _from.value = event.from
+            }
+            is AddEditTransactionEvent.ChangePaymentMethod -> {
                 _paymentMethod.value = event.paymentMethods
             }
-            is AddExpenseEvent.EditTransactionEvent -> {
+            is AddEditTransactionEvent.EditTransactionEvent -> {
                 viewModelScope.launch {
                     try {
-                        useCase.updateTransactionUseCase(
-                            Transaction(
-                                transactionId = 1, // TODO fetch id from nav args
-                                timestamp = timestamp.value,
-                                type = "Expense",
-                                category = category.value.category,
-                                paymentMethod = paymentMethod.value.method,
-                                description = description.value,
-                                amount = amount.value.toFloat(),
-                                attachment = "",
-                                to = to.value
+                        if (
+                            useCase.updateTransactionUseCase(
+                                Transaction(
+                                    transactionId = transactionId.value,
+                                    timestamp = timestamp.value,
+                                    type = type.value,
+                                    category = category.value.category,
+                                    paymentMethod = paymentMethod.value.method,
+                                    description = description.value,
+                                    amount = amount.value.toFloat(),
+                                    to = to.value,
+                                    from = from.value
+                                )
+                            )
+                        ) eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                    } catch (e: InvalidTransactionException) {
+                        eventFlow.emit(
+                            AddEditTransactionUiEvent.ShowSnackBar(
+                                e.message ?: "Unexpected Error Occurred. Please Try Again"
                             )
                         )
-                    } catch (e: InvalidTransactionException) {
-                        Log.e("EditExpense", e.message.toString())
                     }
                 }
             }
-            is AddExpenseEvent.AddTransactionEvent -> {
+            is AddEditTransactionEvent.AddTransactionEvent -> {
                 if (amount.value.isNotBlank()) {
                     viewModelScope.launch {
                         try {
                             if (useCase.addTransactionUseCase(
                                     Transaction(
                                         timestamp = timestamp.value,
-                                        type = "Expense",
+                                        type = type.value,
                                         category = category.value.category,
                                         paymentMethod = paymentMethod.value.method,
                                         description = description.value,
                                         amount = amount.value.toFloat(),
-                                        attachment = "",
-                                        to = to.value
+                                        to = to.value,
+                                        from = from.value
                                     )
                                 )
-                            ) eventFlow.emit(AddExpenseUiEvent.NavigateBack)
+                            ) eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
                         } catch (e: InvalidTransactionException) {
-                            Log.e("AddExpense", e.message.toString())
                             eventFlow.emit(
-                                AddExpenseUiEvent.ShowSnackBar(
+                                AddEditTransactionUiEvent.ShowSnackBar(
                                     e.message ?: "Unexpected Error Occurred. Please Try Again"
                                 )
                             )
@@ -112,18 +154,15 @@ class AddEditTransactionViewModel @Inject constructor(
                 } else {
                     viewModelScope.launch {
                         eventFlow.emit(
-                            AddExpenseUiEvent.ShowSnackBar("Amount can't be empty. Please Enter Valid Amount")
+                            AddEditTransactionUiEvent.ShowSnackBar("Amount can't be empty. Please Enter Valid Amount")
                         )
                     }
                 }
             }
-            is AddExpenseEvent.CancelTransaction -> {
-                _timestamp.value = LocalDateTime.now()
-                _category.value = Categories.Food
-                _to.value = ""
-                _amount.value = ""
-                _paymentMethod.value = PaymentMethods.GPay
-                _description.value = ""
+            is AddEditTransactionEvent.CancelTransaction -> {
+                viewModelScope.launch {
+                    eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                }
             }
         }
     }

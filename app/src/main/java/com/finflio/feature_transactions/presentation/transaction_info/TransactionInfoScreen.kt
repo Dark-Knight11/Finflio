@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.finflio.R
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
+import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.DeleteConfirmationDestination
 import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
@@ -86,7 +87,9 @@ fun TransactionInfoScreen(
                     .padding(vertical = 25.dp, horizontal = 30.dp)
                     .navigationBarsPadding(),
                 type = transaction?.type ?: "Expense"
-            )
+            ) {
+                navigator.navigate(AddEditTransactionScreenDestination(type = transaction?.type ?: "Expense", transactionId = transactionId))
+            }
         }
     ) {
         Column(

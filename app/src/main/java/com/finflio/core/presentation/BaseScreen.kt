@@ -29,8 +29,7 @@ import com.finflio.core.presentation.components.BottomNav
 import com.finflio.core.presentation.components.DiamondFab
 import com.finflio.core.presentation.components.FabWithoutIndication
 import com.finflio.core.presentation.util.toPx
-import com.finflio.destinations.AddExpenseScreenDestination
-import com.finflio.destinations.AddIncomeScreenDestination
+import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.ListTransactionsDestination
 import com.finflio.destinations.ShowStatsDestination
 import com.finflio.ui.theme.*
@@ -188,7 +187,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                 clip = true
                             }
                             .background(Income),
-                        onClick = { navigator.navigate(AddIncomeScreenDestination) }
+                        onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Income")) }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_income),
@@ -221,7 +220,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                 clip = true
                             }
                             .background(Expense),
-                        onClick = { navigator.navigate(AddExpenseScreenDestination) }
+                        onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Expense")) }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_expense),

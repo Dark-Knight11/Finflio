@@ -1,12 +1,15 @@
 package com.finflio.feature_transactions.presentation.transaction_info.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -18,20 +21,22 @@ import com.finflio.ui.theme.GreenGradient
 import com.finflio.ui.theme.RedGradient
 
 @Composable
-fun EditButton(modifier: Modifier, type: String) {
+fun EditButton(
+    modifier: Modifier,
+    type: String,
+    onClick: () -> Unit
+) {
     Box(
         modifier
             .graphicsLayer {
                 shape = RoundedCornerShape(15.dp)
                 clip = true
             }
+            .clickable(remember { MutableInteractionSource() }, null) {
+                onClick()
+            }
             .fillMaxWidth()
-            .then(
-                if (type == "Expense")
-                    Modifier.background(brush = Brush.linearGradient(RedGradient))
-                else
-                    Modifier.background(brush = Brush.linearGradient(GreenGradient))
-            )
+            .background(brush = Brush.linearGradient(if (type == "Expense") RedGradient else GreenGradient))
             .padding(vertical = 15.dp)
     ) {
         Text(
