@@ -18,8 +18,8 @@ class GetMonthTotalUseCase @Inject constructor(
                     it.timestamp.toLocalDate().month == Month.valueOf(month.uppercase())
                 }.forEach {
                     if (it.type == "Income")
-                        total += it.amount
-                    else total -= it.amount
+                        total -= it.amount
+                    else total += it.amount
                 }
                 println("Total: $total")
                 send(total)
