@@ -43,13 +43,8 @@ fun ListTransactions(
 ) {
     val transactions = viewModel.transactions.value
     val monthTotal = viewModel.monthTotal.value
-    var trigger by remember {
-        mutableStateOf(true)
-    }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(Unit) { trigger = !trigger }
 
     resultRecipient.onNavResult { result ->
         when (result) {
@@ -73,7 +68,7 @@ fun ListTransactions(
         modifier = Modifier.padding(bottom = 130.dp)
     ) {
         Column {
-            Header(trigger, monthTotal) {
+            Header(monthTotal) {
                 viewModel.onEvent(TransactionEvent.ChangeMonth(it))
             }
             LazyColumn(
