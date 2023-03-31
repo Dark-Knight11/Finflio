@@ -124,7 +124,7 @@ fun PaymentMethodDropdown(
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        Modifier.padding(top = 10.dp)
+                        Modifier.padding(top = 10.dp).exposedDropdownSize()
                     ) {
                         PaymentMethods.values().forEach {
                             Row(
@@ -134,8 +134,7 @@ fun PaymentMethodDropdown(
                                         onSelect(it)
                                         expanded = !expanded
                                     }
-                                    .padding(vertical = 8.dp)
-                                    .padding(start = 10.dp, end = 118.dp), // TODO fix the padding
+                                    .padding(vertical = 8.dp, horizontal = 10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(15.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {

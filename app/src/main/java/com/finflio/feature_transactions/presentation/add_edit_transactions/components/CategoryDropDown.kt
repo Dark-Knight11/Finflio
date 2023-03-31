@@ -127,13 +127,13 @@ fun CategoryDropDown(
                 ) {
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.exposedDropdownSize()
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                                .padding(start = 26.dp, end = 156.dp), // TODO fix the padding
+                                .padding(vertical = 8.dp, horizontal = 26.dp),
                             horizontalArrangement = Arrangement.spacedBy(25.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
