@@ -40,8 +40,8 @@ fun MonthDropDown(
     modifier: Modifier = Modifier,
     onSelect: (String) -> Unit
 ) {
-    val months = DateFormatSymbols.getInstance(Locale.ENGLISH).shortMonths.toList()
-    val dateFormat: DateFormat = SimpleDateFormat("MMMM", Locale.ENGLISH)
+    val months = DateFormatSymbols.getInstance(Locale.getDefault()).shortMonths.toList()
+    val dateFormat: DateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
     var selectedText by remember { mutableStateOf(dateFormat.format(Date())) }
     var mExpanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
