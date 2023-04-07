@@ -1,6 +1,6 @@
-package com.finflio.feature_transactions.domain.repository
+package com.finflio.core.domain.repository
 
-import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.core.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionsRepository {

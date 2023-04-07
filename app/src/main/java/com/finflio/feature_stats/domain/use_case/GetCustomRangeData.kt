@@ -2,7 +2,7 @@ package com.finflio.feature_stats.domain.use_case
 
 import com.finflio.feature_stats.domain.model.Summary
 import com.finflio.feature_stats.presentation.util.GraphFilter
-import com.finflio.feature_transactions.domain.repository.TransactionsRepository
+import com.finflio.core.domain.repository.TransactionsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow

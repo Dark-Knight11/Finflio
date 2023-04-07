@@ -1,6 +1,6 @@
 package com.finflio.feature_transactions.domain.use_case
 
-import com.finflio.feature_transactions.domain.repository.TransactionsRepository
+import com.finflio.core.domain.repository.TransactionsRepository
 import com.patrykandpatrick.vico.core.extension.sumByFloat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow

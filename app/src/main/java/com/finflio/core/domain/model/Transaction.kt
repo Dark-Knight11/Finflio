@@ -1,4 +1,4 @@
-package com.finflio.feature_transactions.domain.model
+package com.finflio.core.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.finflio.core.presentation.components.CommonSnackBar
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.destinations.TransactionInfoScreenDestination
-import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.list_transactions.components.Header
 import com.finflio.feature_transactions.presentation.list_transactions.components.TransactionCard

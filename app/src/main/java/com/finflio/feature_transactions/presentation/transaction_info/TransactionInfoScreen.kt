@@ -27,7 +27,7 @@ import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.DeleteConfirmationDestination
-import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
 import com.finflio.feature_transactions.presentation.transaction_info.components.Header

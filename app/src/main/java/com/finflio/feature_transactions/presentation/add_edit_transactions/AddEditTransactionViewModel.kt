@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionEvent
@@ -45,7 +45,7 @@ class AddEditTransactionViewModel @Inject constructor(
     private val _type = mutableStateOf<String>("")
     val type: State<String> = _type
 
-    private val _description = mutableStateOf<String>("")
+    private val _description = mutableStateOf<String>("This is description for ${category.value}")
     val description: State<String> = _description
 
     private val _paymentMethod = mutableStateOf<PaymentMethods>(PaymentMethods.GPay)
@@ -85,7 +85,8 @@ class AddEditTransactionViewModel @Inject constructor(
                 _amount.value = event.amount
             }
             is AddEditTransactionEvent.ChangeCategory -> {
-                _category.value = event.categories
+                _category.value = event.category
+                _description.value = "This is description for ${category.value}"
             }
             is AddEditTransactionEvent.ChangeDescription -> {
                 _description.value = event.description
@@ -98,6 +99,11 @@ class AddEditTransactionViewModel @Inject constructor(
             }
             is AddEditTransactionEvent.ChangePaymentMethod -> {
                 _paymentMethod.value = event.paymentMethods
+            }
+            is AddEditTransactionEvent.CancelTransaction -> {
+                viewModelScope.launch {
+                    eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                }
             }
             is AddEditTransactionEvent.EditTransactionEvent -> {
                 viewModelScope.launch {
@@ -159,13 +165,6 @@ class AddEditTransactionViewModel @Inject constructor(
                     }
                 }
             }
-            is AddEditTransactionEvent.CancelTransaction -> {
-                viewModelScope.launch {
-                    eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
-                }
-            }
         }
     }
-
-
 }

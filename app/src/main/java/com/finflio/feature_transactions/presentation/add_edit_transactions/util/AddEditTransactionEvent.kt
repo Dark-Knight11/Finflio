@@ -7,7 +7,7 @@ sealed class AddEditTransactionEvent {
     object EditTransactionEvent: AddEditTransactionEvent()
     object CancelTransaction: AddEditTransactionEvent()
     data class ChangeTimestamp(val timestamp: LocalDateTime): AddEditTransactionEvent()
-    data class ChangeCategory(val categories: Categories): AddEditTransactionEvent()
+    data class ChangeCategory(val category: Categories): AddEditTransactionEvent()
     data class ChangeAmount(val amount: String):AddEditTransactionEvent()
     data class ChangeTo(val to: String): AddEditTransactionEvent()
     data class ChangeFrom(val from: String): AddEditTransactionEvent()

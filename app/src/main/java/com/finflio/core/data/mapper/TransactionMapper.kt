@@ -1,7 +1,7 @@
-package com.finflio.feature_transactions.data.mapper
+package com.finflio.core.data.mapper
 
-import com.finflio.feature_transactions.data.data_source.TransactionEntity
-import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.core.data.model.TransactionEntity
+import com.finflio.core.domain.model.Transaction
 
 fun TransactionEntity.toTransaction(): Transaction {
     return Transaction(

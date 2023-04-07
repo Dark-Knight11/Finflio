@@ -1,7 +1,7 @@
 package com.finflio.feature_stats.data.di
 
 import com.finflio.feature_stats.domain.use_case.GetCustomRangeData
-import com.finflio.feature_transactions.domain.repository.TransactionsRepository
+import com.finflio.core.domain.repository.TransactionsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

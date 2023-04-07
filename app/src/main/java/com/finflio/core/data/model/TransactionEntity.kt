@@ -1,4 +1,4 @@
-package com.finflio.feature_transactions.data.data_source
+package com.finflio.core.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

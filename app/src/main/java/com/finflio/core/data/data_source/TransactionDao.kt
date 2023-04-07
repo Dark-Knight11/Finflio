@@ -1,6 +1,7 @@
-package com.finflio.feature_transactions.data.data_source
+package com.finflio.core.data.data_source
 
 import androidx.room.*
+import com.finflio.core.data.model.TransactionEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
