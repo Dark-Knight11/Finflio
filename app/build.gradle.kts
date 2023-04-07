@@ -64,10 +64,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.activity:activity-compose:1.7.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.1")
 
     // Lifecycle
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
     // Tests
@@ -108,5 +108,8 @@ dependencies {
     //material dialogs
     implementation("io.github.vanpra.compose-material-dialogs:core:0.9.0")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
+
+    // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m2:1.6.4")
 
 }
