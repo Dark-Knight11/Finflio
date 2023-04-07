@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.finflio.R
+import com.finflio.core.domain.model.Transaction
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.DeleteConfirmationDestination
-import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
 import com.finflio.feature_transactions.presentation.transaction_info.components.Header
@@ -56,10 +56,14 @@ fun TransactionInfoScreen(
     val transaction = viewModel.transaction.value
     var infoBarPositionOffset by remember { mutableStateOf(0f) }
     var infoBarHeight by remember { mutableStateOf(0f) }
-    var infoBarPositionSnapshot = 0f
 
-    SideEffect {
-        infoBarPositionSnapshot = infoBarPositionOffset
+    // if I go to edit screen and come back then the gradient is not there anymore
+    // this is happening due to some issue with side effect, not exactly sure whats going on
+    // but making it remember by height as key fixes the issue ... mostly
+    // new issue arises which is observed when you scroll the screen the gradient
+    // goes up way to fast
+    val infoBarPositionSnapshot = remember(infoBarPositionOffset) {
+        infoBarPositionOffset
     }
 
     resultRecipient.onNavResult { result ->
@@ -89,7 +93,11 @@ fun TransactionInfoScreen(
                     .navigationBarsPadding(),
                 type = transaction?.type ?: "Expense"
             ) {
-                navigator.navigate(AddEditTransactionScreenDestination(type = transaction?.type ?: "Expense", transactionId = transactionId))
+                navigator.navigate(
+                    AddEditTransactionScreenDestination(
+                        type = transaction?.type ?: "Expense", transactionId = transactionId
+                    )
+                )
             }
         }
     ) {
@@ -97,15 +105,14 @@ fun TransactionInfoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .background(MainBackground)
                 .background(
                     brush = Brush.radialGradient(
                         0.8f to if (transaction?.type == "Expense") ExpenseBG else IncomeBG,
-                        1f to Color.Transparent,
+                        1f to MainBackground,
                         radius = (2 * infoBarPositionSnapshot).coerceAtLeast(1f),
                         center = Offset(
                             screenSize.width.value.toPx / 2f,
-                            -(infoBarPositionSnapshot - (infoBarHeight/2))
+                            -(infoBarPositionSnapshot - (infoBarHeight / 2))
                         )
                     )
                 )
