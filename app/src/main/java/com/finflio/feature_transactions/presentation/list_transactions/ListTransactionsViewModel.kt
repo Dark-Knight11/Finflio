@@ -9,10 +9,10 @@ import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.Month
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
@@ -27,23 +27,18 @@ class ListTransactionViewModel @Inject constructor(
     private val _monthTotal = mutableStateOf(0f)
     val monthTotal: State<Float> = _monthTotal
 
+    private val _month = mutableStateOf<String>(
+        LocalDate.now().month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+    )
+    val month: State<String> = _month
+
     init {
         viewModelScope.launch {
-            async {
-                useCases.getMonthTotalUseCase(
-                    LocalDate.now().month.getDisplayName(
-                        TextStyle.FULL,
-                        Locale.ENGLISH
-                    )
-                ).collectLatest {
-                    _monthTotal.value = it
+            useCases.getTransactionsUseCase(LocalDate.now().month)
+                .collectLatest { (total, transactions) ->
+                    _transactions.value = transactions
+                    _monthTotal.value = total
                 }
-            }
-            async {
-                useCases.getTransactionsUseCase().collectLatest {
-                    _transactions.value = it
-                }
-            }
         }
     }
 
@@ -51,9 +46,13 @@ class ListTransactionViewModel @Inject constructor(
         when (event) {
             is TransactionEvent.ChangeMonth -> {
                 viewModelScope.launch {
-                    useCases.getMonthTotalUseCase(event.month).collectLatest {
-                        _monthTotal.value = it
-                    }
+                    val month = Month.valueOf(event.month.uppercase())
+                    _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+                    useCases.getTransactionsUseCase(month)
+                        .collectLatest { (total, transactions) ->
+                            _transactions.value = transactions
+                            _monthTotal.value = total
+                        }
                 }
             }
             is TransactionEvent.RestoreTransaction -> {

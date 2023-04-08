@@ -30,26 +30,25 @@ import com.finflio.ui.theme.TransactionCardBg
 import com.finflio.ui.theme.screenSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.text.DateFormatSymbols
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun MonthDropDown(
     modifier: Modifier = Modifier,
+    month: String,
     onSelect: (String) -> Unit
 ) {
     val months = DateFormatSymbols.getInstance(Locale.getDefault()).shortMonths.toList()
-    val dateFormat: DateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
-    var selectedText by remember { mutableStateOf(dateFormat.format(Date())) }
+    var selectedText by remember { mutableStateOf(month) }
     var mExpanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    var dropdownWidth by remember {mutableStateOf(0.dp)}
+    var dropdownWidth by remember { mutableStateOf(0.dp) }
     val screenWidth = screenSize.width
-    var monthSelectorPositionX by remember {mutableStateOf(0.dp)}
-    val calculatedOffset = remember {derivedStateOf {-monthSelectorPositionX + (screenWidth - dropdownWidth)/2}}
+    var monthSelectorPositionX by remember { mutableStateOf(0.dp) }
+    val calculatedOffset =
+        remember { derivedStateOf { -monthSelectorPositionX + (screenWidth - dropdownWidth) / 2 } }
 
     ExposedDropdownMenuBox(
         expanded = mExpanded,
@@ -92,7 +91,8 @@ fun MonthDropDown(
             DropdownMenu(
                 expanded = mExpanded,
                 onDismissRequest = { mExpanded = false },
-                modifier = modifier.exposedDropdownSize(false)
+                modifier = modifier
+                    .exposedDropdownSize(false)
                     .onSizeChanged { dropdownWidth = it.width.toDp },
                 offset = DpOffset(calculatedOffset.value, 0.dp),
             ) {
@@ -103,42 +103,33 @@ fun MonthDropDown(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         it.forEach { month ->
-                            if (month == selectedText.slice(IntRange(0, 2)))
-                                Box(
-                                    modifier = Modifier
-                                        .graphicsLayer {
-                                            shape = RoundedCornerShape(8.dp)
-                                            clip = true
-                                        }
-                                        .background(
-                                            brush = Brush.linearGradient(
-                                                0.0f to Gold,
-                                                1.0f to Gold.copy(0.5f)
-                                            ),
-                                            alpha = 0.5f
-                                        )
-                                        .padding(vertical = 5.dp, horizontal = 20.dp)
-                                ) {
-                                    Text(
-                                        text = month,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier,
-                                        color = Color.White
+                            Box(
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        shape = RoundedCornerShape(8.dp)
+                                        clip = true
+                                    }
+                                    .then(
+                                        if (month == selectedText.slice(IntRange(0, 2)))
+                                            Modifier
+                                                .background(
+                                                    brush = Brush.linearGradient(
+                                                        0.0f to Gold,
+                                                        1.0f to Gold.copy(0.5f)
+                                                    ),
+                                                    alpha = 0.5f
+                                                )
+                                        else Modifier
                                     )
-                                }
-                            else {
-                                Box(
-                                    modifier = Modifier
-                                        .graphicsLayer {
-                                            shape = RoundedCornerShape(8.dp)
-                                            clip = true
-                                        }
-                                        .padding(vertical = 5.dp, horizontal = 20.dp)
-                                ) {
-                                    Text(
-                                        text = month,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.clickable(
+                                    .padding(vertical = 5.dp, horizontal = 20.dp)
+                            ) {
+                                Text(
+                                    text = month,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.White,
+                                    modifier =
+                                    if (month != selectedText.slice(IntRange(0, 2)))
+                                        Modifier.clickable(
                                             remember { MutableInteractionSource() }, null
                                         ) {
                                             selectedText = shortToLongMonth(month)
@@ -147,10 +138,9 @@ fun MonthDropDown(
                                                 delay(300)
                                                 mExpanded = !mExpanded
                                             }
-                                        },
-                                        color = Color.White,
-                                    )
-                                }
+                                        }
+                                    else Modifier
+                                )
                             }
                         }
                     }

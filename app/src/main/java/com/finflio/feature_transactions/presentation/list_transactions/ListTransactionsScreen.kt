@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.finflio.core.domain.model.Transaction
 import com.finflio.core.presentation.components.CommonSnackBar
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.destinations.TransactionInfoScreenDestination
-import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.list_transactions.components.Header
 import com.finflio.feature_transactions.presentation.list_transactions.components.TransactionCard
@@ -43,6 +43,7 @@ fun ListTransactions(
 ) {
     val transactions = viewModel.transactions.value
     val monthTotal = viewModel.monthTotal.value
+    val month = viewModel.month.value
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -68,7 +69,7 @@ fun ListTransactions(
         modifier = Modifier.padding(bottom = 130.dp)
     ) {
         Column {
-            Header(monthTotal) {
+            Header(monthTotal, month) {
                 viewModel.onEvent(TransactionEvent.ChangeMonth(it))
             }
             LazyColumn(

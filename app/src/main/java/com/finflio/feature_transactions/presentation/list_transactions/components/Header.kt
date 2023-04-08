@@ -19,6 +19,7 @@ import com.finflio.ui.theme.SecondaryText
 @Composable
 fun Header(
     total: Float,
+    month: String,
     onSelect: (String) -> Unit
 ) {
     Column(
@@ -28,7 +29,7 @@ fun Header(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        MonthDropDown(Modifier.fillMaxWidth(0.8f)) { onSelect(it) }
+        MonthDropDown(Modifier.fillMaxWidth(0.8f), month) { onSelect(it) }
         Text(
             text = "This month you spent",
             fontFamily = Inter,

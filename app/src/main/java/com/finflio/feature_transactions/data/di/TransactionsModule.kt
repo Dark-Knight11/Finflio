@@ -20,8 +20,7 @@ object TransactionsModule {
             getTransactionUseCase = GetTransactionUseCase(repository),
             addTransactionUseCase = AddTransactionUseCase(repository),
             updateTransactionUseCase = UpdateTransactionUseCase(repository),
-            deleteTransactionUseCase = DeleteTransactionUseCase(repository),
-            getMonthTotalUseCase = GetMonthTotalUseCase(repository)
+            deleteTransactionUseCase = DeleteTransactionUseCase(repository)
         )
     }
 }
