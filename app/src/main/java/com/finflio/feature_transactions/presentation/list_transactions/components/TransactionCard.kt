@@ -34,7 +34,7 @@ fun TransactionCard(
     type: String,
     onClick: () -> Unit
 ) {
-    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+    val formatter = DateTimeFormatter.ofPattern("K:mm a")
     val formattedDateTime = time.format(formatter)
     val display = if (type == "Income") {
         if (from.isNullOrBlank()) category.category
