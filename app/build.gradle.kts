@@ -2,7 +2,7 @@
 plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp") version "1.8.10-1.0.9"
+    id("com.google.devtools.ksp") version "1.8.20-1.0.10"
     kotlin("android")
     kotlin("kapt")
 }
@@ -37,26 +37,26 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_15
-        targetCompatibility = JavaVersion.VERSION_15
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "15"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.4.5"
     }
-    packagingOptions {
+    packaging {
         resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
     }
 }
 
 dependencies {
     // Compose BOM
-    val composeBom = platform ("androidx.compose:compose-bom:2023.03.00")
+    val composeBom = platform ("androidx.compose:compose-bom:2023.04.00")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
@@ -64,7 +64,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.activity:activity-compose:1.7.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
     // Lifecycle
     implementation("androidx.core:core-ktx:1.10.0")
@@ -83,15 +83,15 @@ dependencies {
     implementation("com.github.skydoves:cloudy:0.1.2")
 
     // Accompanist
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.28.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     // Compose Destinations
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.38-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.38-beta")
+    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.39-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.39-beta")
 
     // dagger hilt
     implementation("com.google.dagger:hilt-android:2.45")
@@ -109,7 +109,7 @@ dependencies {
     implementation("io.github.vanpra.compose-material-dialogs:core:0.9.0")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
 
-    // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
+    // Vico Charts
     implementation("com.patrykandpatrick.vico:compose-m2:1.6.4")
 
 }
