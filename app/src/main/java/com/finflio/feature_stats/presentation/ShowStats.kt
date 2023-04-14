@@ -96,7 +96,7 @@ fun ShowStats(viewModel: StatsViewModel = hiltViewModel()) {
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            ProvideChartStyle(rememberChartStyle(listOf(Expense), listOf(Income))) {
+            ProvideChartStyle(rememberChartStyle(listOf(Income), listOf(Expense))) {
                 val defaultColumns = currentChartStyle.columnChart.columns
                 val defaultLines = currentChartStyle.lineChart.lines
                 val columnChart = columnChart(
@@ -127,7 +127,7 @@ fun ShowStats(viewModel: StatsViewModel = hiltViewModel()) {
                 )
                 Chart(
                     chart = remember(columnChart, lineChart) { columnChart + lineChart },
-                    chartModelProducer = expenseChartEntry + incomeChartEntry,
+                    chartModelProducer = incomeChartEntry + expenseChartEntry,
                     startAxis = startAxis(
                         valueFormatter = DecimalFormatAxisValueFormatter(
                             pattern = "#",
