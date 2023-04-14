@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -15,10 +16,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,6 +61,7 @@ fun AddEditTransactionScreen(
     val scrollState = rememberScrollState()
     val dateTimePicker = rememberMaterialDialogState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val focusManager = LocalFocusManager.current
 
     DateTimePicker(dateTimePicker, initialDateTime = viewModel.timestamp.value) {
         viewModel.onEvent(AddEditTransactionEvent.ChangeTimestamp(it))
@@ -70,6 +75,7 @@ fun AddEditTransactionScreen(
                         navigator.popBackStack("list_transactions", false)
                     else navigator.popBackStack()
                 }
+
                 is AddEditTransactionUiEvent.ShowSnackBar -> {
                     snackbarHostState.showSnackbar(event.message)
                 }
@@ -149,9 +155,13 @@ fun AddEditTransactionScreen(
                                 tint = SecondaryText
                             )
                         },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        )
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }),
                     )
                 }
 
@@ -174,7 +184,14 @@ fun AddEditTransactionScreen(
                                     fontSize = 15.sp
                                 )
                             },
-                            onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeTo(it)) }
+                            onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeTo(it)) },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
                         )
                     }
                 } else {
@@ -188,7 +205,18 @@ fun AddEditTransactionScreen(
                                     fontSize = 15.sp
                                 )
                             },
-                            onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeFrom(it)) }
+                            onValueChange = {
+                                viewModel.onEvent(
+                                    AddEditTransactionEvent.ChangeFrom(it)
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
                         )
                     }
                 }
@@ -203,7 +231,11 @@ fun AddEditTransactionScreen(
                                 fontSize = 15.sp
                             )
                         },
-                        onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeDescription(it)) },
+                        onValueChange = {
+                            viewModel.onEvent(
+                                AddEditTransactionEvent.ChangeDescription(it)
+                            )
+                        },
                         singleLine = false
                     )
                 }
