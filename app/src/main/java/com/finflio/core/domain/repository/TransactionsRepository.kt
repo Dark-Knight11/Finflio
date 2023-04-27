@@ -14,4 +14,6 @@ interface TransactionsRepository {
     suspend fun updateTransaction(transaction: Transaction)
 
     suspend fun addTransaction(transaction: Transaction)
+
+    suspend fun deleteImage(imageID: String?)
 }

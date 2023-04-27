@@ -1,6 +1,5 @@
 package com.finflio.feature_transactions.presentation.add_edit_transactions.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,7 +25,6 @@ import com.finflio.ui.theme.SecondaryText
 @Composable
 fun ImageItem(
     modifier: Modifier = Modifier,
-    url: Uri? = null,
     link: String? = null,
     onClose: (() -> Unit)? = null,
 ) {
@@ -34,17 +32,7 @@ fun ImageItem(
         if (link != null) {
             AsyncImage(
                 model = link,
-                contentDescription = null,
-                modifier = modifier
-                    .aspectRatio(1.3f, true)
-                    .clip(RoundedCornerShape(5.dp))
-                    .border(1.dp, SecondaryText, RoundedCornerShape(5.dp)),
-                contentScale = ContentScale.Crop,
-            )
-        } else {
-            AsyncImage(
-                model = url,
-                contentDescription = null,
+                contentDescription = "attachment",
                 modifier = modifier
                     .aspectRatio(1.3f, true)
                     .clip(RoundedCornerShape(5.dp))
@@ -52,6 +40,7 @@ fun ImageItem(
                 contentScale = ContentScale.Crop,
             )
         }
+//        TODO("Fix its placement")
         Icon(
             imageVector = Icons.Default.Close,
             contentDescription = null,

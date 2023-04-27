@@ -19,6 +19,8 @@ allprojects {
                 "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
                 "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi",
                 "-opt-in=com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi",
+                "-opt-in=com.google.accompanist.permissions.ExperimentalPermissionsApi",
+                "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
             )
         }
     }

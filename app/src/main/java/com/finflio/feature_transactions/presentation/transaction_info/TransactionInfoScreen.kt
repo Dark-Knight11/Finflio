@@ -1,28 +1,30 @@
 package com.finflio.feature_transactions.presentation.transaction_info
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.finflio.R
+import coil.compose.AsyncImage
 import com.finflio.core.domain.model.Transaction
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
@@ -163,12 +165,16 @@ fun TransactionInfoScreen(
                         fontSize = 13.sp,
                         color = Color.White
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.sample),
-                        contentDescription = "bill",
+                    AsyncImage(
+                        model = it,
+                        contentDescription = "attachment",
                         modifier = Modifier
+                            .aspectRatio(1.3f, true)
+                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.dp, SecondaryText, RoundedCornerShape(5.dp))
                             .padding(10.dp)
-                            .align(CenterHorizontally)
+                            .align(CenterHorizontally),
+                        contentScale = ContentScale.Crop,
                     )
                 }
             }

@@ -21,4 +21,10 @@ fun errors(transaction: Transaction) {
         throw InvalidTransactionException("From field is applicable only for Income.")
     if (transaction.amount <= 0)
         throw InvalidTransactionException("Amount can't be negative or zero.")
+    invalidImage(transaction.attachment)
+}
+
+fun invalidImage(imgUrl: String?) {
+    if(imgUrl?.contains("cloudinary") == false)
+        throw InvalidTransactionException("Local Image Path not allowed")
 }

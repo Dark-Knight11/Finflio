@@ -1,5 +1,11 @@
 package com.finflio.feature_transactions.presentation.add_edit_transactions
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -8,18 +14,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.Icon
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -34,12 +48,16 @@ import com.finflio.feature_transactions.presentation.add_edit_transactions.compo
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionEvent
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionUiEvent
 import com.finflio.ui.theme.*
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination
 @MainNavGraph
 @Composable
@@ -49,6 +67,33 @@ fun AddEditTransactionScreen(
     transactionId: Int = 0,
     viewModel: AddEditTransactionViewModel = hiltViewModel()
 ) {
+    val permissionDrawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
+    PermissionDrawer(drawerState = permissionDrawerState) {
+        AddEditTransactionScreenContent(
+            navigator = navigator,
+            type = type,
+            transactionId = transactionId,
+            viewModel = viewModel,
+            openPermissionDialog = {
+                coroutineScope.launch {
+                    permissionDrawerState.expand()
+                }
+            }
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Composable
+fun AddEditTransactionScreenContent(
+    navigator: DestinationsNavigator,
+    type: String,
+    transactionId: Int,
+    viewModel: AddEditTransactionViewModel,
+    openPermissionDialog: () -> Unit
+) {
+
     val formatter = DateTimeFormatter.ofPattern("K:mm a - MMM d, yyyy")
     val formattedDateTime = viewModel.timestamp.value.format(formatter)
     val amount = viewModel.amount.value
@@ -57,11 +102,24 @@ fun AddEditTransactionScreen(
     val description = viewModel.description.value
     val category = viewModel.category.value
     val paymentMethod = viewModel.paymentMethod.value
+    val imgPath = viewModel.imgPath.value
 
     val scrollState = rememberScrollState()
     val dateTimePicker = rememberMaterialDialogState()
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val permissionState = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri ->
+                if (uri != null) viewModel.onEvent(
+                    AddEditTransactionEvent.ChangeImagePath(
+                        viewModel.onFilePathsListChange(uri, context)
+                    )
+                )
+            })
+    var showLoader by rememberSaveable { mutableStateOf(false) }
 
     DateTimePicker(dateTimePicker, initialDateTime = viewModel.timestamp.value) {
         viewModel.onEvent(AddEditTransactionEvent.ChangeTimestamp(it))
@@ -78,6 +136,14 @@ fun AddEditTransactionScreen(
 
                 is AddEditTransactionUiEvent.ShowSnackBar -> {
                     snackbarHostState.showSnackbar(event.message)
+                }
+
+                is AddEditTransactionUiEvent.HideLoader -> {
+                    showLoader = false
+                }
+
+                is AddEditTransactionUiEvent.ShowLoader -> {
+                    showLoader = true
                 }
             }
         }
@@ -140,7 +206,11 @@ fun AddEditTransactionScreen(
                 InputCard(title = "Amount") {
                     CustomTextField(
                         value = amount.removeSuffix(".0"),
-                        onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeAmount(it)) },
+                        onValueChange = {
+                            viewModel.onEvent(
+                                AddEditTransactionEvent.ChangeAmount(it)
+                            )
+                        },
                         placeholder = {
                             Text(
                                 text = "0",
@@ -184,7 +254,11 @@ fun AddEditTransactionScreen(
                                     fontSize = 15.sp
                                 )
                             },
-                            onValueChange = { viewModel.onEvent(AddEditTransactionEvent.ChangeTo(it)) },
+                            onValueChange = {
+                                viewModel.onEvent(
+                                    AddEditTransactionEvent.ChangeTo(it)
+                                )
+                            },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next
@@ -240,36 +314,40 @@ fun AddEditTransactionScreen(
                     )
                 }
 
-//            var link by remember {
-//                mutableStateOf("")
-//            }
-//            if (link.isNotBlank()) {
-//                Spacer(modifier = Modifier.height(0.dp))
-//                ImageItem(
-//                    modifier = Modifier
-//                        .size(200.dp)
-//                        .align(Alignment.CenterHorizontally),
-//                    link = link
-//                ) { link = "" }
-//            }
-//            AddImageCard() {
-//                link = "https://i.imgur.com/eGUPkzW.jpeg"
-//            }
+                if (imgPath.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(0.dp))
+                    ImageItem(
+                        modifier = Modifier
+                            .size(200.dp)
+                            .align(Alignment.CenterHorizontally),
+                        link = imgPath
+                    ) { viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath("")) }
+                } else {
+                    AddImageCard() {
+                        if (permissionState.status.isGranted) imagePickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                        else openPermissionDialog()
+                    }
+                }
 
                 SaveCancelButtons(
-                    Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     type = type,
+                    showLoader = showLoader,
                     onCancel = { viewModel.onEvent(AddEditTransactionEvent.CancelTransaction) },
                     onSave = {
                         if (transactionId == 0)
-                            viewModel.onEvent(AddEditTransactionEvent.AddTransactionEvent)
-                        else viewModel.onEvent(AddEditTransactionEvent.EditTransactionEvent)
+                            viewModel.onEvent(AddEditTransactionEvent.AddTransactionEvent(context))
+                        else viewModel.onEvent(AddEditTransactionEvent.EditTransactionEvent(context))
                     }
                 )
             }
         }
     }
 }
+
+
 
 
 

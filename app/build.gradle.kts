@@ -3,6 +3,7 @@ plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp") version "1.8.20-1.0.10"
+    id("kotlin-parcelize")
     kotlin("android")
     kotlin("kapt")
 }
@@ -26,11 +27,21 @@ android {
 
     buildTypes {
         getByName("debug") {
+            buildConfigField("String", "CLOUD_NAME", "\"${project.property("CLOUD_NAME")}\"")
+            buildConfigField("String", "CLOUDINARY_API_KEY", "\"${project.property("CLOUDINARY_API_KEY")}\"")
+            buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${project.property("CLOUDINARY_API_SECRET")}\"")
+            buildConfigField("String", "CLOUDINARY_URL", "\"${project.property("CLOUDINARY_URL")}\"")
+
             isMinifyEnabled = false
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("release") {
+            buildConfigField("String", "CLOUD_NAME", "\"${project.property("CLOUD_NAME")}\"")
+            buildConfigField("String", "CLOUDINARY_API_KEY", "\"${project.property("CLOUDINARY_API_KEY")}\"")
+            buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${project.property("CLOUDINARY_API_SECRET")}\"")
+            buildConfigField("String", "CLOUDINARY_URL", "\"${project.property("CLOUDINARY_URL")}\"")
+
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -56,15 +67,17 @@ android {
 
 dependencies {
     // Compose BOM
-    val composeBom = platform ("androidx.compose:compose-bom:2023.04.00")
+    val composeBom = platform ("androidx.compose:compose-bom:2023.04.01")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.activity:activity-compose:1.7.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    implementation("androidx.activity:activity-compose:1.7.1")
+    implementation("androidx.activity:activity:1.7.1")
 
     // Lifecycle
     implementation("androidx.core:core-ktx:1.10.0")
@@ -83,15 +96,17 @@ dependencies {
     implementation("com.github.skydoves:cloudy:0.1.2")
 
     // Accompanist
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
+    val accompanistVersion = "0.30.1"
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.3.0")
 
     // Compose Destinations
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.39-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.39-beta")
+    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.41-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.41-beta")
 
     // dagger hilt
     implementation("com.google.dagger:hilt-android:2.45")
@@ -111,5 +126,9 @@ dependencies {
 
     // Vico Charts
     implementation("com.patrykandpatrick.vico:compose-m2:1.6.4")
+
+    //Integration
+    implementation("com.cloudinary:cloudinary-android:2.2.0")
+    implementation(kotlin("reflect"))
 
 }

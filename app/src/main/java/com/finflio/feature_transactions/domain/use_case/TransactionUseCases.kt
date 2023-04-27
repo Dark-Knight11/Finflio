@@ -5,5 +5,7 @@ data class TransactionUseCases (
     val getTransactionsUseCase: GetTransactionsUseCase,
     val addTransactionUseCase: AddTransactionUseCase,
     val updateTransactionUseCase: UpdateTransactionUseCase,
-    val deleteTransactionUseCase: DeleteTransactionUseCase
+    val deleteTransactionUseCase: DeleteTransactionUseCase,
+    val getImagePathUseCase: GetImagePathUseCase,
+    val deleteImageUseCase: DeleteImageUseCase
 )

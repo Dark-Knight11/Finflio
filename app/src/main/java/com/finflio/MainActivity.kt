@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import com.cloudinary.android.MediaManager
 import com.finflio.ui.theme.BottomNavBlue
 import com.finflio.ui.theme.FinflioTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -20,6 +21,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Cloudinary Configuration
+        val config: MutableMap<String, String> = HashMap()
+        config["cloud_name"] = BuildConfig.CLOUD_NAME
+        config["api_key"] = BuildConfig.CLOUDINARY_API_KEY
+        config["api_secret"] = BuildConfig.CLOUDINARY_API_SECRET
+        MediaManager.init(this, config)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         setContent {

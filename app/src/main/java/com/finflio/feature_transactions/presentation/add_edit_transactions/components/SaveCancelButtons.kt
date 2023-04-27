@@ -3,8 +3,16 @@ package com.finflio.feature_transactions.presentation.add_edit_transactions.comp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,6 +31,7 @@ import com.finflio.ui.theme.RedGradient
 fun SaveCancelButtons(
     modifier: Modifier = Modifier,
     type: String,
+    showLoader: Boolean = false,
     onCancel: () -> Unit,
     onSave: () -> Unit
 ) {
@@ -66,13 +75,20 @@ fun SaveCancelButtons(
                 .width(127.dp)
                 .padding(vertical = 15.dp)
         ) {
-            Text(
-                text = "Save",
-                color = Color.White,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontSize = 14.sp
-            )
+            if(showLoader)
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center).size(18.dp),
+                    strokeWidth = 2.dp
+                )
+            else
+                Text(
+                    text = "Save",
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp
+                )
         }
     }
 }

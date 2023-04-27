@@ -7,6 +7,7 @@ import com.finflio.core.data.data_source.TransactionDao
 import com.finflio.core.data.repository.TransactionsRepositoryImpl
 import com.finflio.core.data.util.Converters
 import com.finflio.core.domain.repository.TransactionsRepository
+import com.finflio.core.presentation.util.UriPathFinder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,5 +42,11 @@ object AppModule {
     @Singleton
     fun provideTransactionRepo(transactionDao: TransactionDao): TransactionsRepository {
         return TransactionsRepositoryImpl(transactionDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUriPathFinder(): UriPathFinder  {
+        return UriPathFinder()
     }
 }
