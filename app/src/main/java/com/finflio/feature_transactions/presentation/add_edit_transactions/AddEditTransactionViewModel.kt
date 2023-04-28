@@ -54,10 +54,11 @@ class AddEditTransactionViewModel @Inject constructor(
     private val _description = mutableStateOf<String>("This is description for ${category.value}")
     val description: State<String> = _description
 
-    private val _imgPath = mutableStateOf<String>("")
-    val imgPath: State<String> = _imgPath
+    private val _imgUri = mutableStateOf<Uri?>(null)
+    val imgUri: State<Uri?> = _imgUri
 
-    private val attachment = mutableStateOf<String?>(null)
+    private val _attachment = mutableStateOf<String?>(null)
+    val attachment: State<String?> = _attachment
 
     private val _paymentMethod = mutableStateOf<PaymentMethods>(PaymentMethods.GPay)
     val paymentMethod: State<PaymentMethods> = _paymentMethod
@@ -82,8 +83,7 @@ class AddEditTransactionViewModel @Inject constructor(
                     _to.value = it.to ?: ""
                     _from.value = it.from ?: ""
                     _timestamp.value = it.timestamp
-                    _imgPath.value = it.attachment ?: ""
-                    attachment.value = it.attachment
+                    _attachment.value = it.attachment
                 }
             }
         }
@@ -117,7 +117,7 @@ class AddEditTransactionViewModel @Inject constructor(
             }
 
             is AddEditTransactionEvent.ChangeImagePath -> {
-                _imgPath.value = event.imagePath ?: ""
+                _imgUri.value = event.imgUri
             }
 
             is AddEditTransactionEvent.ChangePaymentMethod -> {
@@ -131,18 +131,25 @@ class AddEditTransactionViewModel @Inject constructor(
             }
 
             is AddEditTransactionEvent.EditTransactionEvent -> {
+                // TODO Fix Someday
+                // if you edit a transaction and you try to change the existing image in it
+                // and if some error occurs at the time like amount can't be negative then
+                // old image is deleted from cloudinary. So if user cancels the transaction
+                // after that error then previous image of that transaction is deleted from
+                // cloud but not from database and this causes issue
+                // Hopefully this will be fixed once separate backend is integrated
                 if (amount.value.isNotBlank()) {
                     viewModelScope.launch {
-                        if (imgPath.value.isNotBlank() && attachment.value.isNullOrBlank()) {
-                            uploadImage(imgPath.value, event.context, event)
-                        } else if (imgPath.value.isNotBlank() && imgPath.value != attachment.value && !attachment.value.isNullOrBlank()) {
+                        if (imgUri.value != null && attachment.value.isNullOrBlank()) {
+                            uploadImage(imgUri.value, event.context, event)
+                        } else if (imgUri.value != null && imgUri.value != Uri.EMPTY && !attachment.value.isNullOrBlank()) {
                             useCase.deleteImageUseCase(attachment.value)
-                            uploadImage(imgPath.value, event.context, event)
+                            uploadImage(imgUri.value, event.context, event)
                         } else {
-                            if (imgPath.value.isBlank() && !attachment.value.isNullOrBlank()) {
+                            if (imgUri.value == Uri.EMPTY && !attachment.value.isNullOrBlank()) {
                                 useCase.deleteImageUseCase(attachment.value)
-                            }
-                            addTransaction(event, imgPath.value)
+                                addTransaction(event)
+                            } else addTransaction(event, attachment.value)
                         }
                     }
                 } else {
@@ -158,8 +165,8 @@ class AddEditTransactionViewModel @Inject constructor(
 
             is AddEditTransactionEvent.AddTransactionEvent -> {
                 if (amount.value.isNotBlank()) {
-                    if (imgPath.value.isNotBlank())
-                        uploadImage(imgPath.value, event.context, event)
+                    if (imgUri.value != null)
+                        uploadImage(imgUri.value, event.context, event)
                     else
                         addTransaction(event)
                 } else {
@@ -175,13 +182,10 @@ class AddEditTransactionViewModel @Inject constructor(
         }
     }
 
-    fun onFilePathsListChange(list: Uri, context: Context): String? =
-        useCase.getImagePathUseCase(list, context)
-
-    private fun uploadImage(path: String, context: Context, event: AddEditTransactionEvent) {
+    private fun uploadImage(uri: Uri?, context: Context, event: AddEditTransactionEvent) {
         viewModelScope.launch {
             MediaManager.get()
-                .upload(path)
+                .upload(uri)
                 .option("folder", "finflio")
                 .callback(object : UploadCallback {
                     override fun onStart(requestId: String?) {
