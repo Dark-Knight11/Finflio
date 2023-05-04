@@ -78,6 +78,7 @@ dependencies {
 
     implementation("androidx.activity:activity-compose:1.7.1")
     implementation("androidx.activity:activity:1.7.1")
+    implementation("androidx.compose.ui:ui-util:1.4.2")
 
     // Lifecycle
     implementation("androidx.core:core-ktx:1.10.0")
@@ -130,5 +131,8 @@ dependencies {
     //Integration
     implementation("com.cloudinary:cloudinary-android:2.2.0")
     implementation(kotlin("reflect"))
+
+    //For zoomable images
+    implementation("de.mr-pine.utils:zoomables:1.1.2")
 
 }

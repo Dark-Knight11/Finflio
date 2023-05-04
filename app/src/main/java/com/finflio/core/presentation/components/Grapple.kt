@@ -6,11 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import com.finflio.ui.theme.GoldIcon
-
 
 @Composable
-fun Grapple(modifier: Modifier = Modifier, color: Color = GoldIcon) {
+fun Grapple(modifier: Modifier = Modifier, color: Color = Color.White) {
     Canvas(
         modifier = modifier,
         onDraw = {
