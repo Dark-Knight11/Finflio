@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInWindow
@@ -24,12 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.finflio.core.domain.model.Transaction
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.DeleteConfirmationDestination
+import com.finflio.feature_transactions.presentation.add_edit_transactions.components.OpenableImage
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
 import com.finflio.feature_transactions.presentation.transaction_info.components.Header
@@ -165,16 +164,14 @@ fun TransactionInfoScreen(
                         fontSize = 13.sp,
                         color = Color.White
                     )
-                    AsyncImage(
-                        model = it,
-                        contentDescription = "attachment",
+                    OpenableImage(
                         modifier = Modifier
                             .aspectRatio(1.3f, true)
                             .clip(RoundedCornerShape(5.dp))
                             .border(1.dp, SecondaryText, RoundedCornerShape(5.dp))
                             .padding(10.dp)
                             .align(CenterHorizontally),
-                        contentScale = ContentScale.Crop,
+                        imageUrl = it
                     )
                 }
             }
