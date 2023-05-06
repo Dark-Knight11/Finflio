@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Month
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 class GetTransactionsUseCase @Inject constructor(
@@ -28,8 +29,8 @@ class GetTransactionsUseCase @Inject constructor(
                         (it.type == "Expense" || it.type == "Income") && (it.timestamp.month == month && it.timestamp.year == currentDate.year)
                     }.groupBy { it.timestamp.dayOfMonth }.map { (dayOfMonth, transactions) ->
                         val dateFormat = SimpleDateFormat(
-                            "EEEE - d'${getDayOfMonthSuffix(dayOfMonth)}' MMM",
-                            Locale.getDefault()
+                            /* pattern = */ "EEEE - d'${getDayOfMonthSuffix(dayOfMonth)}' MMM",
+                            /* locale = */ Locale.getDefault()
                         )
                         calendar.set(Calendar.MONTH, transactions[0].timestamp.monthValue - 1)
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -39,9 +40,10 @@ class GetTransactionsUseCase @Inject constructor(
                             else -> dateFormat.format(calendar.time)
                         }
                         transactions.filter { it.type == "Expense" }.sumByFloat { it.amount } to
-                                TransactionDisplay(day = day, transactions = transactions.sortedBy {
-                                    it.timestamp
-                                })
+                                TransactionDisplay(
+                                    day = day,
+                                    transactions = transactions.sortedBy { it.timestamp }
+                                )
 
                     }.unzip()
 

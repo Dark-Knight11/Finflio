@@ -258,7 +258,7 @@ class AddEditTransactionViewModel @Inject constructor(
                         if (useCase.addTransactionUseCase(transaction))
                             eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
                     } catch (e: InvalidTransactionException) {
-                        useCase.deleteImageUseCase(imgUrl)
+                        if (!imgUrl.isNullOrBlank()) useCase.deleteImageUseCase(imgUrl)
                         eventFlow.emit(
                             AddEditTransactionUiEvent.ShowSnackBar(
                                 e.message ?: "Unexpected Error Occurred. Please Try Again"
