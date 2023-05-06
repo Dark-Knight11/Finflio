@@ -1,4 +1,4 @@
-package com.finflio.feature_transactions.presentation.add_edit_transactions.components
+package com.finflio.feature_transactions.presentation.unsettled_transactions.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,27 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.finflio.ui.theme.DMSans
-import com.finflio.ui.theme.GreenGradient
-import com.finflio.ui.theme.RedGradient
 import com.finflio.ui.theme.TransferGradient
 
 @Composable
-fun AddEditTransactionTopAppBar(
+fun UnsettledTransactionTopAppBar(
     modifier: Modifier = Modifier,
-    type: String,
     onBackPressed: () -> Unit
 ) {
     Box(
         modifier = modifier
             .padding(top = 70.dp)
             .background(
-                brush = Brush.linearGradient(
-                    colors = when (type) {
-                        "Expense" -> RedGradient
-                        "Income" -> GreenGradient
-                        else -> TransferGradient
-                    }
-                )
+                brush = Brush.linearGradient(TransferGradient)
             )
             .padding(vertical = 13.dp)
             .fillMaxWidth()
@@ -55,7 +46,7 @@ fun AddEditTransactionTopAppBar(
                 }
         )
         Text(
-            text = type,
+            text = "Unsettled Transactions",
             fontFamily = DMSans,
             fontWeight = FontWeight.Medium,
             color = Color.White,

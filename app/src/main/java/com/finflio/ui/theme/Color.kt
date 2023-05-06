@@ -10,7 +10,6 @@ val Teal200 = Color(0xFF03DAC5)
 val Gold = Color(0xFFE3D23C)
 val GoldIcon = Color(0xFFE3B53C)
 val RedGradient = listOf(Color(0xFFE3823C), Color(0xFFE33C3C))
-val GoldGradient = listOf(Gold.copy(0.5f), Color.Transparent)
 val GreenGradient = listOf(Color(0xFF7FF6A0), Color(0xFF34D360))
 
 val SecondaryText = Color(0xFF91919F)
@@ -35,3 +34,8 @@ val AddExpenseBG = Color(0xFFE84040)
 val AddIncomeBG = Color(0xFF59E07D)
 
 val OffWhite = Color(0xFFFCFCFC)
+
+val TransferBlue = Color(0xFF0077FF)
+val AddTransferBg = Color(0xFF0094FF)
+val TransferBg = Color(0xFF004679)
+val TransferGradient = listOf(Color(0xFF3D90CF), TransferBlue)

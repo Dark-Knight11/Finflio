@@ -86,7 +86,11 @@ fun TransactionInfoScreen(
                 modifier = Modifier.statusBarsPadding()
             )
         },
-        backgroundColor = if (transaction?.type == "Expense") ExpenseBG else IncomeBG,
+        backgroundColor = when (transaction?.type) {
+            "Expense" -> ExpenseBG
+            "Income" -> IncomeBG
+            else -> TransferBg
+        },
         bottomBar = {
             EditButton(
                 modifier = Modifier
@@ -108,7 +112,11 @@ fun TransactionInfoScreen(
                 .verticalScroll(scrollState)
                 .background(
                     brush = Brush.radialGradient(
-                        0.8f to if (transaction?.type == "Expense") ExpenseBG else IncomeBG,
+                        0.8f to when (transaction?.type) {
+                            "Expense" -> ExpenseBG
+                            "Income" -> IncomeBG
+                            else -> TransferBg
+                        },
                         1f to MainBackground,
                         radius = (2 * infoBarPositionSnapshot).coerceAtLeast(1f),
                         center = Offset(

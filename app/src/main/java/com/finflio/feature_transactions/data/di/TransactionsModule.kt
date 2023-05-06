@@ -15,7 +15,10 @@ object TransactionsModule {
 
     @Provides
     @Singleton
-    fun provideTransactionsUseCases(repository: TransactionsRepository, uriPathFinder: UriPathFinder): TransactionUseCases {
+    fun provideTransactionsUseCases(
+        repository: TransactionsRepository,
+        uriPathFinder: UriPathFinder
+    ): TransactionUseCases {
         return TransactionUseCases(
             getTransactionsUseCase = GetTransactionsUseCase(repository),
             getTransactionUseCase = GetTransactionUseCase(repository),
@@ -23,6 +26,7 @@ object TransactionsModule {
             updateTransactionUseCase = UpdateTransactionUseCase(repository),
             deleteTransactionUseCase = DeleteTransactionUseCase(repository),
             deleteImageUseCase = DeleteImageUseCase(repository),
+            getUnsettledTransactionsUseCase = GetUnsettledTransactionsUseCase(repository),
             getImagePathUseCase = GetImagePathUseCase(uriPathFinder)
         )
     }

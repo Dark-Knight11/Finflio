@@ -2,9 +2,15 @@ package com.finflio.feature_transactions.presentation.transaction_info.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +19,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.finflio.core.presentation.navigation.HomeNavGraph
-import com.finflio.ui.theme.*
+import com.finflio.ui.theme.DMSans
+import com.finflio.ui.theme.ExpenseBG
+import com.finflio.ui.theme.IncomeBG
+import com.finflio.ui.theme.MainBackground
+import com.finflio.ui.theme.TransferBg
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -62,7 +72,11 @@ fun DeleteConfirmation(
                     resultNavigator.navigateBack(result = true)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (type == "Income") IncomeBG else ExpenseBG
+                    backgroundColor = when (type) {
+                        "Expense" -> ExpenseBG
+                        "Income" -> IncomeBG
+                        else -> TransferBg
+                    }
                 )
             ) {
                 Text(text = "Yes")

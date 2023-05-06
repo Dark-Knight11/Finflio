@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finflio.ui.theme.GreenGradient
 import com.finflio.ui.theme.RedGradient
+import com.finflio.ui.theme.TransferGradient
 
 @Composable
 fun EditButton(
@@ -36,7 +37,16 @@ fun EditButton(
                 onClick()
             }
             .fillMaxWidth()
-            .background(brush = Brush.linearGradient(if (type == "Expense") RedGradient else GreenGradient))
+            .background(
+                brush = Brush
+                    .linearGradient(
+                        when (type) {
+                            "Expense" -> RedGradient
+                            "Income" -> GreenGradient
+                            else -> TransferGradient
+                        }
+                    )
+            )
             .padding(vertical = 15.dp)
     ) {
         Text(

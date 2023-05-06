@@ -153,30 +153,24 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = 140.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.Bottom
+            Column(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AnimatedVisibility(
                     visible = fabVisibility,
                     enter = slideIn(
-                        animationSpec = tween(
-                            durationMillis = 300
-                        ),
+                        animationSpec = tween(300),
                         initialOffset = {
-                            IntOffset(it.width, it.height)
+                            IntOffset(0,0)
                         }
-                    ) + fadeIn() + scaleIn(),
+                    ) + scaleIn(),
                     exit = slideOut(
                         animationSpec = tween(),
                         targetOffset = {
-                            IntOffset(it.width, it.height)
+                            IntOffset(0,0)
                         }
-                    ) + fadeOut() + scaleOut()
+                    ) + scaleOut()
                 ) {
                     FabWithoutIndication(
                         modifier = Modifier
@@ -186,47 +180,91 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                 shape = DiamondShape(62.dp.toPx())
                                 clip = true
                             }
-                            .background(Income),
-                        onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Income")) }
+                            .background(TransferBlue),
+                        onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Unsettled")) }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_income),
-                            contentDescription = "income",
+                            painter = painterResource(id = R.drawable.ic_transfer),
+                            contentDescription = "tranfer",
                             tint = Color.White
                         )
                     }
                 }
-                AnimatedVisibility(
-                    visible = fabVisibility,
-                    enter = slideIn(
-                        animationSpec = tween(),
-                        initialOffset = {
-                            IntOffset(-it.width, it.height)
-                        }
-                    ) + fadeIn() + scaleIn(),
-                    exit = slideOut(
-                        animationSpec = tween(300),
-                        targetOffset = {
-                            IntOffset(-it.width, it.height)
-                        }
-                    ) + fadeOut() + scaleOut()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 140.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.Bottom
                 ) {
-                    FabWithoutIndication(
-                        modifier = Modifier
-                            .rotate(-button)
-                            .size(62.dp)
-                            .graphicsLayer {
-                                shape = DiamondShape(62.dp.toPx())
-                                clip = true
+                    AnimatedVisibility(
+                        visible = fabVisibility,
+                        enter = slideIn(
+                            animationSpec = tween(
+                                durationMillis = 300
+                            ),
+                            initialOffset = {
+                                IntOffset(it.width, it.height)
                             }
-                            .background(Expense),
-                        onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Expense")) }
+                        ) + fadeIn() + scaleIn(),
+                        exit = slideOut(
+                            animationSpec = tween(),
+                            targetOffset = {
+                                IntOffset(it.width, it.height)
+                            }
+                        ) + fadeOut() + scaleOut()
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_expense),
-                            contentDescription = "expense",
-                            tint = Color.White
-                        )
+                        FabWithoutIndication(
+                            modifier = Modifier
+                                .rotate(button)
+                                .size(62.dp)
+                                .graphicsLayer {
+                                    shape = DiamondShape(62.dp.toPx())
+                                    clip = true
+                                }
+                                .background(Income),
+                            onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Income")) }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_income),
+                                contentDescription = "income",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = fabVisibility,
+                        enter = slideIn(
+                            animationSpec = tween(),
+                            initialOffset = {
+                                IntOffset(-it.width, it.height)
+                            }
+                        ) + fadeIn() + scaleIn(),
+                        exit = slideOut(
+                            animationSpec = tween(300),
+                            targetOffset = {
+                                IntOffset(-it.width, it.height)
+                            }
+                        ) + fadeOut() + scaleOut()
+                    ) {
+                        FabWithoutIndication(
+                            modifier = Modifier
+                                .rotate(-button)
+                                .size(62.dp)
+                                .graphicsLayer {
+                                    shape = DiamondShape(62.dp.toPx())
+                                    clip = true
+                                }
+                                .background(Expense),
+                            onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Expense")) }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_expense),
+                                contentDescription = "expense",
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }

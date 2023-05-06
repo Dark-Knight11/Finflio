@@ -109,7 +109,7 @@ fun AddEditTransactionScreen(
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
     ) {
-        if(it) cameraLauncher.launch(captureImageUri)
+        if (it) cameraLauncher.launch(captureImageUri)
     }
     var showPermissionDialog by remember {
         mutableStateOf(false)
@@ -231,8 +231,11 @@ fun AddEditTransactionContent(
             .fillMaxSize()
             .gradientBackground(
                 colorStops = arrayOf(
-                    0.0f to if (type == "Expense") AddExpenseBG.copy(0.9f)
-                    else AddIncomeBG.copy(0.9f),
+                    0.0f to when (type) {
+                        "Expense" -> AddExpenseBG.copy(0.9f)
+                        "Income" -> AddIncomeBG.copy(0.9f)
+                        else -> AddTransferBg.copy(0.9f)
+                    },
                     0.2f to TransactionCardBg
                 ),
                 angle = -70f,
@@ -247,8 +250,11 @@ fun AddEditTransactionContent(
                 .fillMaxSize()
                 .background(
                     brush = Brush.radialGradient(
-                        0.0f to if (type == "Expense") AddExpenseBG.copy(0.5f)
-                        else AddIncomeBG.copy(0.5f),
+                        0.0f to when (type) {
+                            "Expense" -> AddExpenseBG.copy(0.5f)
+                            "Income" -> AddIncomeBG.copy(0.5f)
+                            else -> AddTransferBg.copy(0.5f)
+                        },
                         1f to Color.Transparent,
                         radius = 1700f,
                         center = Offset(2000f, 1000f)
@@ -315,7 +321,7 @@ fun AddEditTransactionContent(
                 viewModel.onEvent(AddEditTransactionEvent.ChangePaymentMethod(it))
             }
 
-            if (type == "Expense") {
+            if (type == "Expense" || type == "Unsettled") {
                 InputCard(title = "To") {
                     CustomTextField(
                         value = to,
@@ -340,7 +346,8 @@ fun AddEditTransactionContent(
                         }),
                     )
                 }
-            } else {
+            }
+            if (type == "Unsettled" || type == "Income") {
                 InputCard(title = "From") {
                     CustomTextField(
                         value = from,
@@ -386,35 +393,37 @@ fun AddEditTransactionContent(
                 )
             }
 
-            if (imgUri == null) {
-                if (!attachment.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(0.dp))
-                    ImageItem(
-                        modifier = Modifier
-                            .size(200.dp)
-                            .align(Alignment.CenterHorizontally),
-                        link = attachment
-                    ) { viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath(Uri.EMPTY)) }
-                } else {
-                    AddImageCard() {
-                        scope.launch {
-                            optionsDrawerState.expand()
+            if (type != "Unsettled") {
+                if (imgUri == null) {
+                    if (!attachment.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(0.dp))
+                        ImageItem(
+                            modifier = Modifier
+                                .size(200.dp)
+                                .align(Alignment.CenterHorizontally),
+                            link = attachment
+                        ) { viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath(Uri.EMPTY)) }
+                    } else {
+                        AddImageCard() {
+                            scope.launch {
+                                optionsDrawerState.expand()
+                            }
                         }
                     }
-                }
-            } else {
-                if (imgUri != Uri.EMPTY) {
-                    Spacer(modifier = Modifier.height(0.dp))
-                    ImageItem(
-                        modifier = Modifier
-                            .size(200.dp)
-                            .align(Alignment.CenterHorizontally),
-                        uri = imgUri
-                    ) { viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath(null)) }
                 } else {
-                    AddImageCard() {
-                        scope.launch {
-                            optionsDrawerState.expand()
+                    if (imgUri != Uri.EMPTY) {
+                        Spacer(modifier = Modifier.height(0.dp))
+                        ImageItem(
+                            modifier = Modifier
+                                .size(200.dp)
+                                .align(Alignment.CenterHorizontally),
+                            uri = imgUri
+                        ) { viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath(null)) }
+                    } else {
+                        AddImageCard() {
+                            scope.launch {
+                                optionsDrawerState.expand()
+                            }
                         }
                     }
                 }

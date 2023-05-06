@@ -4,7 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.transaction_info.components.CategoryFab
-import com.finflio.ui.theme.*
+import com.finflio.ui.theme.DMSans
+import com.finflio.ui.theme.Expense
+import com.finflio.ui.theme.GreenGradient
+import com.finflio.ui.theme.TransactionCardBg
+import com.finflio.ui.theme.TransactionDate
+import com.finflio.ui.theme.TransferBg
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -34,15 +44,29 @@ fun TransactionCard(
     type: String,
     onClick: () -> Unit
 ) {
-    val formatter = DateTimeFormatter.ofPattern("K:mm a")
+    val formatter = if (type == "Unsettled") DateTimeFormatter.ofPattern("MMM dd, K:mm a")
+    else DateTimeFormatter.ofPattern("K:mm a")
     val formattedDateTime = time.format(formatter)
-    val display = if (type == "Income") {
-        if (from.isNullOrBlank()) category.category
-        else from
-    } else {
-        if (to.isNullOrBlank()) category.category
-        else to
+    val titleField = when (type) {
+        "Income" -> {
+            if (from.isNullOrBlank()) category.category
+            else from
+        }
+
+        "Expense" -> {
+            if (to.isNullOrBlank()) category.category
+            else to
+        }
+
+        else -> if (from.isNullOrBlank()) to else from
     }
+
+    val amountField = when (type) {
+        "Income" -> "+₹$amount".removeSuffix(".0")
+        "Expense" -> "-₹$amount".removeSuffix(".0")
+        else -> "₹$amount".removeSuffix(".0")
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -53,18 +77,28 @@ fun TransactionCard(
             }
             .background(Color.Black)
             .then(
-                if (type == "Income") Modifier.background(
-                    brush = Brush.linearGradient(
-                        0.80f to TransactionCardBg,
-                        1f to GreenGradient[1]
+                when (type) {
+                    "Income" -> Modifier.background(
+                        brush = Brush.linearGradient(
+                            0.80f to TransactionCardBg,
+                            1f to GreenGradient[1]
+                        )
                     )
-                )
-                else Modifier.background(
-                    brush = Brush.linearGradient(
-                        0.80f to TransactionCardBg,
-                        1f to Expense
+
+                    "Expense" -> Modifier.background(
+                        brush = Brush.linearGradient(
+                            0.80f to TransactionCardBg,
+                            1f to Expense
+                        )
                     )
-                )
+
+                    else -> Modifier.background(
+                        brush = Brush.linearGradient(
+                            0.6f to Color.Black,
+                            0.7f to TransferBg
+                        )
+                    )
+                }
             )
             .padding(15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,7 +111,7 @@ fun TransactionCard(
             CategoryFab(icon = category.icon, colors = category.colors, size = 35.dp)
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(
-                    text = display,
+                    text = titleField ?: "",
                     fontSize = 13.sp,
                     color = Color.White.copy(0.87f),
                     fontFamily = DMSans,
@@ -102,8 +136,7 @@ fun TransactionCard(
                 .padding(vertical = 7.dp, horizontal = 20.dp)
         ) {
             Text(
-                text = if (type == "Income") "+₹$amount".removeSuffix(".0")
-                else "-₹$amount".removeSuffix(".0"),
+                text = amountField,
                 fontSize = 12.sp,
                 color = Color.White.copy(0.87f),
                 fontFamily = DMSans,
