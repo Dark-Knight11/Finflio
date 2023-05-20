@@ -1,6 +1,5 @@
 package com.finflio.feature_stats.presentation.util
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Brush
@@ -18,9 +17,8 @@ import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 
 @Composable
 internal fun rememberChartStyle(columnChartColors: List<Color>, lineChartColors: List<Color>): ChartStyle {
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-    return remember(columnChartColors, lineChartColors, isSystemInDarkTheme) {
-        val defaultColors = if (isSystemInDarkTheme) DefaultColors.Dark else DefaultColors.Light
+    return remember(columnChartColors, lineChartColors) {
+        val defaultColors = DefaultColors.Dark
         ChartStyle(
             ChartStyle.Axis(
                 axisLabelColor = Color(defaultColors.axisLabelColor),
