@@ -50,6 +50,7 @@ fun DeleteConfirmation(
         Text(
             text = "Are you sure you want to delete this Transaction?",
             fontFamily = DMSans,
+            color = Color.White,
             textAlign = TextAlign.Center
         )
         Row(
@@ -65,7 +66,7 @@ fun DeleteConfirmation(
                     backgroundColor = MainBackground
                 )
             ) {
-                Text(text = "No")
+                Text(text = "No", color = Color.White)
             }
             Button(
                 onClick = {
@@ -79,7 +80,7 @@ fun DeleteConfirmation(
                     }
                 )
             ) {
-                Text(text = "Yes")
+                Text(text = "Yes", color = Color.White)
             }
         }
     }
