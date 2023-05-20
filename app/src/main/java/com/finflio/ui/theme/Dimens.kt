@@ -9,11 +9,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
-val navigationBarHeight: Dp
+val navigationBottomBarHeight: Dp
     @Composable
     get() = with(LocalDensity.current) {
         WindowInsets.navigationBars.getBottom(this).toDp()
     }
+
+val navigationTopBarHeight: Dp = 50.dp
 
 val screenSize: DpSize
     @Composable

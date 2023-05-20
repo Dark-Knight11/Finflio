@@ -84,7 +84,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                 BottomAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(70.dp + navigationBarHeight),
+                        .height(70.dp + navigationBottomBarHeight),
                     backgroundColor = Color.Transparent,
                     elevation = 22.dp,
                     cutoutShape = DiamondShape(86.dp.toPx()),
@@ -118,7 +118,8 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                     }
                 )
             }
-        }
+        },
+        backgroundColor = Color.Black,
     ) {
         Box {
             Column(

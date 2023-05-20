@@ -42,7 +42,7 @@ import com.finflio.ui.theme.GoldIcon
 import com.finflio.ui.theme.IncomeBG
 import com.finflio.ui.theme.MainBackground
 import com.finflio.ui.theme.PrimaryText
-import com.finflio.ui.theme.navigationBarHeight
+import com.finflio.ui.theme.navigationBottomBarHeight
 import kotlinx.coroutines.launch
 
 @Composable
@@ -111,7 +111,7 @@ fun OptionsDrawerContent(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = navigationBarHeight)
+                .padding(bottom = navigationBottomBarHeight)
                 .padding(horizontal = 70.dp, vertical = 25.dp)
         ) {
             Option(text = "Camera", icon = R.drawable.camera) {

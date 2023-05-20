@@ -33,14 +33,14 @@ fun BottomNav(navController: NavController) {
         BottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp + navigationBarHeight)
+                .height(70.dp + navigationBottomBarHeight)
                 .background(
                     brush = Brush.verticalGradient(
                         0.0f to BottomNavBlue.copy(0.7f),
                         0.4f to BottomNavBlue
                     )
                 )
-                .padding(bottom = navigationBarHeight),
+                .padding(bottom = navigationBottomBarHeight),
             backgroundColor = Color.Transparent,
             elevation = 0.dp
         ) {

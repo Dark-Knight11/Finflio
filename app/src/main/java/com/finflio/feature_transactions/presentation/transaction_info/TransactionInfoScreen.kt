@@ -125,7 +125,7 @@ fun TransactionInfoScreen(
                         )
                     )
                 )
-                .padding(bottom = navigationBarHeight + 100.dp),
+                .padding(bottom = navigationBottomBarHeight + 100.dp),
             horizontalAlignment = CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(30.dp))

@@ -160,7 +160,7 @@ fun AddEditTransactionScreen(
 
     CommonSnackBar(
         snackBarHostState = snackbarHostState,
-        modifier = Modifier.padding(bottom = navigationBarHeight)
+        modifier = Modifier.padding(bottom = navigationBottomBarHeight)
     ) {
         OptionsDrawer(
             optionsDrawerState = optionsDrawerState,
