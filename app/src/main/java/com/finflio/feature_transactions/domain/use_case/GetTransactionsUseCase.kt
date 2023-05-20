@@ -25,29 +25,35 @@ class GetTransactionsUseCase @Inject constructor(
         return channelFlow {
             launch(Dispatchers.IO) {
                 repo.getTransactions().collectLatest { transactionList ->
-                    val (total, list) = transactionList.filter {
+                    val (total, list) = transactionList.asSequence().filter {
                         (it.type == "Expense" || it.type == "Income") && (it.timestamp.month == month && it.timestamp.year == currentDate.year)
-                    }.groupBy { it.timestamp.dayOfMonth }.map { (dayOfMonth, transactions) ->
-                        val dateFormat = SimpleDateFormat(
-                            /* pattern = */ "EEEE - d'${getDayOfMonthSuffix(dayOfMonth)}' MMM",
-                            /* locale = */ Locale.getDefault()
-                        )
-                        calendar.set(Calendar.MONTH, transactions[0].timestamp.monthValue - 1)
-                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                        val day = when (dayOfMonth) {
-                            currentDate.dayOfMonth -> "Today"
-                            currentDate.minusDays(1).dayOfMonth -> "Yesterday"
-                            else -> dateFormat.format(calendar.time)
-                        }
-                        transactions.filter { it.type == "Expense" }.sumByFloat { it.amount } to
-                                TransactionDisplay(
-                                    day = day,
-                                    transactions = transactions.sortedBy { it.timestamp }
-                                )
+                    }
+                        .sortedByDescending { it.timestamp.dayOfMonth }
+                        .groupBy { it.timestamp.dayOfMonth }.map { (dayOfMonth, transactions) ->
+                            val dateFormat = SimpleDateFormat(
+                                /* pattern = */ "EEEE - d'${getDayOfMonthSuffix(dayOfMonth)}' MMM",
+                                /* locale = */ Locale.getDefault()
+                            )
+                            calendar.set(Calendar.MONTH, transactions[0].timestamp.monthValue - 1)
+                            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                            val day = when (dayOfMonth) {
+                                currentDate.dayOfMonth -> if (currentDate.month == transactions[0].timestamp.month) "Today"
+                                else dateFormat.format(calendar.time)
 
-                    }.unzip()
+                                currentDate.minusDays(1).dayOfMonth -> if (currentDate.month == transactions[0].timestamp.month) "Yesterday"
+                                else dateFormat.format(calendar.time)
 
-                    send(total.sum() to list.reversed())
+                                else -> dateFormat.format(calendar.time)
+                            }
+                            transactions.filter { it.type == "Expense" }.sumByFloat { it.amount } to
+                                    TransactionDisplay(
+                                        day = day,
+                                        transactions = transactions.sortedBy { it.timestamp }
+                                    )
+
+                        }.unzip()
+
+                    send(total.sum() to list)
                 }
             }
         }
