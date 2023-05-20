@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
@@ -105,6 +106,7 @@ fun TransactionCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
@@ -115,7 +117,9 @@ fun TransactionCard(
                     fontSize = 13.sp,
                     color = Color.White.copy(0.87f),
                     fontFamily = DMSans,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
                 Text(
                     text = formattedDateTime,
