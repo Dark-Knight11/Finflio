@@ -2,7 +2,7 @@
 plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp") version "1.8.20-1.0.10"
+    id("com.google.devtools.ksp") version "1.8.21-1.0.11"
     id("kotlin-parcelize")
     kotlin("android")
     kotlin("kapt")
@@ -58,7 +58,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.5"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
     packaging {
         resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -67,7 +67,7 @@ android {
 
 dependencies {
     // Compose BOM
-    val composeBom = platform ("androidx.compose:compose-bom:2023.04.01")
+    val composeBom = platform ("androidx.compose:compose-bom:2023.05.01")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
@@ -78,10 +78,10 @@ dependencies {
 
     implementation("androidx.activity:activity-compose:1.7.1")
     implementation("androidx.activity:activity:1.7.1")
-    implementation("androidx.compose.ui:ui-util:1.4.2")
+    implementation("androidx.compose.ui:ui-util:1.4.3")
 
     // Lifecycle
-    implementation("androidx.core:core-ktx:1.10.0")
+    implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
     // Tests
@@ -135,4 +135,5 @@ dependencies {
     //For zoomable images
     implementation("de.mr-pine.utils:zoomables:1.1.2")
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
