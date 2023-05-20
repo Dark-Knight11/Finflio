@@ -10,6 +10,7 @@ val Teal200 = Color(0xFF03DAC5)
 val Gold = Color(0xFFE3D23C)
 val GoldIcon = Color(0xFFE3B53C)
 val RedGradient = listOf(Color(0xFFE3823C), Color(0xFFE33C3C))
+val GoldGradient = listOf(Gold, Gold.copy(0.3f))
 val GreenGradient = listOf(Color(0xFF7FF6A0), Color(0xFF34D360))
 
 val SecondaryText = Color(0xFF91919F)
