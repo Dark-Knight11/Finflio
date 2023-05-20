@@ -105,11 +105,10 @@ fun PermissionDialog(
                             .rotate(90f)
                             .size(40.dp)
                     )
-                    // TODO replace with app logo
                     Image(
-                        painter = painterResource(R.drawable.google_pay),
+                        painter = painterResource(R.drawable.ic_logo),
                         contentDescription = null,
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(48.dp),
                         contentScale = ContentScale.FillWidth
                     )
                 }
