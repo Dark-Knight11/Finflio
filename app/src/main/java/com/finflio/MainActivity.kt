@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.cloudinary.android.MediaManager
 import com.finflio.ui.theme.BottomNavBlue
@@ -21,6 +22,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        installSplashScreen()
         // Cloudinary Configuration
         val config: MutableMap<String, String> = HashMap()
         config["cloud_name"] = BuildConfig.CLOUD_NAME
@@ -28,7 +31,6 @@ class MainActivity : ComponentActivity() {
         config["api_secret"] = BuildConfig.CLOUDINARY_API_SECRET
         MediaManager.init(this, config)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        super.onCreate(savedInstanceState)
         setContent {
             FinflioTheme {
                 val systemUiController = rememberSystemUiController()
