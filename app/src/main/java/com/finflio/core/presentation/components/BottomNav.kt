@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.finflio.NavGraphs
 import com.finflio.appCurrentDestinationAsState
-import com.finflio.core.presentation.util.BottomBarDestination
+import com.finflio.core.presentation.util.BottomBarDestinations
 import com.finflio.destinations.Destination
 import com.finflio.startAppDestination
 import com.finflio.ui.theme.*
@@ -44,9 +44,16 @@ fun BottomNav(navController: NavController) {
             backgroundColor = Color.Transparent,
             elevation = 0.dp
         ) {
-            BottomBarDestination.values().forEach { destination ->
+            BottomBarDestinations.values().forEach { destination ->
                 BottomNavigationItem(
-                    modifier = if (destination.direction.startAppDestination == currentDestination) Modifier.glow(true, Gold) else Modifier,
+                    modifier = if (destination.direction.startAppDestination == currentDestination) {
+                        Modifier.glow(
+                            true,
+                            Gold
+                        )
+                    } else {
+                        Modifier
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(id = destination.icon),

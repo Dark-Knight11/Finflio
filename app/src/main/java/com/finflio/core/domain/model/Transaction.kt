@@ -1,8 +1,8 @@
 package com.finflio.core.domain.model
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.time.LocalDateTime
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Transaction(

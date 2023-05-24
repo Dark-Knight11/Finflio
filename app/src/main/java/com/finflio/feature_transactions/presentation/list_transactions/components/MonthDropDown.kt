@@ -28,10 +28,10 @@ import com.finflio.ui.theme.Gold
 import com.finflio.ui.theme.OrangeRed
 import com.finflio.ui.theme.TransactionCardBg
 import com.finflio.ui.theme.screenSize
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.util.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun MonthDropDown(
@@ -72,7 +72,8 @@ fun MonthDropDown(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Icon(
-                Icons.Default.ArrowDropDown, "contentDescription",
+                Icons.Default.ArrowDropDown,
+                "contentDescription",
                 Modifier.clickable(remember { MutableInteractionSource() }, null) {
                     mExpanded = !mExpanded
                 },
@@ -85,7 +86,7 @@ fun MonthDropDown(
             MaterialTheme.colors.copy(
                 background = TransactionCardBg,
                 surface = TransactionCardBg,
-                onBackground = TransactionCardBg,
+                onBackground = TransactionCardBg
             )
         ) {
             DropdownMenu(
@@ -94,7 +95,7 @@ fun MonthDropDown(
                 modifier = modifier
                     .exposedDropdownSize(false)
                     .onSizeChanged { dropdownWidth = it.width.toDp },
-                offset = DpOffset(calculatedOffset.value, 0.dp),
+                offset = DpOffset(calculatedOffset.value, 0.dp)
             ) {
                 months.windowed(3, 3, true).forEach {
                     Row(
@@ -110,7 +111,7 @@ fun MonthDropDown(
                                         clip = true
                                     }
                                     .then(
-                                        if (month == selectedText.slice(IntRange(0, 2)))
+                                        if (month == selectedText.slice(IntRange(0, 2))) {
                                             Modifier
                                                 .background(
                                                     brush = Brush.linearGradient(
@@ -119,7 +120,9 @@ fun MonthDropDown(
                                                     ),
                                                     alpha = 0.5f
                                                 )
-                                        else Modifier
+                                        } else {
+                                            Modifier
+                                        }
                                     )
                                     .padding(vertical = 5.dp, horizontal = 20.dp)
                             ) {
@@ -128,9 +131,10 @@ fun MonthDropDown(
                                     textAlign = TextAlign.Center,
                                     color = Color.White,
                                     modifier =
-                                    if (month != selectedText.slice(IntRange(0, 2)))
+                                    if (month != selectedText.slice(IntRange(0, 2))) {
                                         Modifier.clickable(
-                                            remember { MutableInteractionSource() }, null
+                                            remember { MutableInteractionSource() },
+                                            null
                                         ) {
                                             selectedText = shortToLongMonth(month)
                                             onSelect(selectedText)
@@ -139,7 +143,9 @@ fun MonthDropDown(
                                                 mExpanded = !mExpanded
                                             }
                                         }
-                                    else Modifier
+                                    } else {
+                                        Modifier
+                                    }
                                 )
                             }
                         }

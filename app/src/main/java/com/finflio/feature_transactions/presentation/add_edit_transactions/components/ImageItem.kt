@@ -28,7 +28,7 @@ fun ImageItem(
     modifier: Modifier = Modifier,
     link: String? = null,
     uri: Uri? = null,
-    onClose: (() -> Unit)? = null,
+    onClose: (() -> Unit)? = null
 ) {
     Box(modifier) {
         if (!link.isNullOrBlank()) {
@@ -39,7 +39,7 @@ fun ImageItem(
                     .aspectRatio(1.3f, true)
                     .clip(RoundedCornerShape(5.dp))
                     .border(1.dp, SecondaryText, RoundedCornerShape(5.dp)),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             )
         } else {
             AsyncImage(
@@ -49,7 +49,7 @@ fun ImageItem(
                     .aspectRatio(1.3f, true)
                     .clip(RoundedCornerShape(5.dp))
                     .border(1.dp, SecondaryText, RoundedCornerShape(5.dp)),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             )
         }
 //        TODO("Fix its placement")

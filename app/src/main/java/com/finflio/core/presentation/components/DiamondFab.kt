@@ -27,7 +27,7 @@ fun DiamondFab(
                 clip = true
             }
             .background(
-                brush = Brush.verticalGradient(RedGradient),
+                brush = Brush.verticalGradient(RedGradient)
             )
     )
 }

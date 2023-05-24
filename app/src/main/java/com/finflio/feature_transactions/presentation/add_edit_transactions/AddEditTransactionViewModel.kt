@@ -19,10 +19,10 @@ import com.finflio.feature_transactions.presentation.add_edit_transactions.util.
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.PaymentMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AddEditTransactionViewModel @Inject constructor(
@@ -149,7 +149,9 @@ class AddEditTransactionViewModel @Inject constructor(
                             if (imgUri.value == Uri.EMPTY && !attachment.value.isNullOrBlank()) {
                                 useCase.deleteImageUseCase(attachment.value)
                                 addTransaction(event)
-                            } else addTransaction(event, attachment.value)
+                            } else {
+                                addTransaction(event, attachment.value)
+                            }
                         }
                     }
                 } else {
@@ -165,10 +167,11 @@ class AddEditTransactionViewModel @Inject constructor(
 
             is AddEditTransactionEvent.AddTransactionEvent -> {
                 if (amount.value.isNotBlank()) {
-                    if (imgUri.value != null)
+                    if (imgUri.value != null) {
                         uploadImage(imgUri.value, event.context, event)
-                    else
+                    } else {
                         addTransaction(event)
+                    }
                 } else {
                     viewModelScope.launch {
                         eventFlow.emit(
@@ -187,55 +190,56 @@ class AddEditTransactionViewModel @Inject constructor(
             MediaManager.get()
                 .upload(uri)
                 .option("folder", "finflio")
-                .callback(object : UploadCallback {
-                    override fun onStart(requestId: String?) {
-                        viewModelScope.launch {
-                            eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
+                .callback(
+                    object : UploadCallback {
+                        override fun onStart(requestId: String?) {
+                            viewModelScope.launch {
+                                eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
+                            }
                         }
-                    }
 
-                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                        Log.i(
-                            "AddEditTransactionViewModel",
-                            "Cloudinary Image Upload Progress: $bytes/$totalBytes"
-                        )
-                    }
-
-                    override fun onSuccess(
-                        requestId: String?,
-                        resultData: MutableMap<Any?, Any?>?
-                    ) {
-                        viewModelScope.launch {
-                            eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                        }
-                        addTransaction(event, resultData?.get("secure_url").toString())
-                    }
-
-                    override fun onError(requestId: String?, error: ErrorInfo?) {
-                        viewModelScope.launch {
-                            eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                            eventFlow.emit(
-                                AddEditTransactionUiEvent.ShowSnackBar(
-                                    error?.description
-                                        ?: "Unexpected Error Occurred. Please Try Again"
-                                )
+                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                            Log.i(
+                                "AddEditTransactionViewModel",
+                                "Cloudinary Image Upload Progress: $bytes/$totalBytes"
                             )
                         }
-                    }
 
-                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                        viewModelScope.launch {
-                            eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                            eventFlow.emit(
-                                AddEditTransactionUiEvent.ShowSnackBar(
-                                    error?.description
-                                        ?: "Unexpected Error Occurred. Please Try Again"
+                        override fun onSuccess(
+                            requestId: String?,
+                            resultData: MutableMap<Any?, Any?>?
+                        ) {
+                            viewModelScope.launch {
+                                eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                            }
+                            addTransaction(event, resultData?.get("secure_url").toString())
+                        }
+
+                        override fun onError(requestId: String?, error: ErrorInfo?) {
+                            viewModelScope.launch {
+                                eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                eventFlow.emit(
+                                    AddEditTransactionUiEvent.ShowSnackBar(
+                                        error?.description
+                                            ?: "Unexpected Error Occurred. Please Try Again"
+                                    )
                                 )
-                            )
+                            }
+                        }
+
+                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                            viewModelScope.launch {
+                                eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                eventFlow.emit(
+                                    AddEditTransactionUiEvent.ShowSnackBar(
+                                        error?.description
+                                            ?: "Unexpected Error Occurred. Please Try Again"
+                                    )
+                                )
+                            }
                         }
                     }
-
-                }).startNow(context)
+                ).startNow(context)
         }
     }
 
@@ -255,8 +259,9 @@ class AddEditTransactionViewModel @Inject constructor(
             is AddEditTransactionEvent.AddTransactionEvent -> {
                 viewModelScope.launch {
                     try {
-                        if (useCase.addTransactionUseCase(transaction))
+                        if (useCase.addTransactionUseCase(transaction)) {
                             eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                        }
                     } catch (e: InvalidTransactionException) {
                         if (!imgUrl.isNullOrBlank()) useCase.deleteImageUseCase(imgUrl)
                         eventFlow.emit(
@@ -271,8 +276,12 @@ class AddEditTransactionViewModel @Inject constructor(
             is AddEditTransactionEvent.EditTransactionEvent -> {
                 viewModelScope.launch {
                     try {
-                        if (useCase.updateTransactionUseCase(transaction.copy(transactionId = transactionId.value)))
+                        if (useCase.updateTransactionUseCase(
+                                transaction.copy(transactionId = transactionId.value)
+                            )
+                        ) {
                             eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                        }
                     } catch (e: InvalidTransactionException) {
                         eventFlow.emit(
                             AddEditTransactionUiEvent.ShowSnackBar(

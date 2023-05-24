@@ -23,16 +23,16 @@ internal fun rememberChartStyle(columnChartColors: List<Color>, lineChartColors:
             ChartStyle.Axis(
                 axisLabelColor = Color(defaultColors.axisLabelColor),
                 axisGuidelineColor = Color(defaultColors.axisGuidelineColor),
-                axisLineColor = Color(defaultColors.axisLineColor),
+                axisLineColor = Color(defaultColors.axisLineColor)
             ),
             ChartStyle.ColumnChart(
                 columnChartColors.map { columnChartColor ->
                     LineComponent(
                         columnChartColor.toArgb(),
                         DefaultDimens.COLUMN_WIDTH,
-                        Shapes.roundedCornerShape(DefaultDimens.COLUMN_ROUNDNESS_PERCENT),
+                        Shapes.roundedCornerShape(DefaultDimens.COLUMN_ROUNDNESS_PERCENT)
                     )
-                },
+                }
             ),
             ChartStyle.LineChart(
                 lineChartColors.map { lineChartColor ->
@@ -42,15 +42,15 @@ internal fun rememberChartStyle(columnChartColors: List<Color>, lineChartColors:
                             Brush.verticalGradient(
                                 listOf(
                                     lineChartColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_START),
-                                    lineChartColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END),
-                                ),
-                            ),
-                        ),
+                                    lineChartColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END)
+                                )
+                            )
+                        )
                     )
-                },
+                }
             ),
             ChartStyle.Marker(),
-            Color(defaultColors.elevationOverlayColor),
+            Color(defaultColors.elevationOverlayColor)
         )
     }
 }

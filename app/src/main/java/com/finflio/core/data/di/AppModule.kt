@@ -46,7 +46,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUriPathFinder(): UriPathFinder  {
+    fun provideUriPathFinder(): UriPathFinder {
         return UriPathFinder()
     }
 }

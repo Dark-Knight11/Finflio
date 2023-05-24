@@ -59,8 +59,10 @@ fun PermissionDialog(
     onDismiss: () -> Unit
 ) {
     Dialog(
-        onDismissRequest = { onDismiss() }, properties = DialogProperties(
-            dismissOnBackPress = false, dismissOnClickOutside = false
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
         )
     ) {
         Column(
@@ -79,7 +81,15 @@ fun PermissionDialog(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(if (type == "Expense") Expense.copy(alpha = 0.3f) else Income.copy(alpha = 0.3f))
+                    .background(
+                        if (type == "Expense") {
+                            Expense.copy(alpha = 0.3f)
+                        } else {
+                            Income.copy(
+                                alpha = 0.3f
+                            )
+                        }
+                    )
                     .padding(20.dp)
             ) {
                 Row(
@@ -113,7 +123,7 @@ fun PermissionDialog(
                     )
                 }
             }
-            if (permissionState.status.shouldShowRationale)
+            if (permissionState.status.shouldShowRationale) {
                 Text(
                     text = "To capture photos allow Finflio access to your camera",
                     textAlign = TextAlign.Start,
@@ -123,7 +133,7 @@ fun PermissionDialog(
                     fontSize = 14.sp,
                     modifier = Modifier.padding(15.dp)
                 )
-            else
+            } else {
                 Text(
                     text = "Camera permission required for this feature to be available. Please grant the permission.",
                     textAlign = TextAlign.Justify,
@@ -133,6 +143,7 @@ fun PermissionDialog(
                     fontSize = 14.sp,
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
                 )
+            }
 
             Row(
                 modifier = Modifier

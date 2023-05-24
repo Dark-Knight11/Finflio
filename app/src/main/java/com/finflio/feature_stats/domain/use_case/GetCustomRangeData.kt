@@ -7,13 +7,13 @@ import com.finflio.feature_stats.domain.util.calculateMonthlyData
 import com.finflio.feature_stats.domain.util.calculateWeeklyData
 import com.finflio.feature_stats.domain.util.calculateYearlyData
 import com.finflio.feature_stats.presentation.util.GraphFilter
+import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import javax.inject.Inject
 
 class GetCustomRangeData @Inject constructor(
     private val repo: TransactionsRepository
@@ -46,5 +46,3 @@ class GetCustomRangeData @Inject constructor(
         }
     }
 }
-
-

@@ -52,12 +52,15 @@ fun YMWFilter(
                     }
                     .background(Color.Black)
                     .then(
-                        if (currentlySelectedFilter == it) Modifier.background(
-                            brush = Brush.linearGradient(
-                                GoldGradient
+                        if (currentlySelectedFilter == it) {
+                            Modifier.background(
+                                brush = Brush.linearGradient(
+                                    GoldGradient
+                                )
                             )
-                        )
-                        else Modifier
+                        } else {
+                            Modifier
+                        }
                     )
                     .clickable(remember { MutableInteractionSource() }, null) {
                         currentlySelectedFilter = it
@@ -68,7 +71,6 @@ fun YMWFilter(
         }
     }
 }
-
 
 @Composable
 fun YMWBox(text: String, modifier: Modifier = Modifier) {

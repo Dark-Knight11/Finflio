@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class UnsettledTransactionsViewModel @Inject constructor(

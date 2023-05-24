@@ -37,7 +37,7 @@ fun PaymentMethodDropdown(
     var expanded by remember { mutableStateOf(false) }
     val customTextSelectionColors = TextSelectionColors(
         handleColor = Color.Transparent,
-        backgroundColor = Color.Transparent,
+        backgroundColor = Color.Transparent
     )
     Box(
         modifier = Modifier
@@ -62,7 +62,9 @@ fun PaymentMethodDropdown(
                 expanded = expanded,
                 onExpandedChange = { }
             ) {
-                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                CompositionLocalProvider(
+                    LocalTextSelectionColors provides customTextSelectionColors
+                ) {
                     CustomTextField(
                         value = paymentMethod.method,
                         readOnly = true,
@@ -101,7 +103,7 @@ fun PaymentMethodDropdown(
                             focusedIndicatorColor = GoldIcon,
                             cursorColor = Color.Transparent,
                             backgroundColor = Color.Transparent,
-                            textColor = Color.White,
+                            textColor = Color.White
                         ),
                         interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
                             LaunchedEffect(interactionSource) {
@@ -118,7 +120,7 @@ fun PaymentMethodDropdown(
                     colors = MaterialTheme.colors.copy(
                         background = TransactionCardBg,
                         surface = TransactionCardBg,
-                        onBackground = TransactionCardBg,
+                        onBackground = TransactionCardBg
                     )
                 ) {
                     DropdownMenu(
@@ -149,7 +151,8 @@ fun PaymentMethodDropdown(
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
                                     modifier = Modifier.clickable(
-                                        remember { MutableInteractionSource() }, null
+                                        remember { MutableInteractionSource() },
+                                        null
                                     ) {
                                         onSelect(it)
                                         expanded = !expanded

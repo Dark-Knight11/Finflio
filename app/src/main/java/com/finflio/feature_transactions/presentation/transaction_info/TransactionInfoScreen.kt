@@ -100,7 +100,8 @@ fun TransactionInfoScreen(
             ) {
                 navigator.navigate(
                     AddEditTransactionScreenDestination(
-                        type = transaction?.type ?: "Expense", transactionId = transactionId
+                        type = transaction?.type ?: "Expense",
+                        transactionId = transactionId
                     )
                 )
             }

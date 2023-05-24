@@ -84,7 +84,7 @@ fun SaveCancelButtons(
                 .width(127.dp)
                 .padding(vertical = 15.dp)
         ) {
-            if (showLoader)
+            if (showLoader) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier
@@ -92,7 +92,7 @@ fun SaveCancelButtons(
                         .size(18.dp),
                     strokeWidth = 2.dp
                 )
-            else
+            } else {
                 Text(
                     text = "Save",
                     color = Color.White,
@@ -100,6 +100,7 @@ fun SaveCancelButtons(
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
                 )
+            }
         }
     }
 }

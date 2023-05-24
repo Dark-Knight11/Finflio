@@ -43,7 +43,7 @@ fun InputCard(
             )
             Spacer(modifier = Modifier.height(15.dp))
             CompositionLocalProvider(
-                LocalTextSelectionColors provides customTextSelectionColors,
+                LocalTextSelectionColors provides customTextSelectionColors
             ) { content() }
         }
     }

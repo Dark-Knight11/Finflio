@@ -46,10 +46,13 @@ fun TypeFilter(
                         onClick(it)
                     }
                     .then(
-                        if (currentlySelectedFilter == it) Modifier.background(
-                            brush = Brush.linearGradient(GoldGradient)
-                        )
-                        else Modifier
+                        if (currentlySelectedFilter == it) {
+                            Modifier.background(
+                                brush = Brush.linearGradient(GoldGradient)
+                            )
+                        } else {
+                            Modifier
+                        }
                     )
             )
         }

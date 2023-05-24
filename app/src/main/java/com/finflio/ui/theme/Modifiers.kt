@@ -17,11 +17,18 @@ fun Modifier.glow(isGlow: Boolean, color: Color): Modifier {
             Modifier.drawBehind {
                 drawCircle(
                     brush = Brush.radialGradient(
-                        0.0f to color.copy(0.5f), 1.0f to Color.Transparent, radius = size.height/2
-                    ), blendMode = BlendMode.Lighten, radius = size.width
+                        0.0f to color.copy(0.5f),
+                        1.0f to Color.Transparent,
+                        radius = size.height / 2
+                    ),
+                    blendMode = BlendMode.Lighten,
+                    radius = size.width
                 )
-            })
-    } else this
+            }
+        )
+    } else {
+        this
+    }
 }
 
 fun Modifier.gradientBackground(
@@ -33,8 +40,8 @@ fun Modifier.gradientBackground(
 ) = this.then(
     Modifier.drawBehind {
         val angleRad = angle / 180f * PI
-        val x = cos(angleRad).toFloat() //Fractional x
-        val y = sin(angleRad).toFloat() //Fractional y
+        val x = cos(angleRad).toFloat() // Fractional x
+        val y = sin(angleRad).toFloat() // Fractional y
 
         val radius = sqrt(size.width.pow(2) + size.height.pow(2)) / 2f
         val offset = center + Offset(x * radius, y * radius)
@@ -50,7 +57,8 @@ fun Modifier.gradientBackground(
                     colors = colors,
                     start = Offset(size.width + extraX, size.height + extraY) - exactOffset,
                     end = exactOffset
-                ), size = size
+                ),
+                size = size
             )
         } else {
             drawRect(
@@ -58,7 +66,8 @@ fun Modifier.gradientBackground(
                     colorStops = colorStops,
                     start = Offset(size.width + extraX, size.height + extraY) - exactOffset,
                     end = exactOffset
-                ), size = size
+                ),
+                size = size
             )
         }
     }

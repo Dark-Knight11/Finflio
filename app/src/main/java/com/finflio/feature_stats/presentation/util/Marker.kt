@@ -31,14 +31,14 @@ internal fun rememberMarker(): Marker {
         ShapeComponent(labelBackgroundShape, labelBackgroundColor.toArgb()).setShadow(
             radius = LABEL_BACKGROUND_SHADOW_RADIUS,
             dy = LABEL_BACKGROUND_SHADOW_DY,
-            applyElevationOverlay = true,
+            applyElevationOverlay = true
         )
     }
     val label = textComponent(
         background = labelBackground,
         lineCount = LABEL_LINE_COUNT,
         padding = labelPadding,
-        typeface = Typeface.MONOSPACE,
+        typeface = Typeface.MONOSPACE
     )
     val indicatorInnerComponent = shapeComponent(Shapes.pillShape, MaterialTheme.colors.surface)
     val indicatorCenterComponent = shapeComponent(Shapes.pillShape, Color.White)
@@ -48,14 +48,14 @@ internal fun rememberMarker(): Marker {
         inner = overlayingComponent(
             outer = indicatorCenterComponent,
             inner = indicatorInnerComponent,
-            innerPaddingAll = indicatorInnerAndCenterComponentPaddingValue,
+            innerPaddingAll = indicatorInnerAndCenterComponentPaddingValue
         ),
-        innerPaddingAll = indicatorCenterAndOuterComponentPaddingValue,
+        innerPaddingAll = indicatorCenterAndOuterComponentPaddingValue
     )
     val guideline = lineComponent(
         MaterialTheme.colors.onSurface.copy(GUIDELINE_ALPHA),
         guidelineThickness,
-        guidelineShape,
+        guidelineShape
     )
     return remember(label, indicator, guideline) {
         object : MarkerComponent(label, indicator, guideline) {
@@ -83,13 +83,12 @@ internal fun rememberMarker(): Marker {
                 with(context) {
                     outInsets.top =
                         label.getHeight(context) + labelBackgroundShape.tickSizeDp.pixels +
-                                LABEL_BACKGROUND_SHADOW_RADIUS.pixels * SHADOW_RADIUS_MULTIPLIER -
-                                LABEL_BACKGROUND_SHADOW_DY.pixels
+                        LABEL_BACKGROUND_SHADOW_RADIUS.pixels * SHADOW_RADIUS_MULTIPLIER -
+                        LABEL_BACKGROUND_SHADOW_DY.pixels
                 }
         }
     }
 }
-
 
 private const val LABEL_BACKGROUND_SHADOW_RADIUS = 4f
 private const val LABEL_BACKGROUND_SHADOW_DY = 2f

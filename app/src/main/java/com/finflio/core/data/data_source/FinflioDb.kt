@@ -12,6 +12,6 @@ import com.finflio.core.data.util.Converters
     exportSchema = true
 )
 @TypeConverters(Converters::class)
-abstract class FinflioDb(): RoomDatabase() {
+abstract class FinflioDb() : RoomDatabase() {
     abstract val transactionDao: TransactionDao
 }

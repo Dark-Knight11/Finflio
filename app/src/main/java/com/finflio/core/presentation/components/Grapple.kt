@@ -17,7 +17,7 @@ fun Grapple(modifier: Modifier = Modifier, color: Color = Color.White) {
                 start = Offset(size.width / 10, size.height / 2f),
                 end = Offset(size.width - size.width / 10, size.height / 2f),
                 strokeWidth = size.height / 3,
-                cap = StrokeCap.Round,
+                cap = StrokeCap.Round
             )
         }
     )

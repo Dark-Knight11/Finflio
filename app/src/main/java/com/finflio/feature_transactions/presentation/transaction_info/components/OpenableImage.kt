@@ -47,9 +47,6 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import de.mr_pine.zoomables.ZoomableState
 import de.mr_pine.zoomables.rememberZoomableState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan
@@ -57,6 +54,9 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun OpenableImage(
@@ -90,7 +90,7 @@ fun OpenableImage(
             interactionSource = remember { MutableInteractionSource() },
             indication = null
         ) { dialogState.show() },
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Crop
     )
 
     MaterialDialog(
@@ -134,9 +134,8 @@ private fun Zoomable(
     onTap: ((Offset) -> Unit)? = null,
     onLongPress: (() -> Unit)? = null,
     onPointerMovement: ((Boolean) -> Unit)? = null,
-    content: @Composable (BoxScope.() -> Unit),
+    content: @Composable (BoxScope.() -> Unit)
 ) {
-
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
     var composableCenter by remember { mutableStateOf(Offset.Zero) }
     var transformOffset by remember { mutableStateOf(Offset.Zero) }
@@ -163,7 +162,7 @@ private fun Zoomable(
         centroid: Offset,
         pan: Offset,
         zoom: Float,
-        transformRotation: Float,
+        transformRotation: Float
     ) {
         val rotationChange =
             if (zoomableState.rotationBehavior == ZoomableState.Rotation.DISABLED) 0f else transformRotation
@@ -174,11 +173,13 @@ private fun Zoomable(
         val y0 = centroid.y - composableCenter.y
 
         val hyp0 = sqrt(x0 * x0 + y0 * y0)
-        val hyp1 = zoom * hyp0 * (if (x0 > 0) {
-            1f
-        } else {
-            -1f
-        })
+        val hyp1 = zoom * hyp0 * (
+            if (x0 > 0) {
+                1f
+            } else {
+                -1f
+            }
+            )
 
         val alpha0 = atan(y0 / x0)
 
@@ -213,6 +214,7 @@ private fun Zoomable(
                 )
             }
             .pointerInput(Unit) {
+                // TODO()
                 forEachGesture {
                     awaitPointerEventScope {
                         var transformRotation = 0f
@@ -225,7 +227,6 @@ private fun Zoomable(
                         var overSlop = Offset.Zero
 
                         val down = awaitFirstDown(requireUnconsumed = false)
-
 
                         var transformEventCounter = 0
                         do {
@@ -247,7 +248,9 @@ private fun Zoomable(
                                             event.calculateCentroidSize(useCurrent = false)
                                         val zoomMotion = abs(1 - zoom) * centroidSize
                                         val rotationMotion =
-                                            abs(transformRotation * PI.toFloat() * centroidSize / 180f)
+                                            abs(
+                                                transformRotation * PI.toFloat() * centroidSize / 180f
+                                            )
                                         val panMotion = pan.getDistance()
 
                                         if (zoomMotion > touchSlop ||
@@ -308,19 +311,18 @@ private fun Zoomable(
                                     dragOffset += overSlop
                                 }
                                 if (drag(drag.id) {
-                                        if (zoomableState.scale.value !in 0.92f..1.08f) {
-                                            zoomableState.offset.value += it.positionChange()
-                                        } else {
-                                            dragOffset += it.positionChange()
-                                        }
-                                        if (it.positionChange() != Offset.Zero) it.consume()
+                                    if (zoomableState.scale.value !in 0.92f..1.08f) {
+                                        zoomableState.offset.value += it.positionChange()
+                                    } else {
+                                        dragOffset += it.positionChange()
                                     }
+                                    if (it.positionChange() != Offset.Zero) it.consume()
+                                }
                                 ) {
                                     if (zoomableState.scale.value in 0.92f..1.08f) {
                                         val offsetX = dragOffset.x
                                         if (offsetX > minimumSwipeDistance) {
                                             onSwipeRight()
-
                                         } else if (offsetX < -minimumSwipeDistance) {
                                             onSwipeLeft()
                                         }

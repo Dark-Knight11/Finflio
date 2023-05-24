@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finflio.core.presentation.components.CategoryFab
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.ui.theme.Inter
 import com.finflio.ui.theme.OffWhite
@@ -23,7 +24,7 @@ fun Header(
     type: String,
     category: Categories,
     paymentMethod: String,
-    infoBarModifier: Modifier,
+    infoBarModifier: Modifier
 ) {
     val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy K:mm a")
     val formattedDateTime = timestamp.format(formatter)

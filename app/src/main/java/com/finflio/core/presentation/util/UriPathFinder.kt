@@ -12,7 +12,6 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-
 class UriPathFinder {
 
     fun getPath(context: Context, uri: Uri): String? {
@@ -28,11 +27,12 @@ class UriPathFinder {
                 if ("primary".equals(type, ignoreCase = true)) {
                     return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
                 }
-
             } else if (isDownloadsDocument(uri)) {
                 val dstPath =
-                    context.cacheDir.absolutePath + File.separator.toString() + getFileName(context,
-                        uri)
+                    context.cacheDir.absolutePath + File.separator.toString() + getFileName(
+                        context,
+                        uri
+                    )
                 if (copyFile(context, uri, dstPath)) {
                     return dstPath
                 }
@@ -64,7 +64,7 @@ class UriPathFinder {
         context: Context,
         uri: Uri?,
         selection: String?,
-        selectionArgs: Array<String>?,
+        selectionArgs: Array<String>?
     ): String? {
         var cursor: Cursor? = null
         val column = "_data"
@@ -96,7 +96,6 @@ class UriPathFinder {
     }
 }
 
-
 fun getFileName(context: Context, uri: Uri?): String? {
     val cursor = uri?.let { context.contentResolver.query(it, null, null, null, null) }
     val nameindex = cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -112,8 +111,9 @@ private fun copyFile(context: Context, uri: Uri, dstPath: String): Boolean {
         val buff = ByteArray(100 * 1024)
         var len: Int?
         while (inputStream?.read(buff).also {
-                len = it
-            } != -1) {
+            len = it
+        } != -1
+        ) {
             len?.let { outputStream.write(buff, 0, it) }
         }
     } catch (e: Exception) {

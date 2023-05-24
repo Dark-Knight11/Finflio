@@ -1,6 +1,6 @@
 package com.finflio.feature_transactions.domain.use_case
 
-data class TransactionUseCases (
+data class TransactionUseCases(
     val getTransactionUseCase: GetTransactionUseCase,
     val getTransactionsUseCase: GetTransactionsUseCase,
     val addTransactionUseCase: AddTransactionUseCase,

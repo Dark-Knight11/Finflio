@@ -60,11 +60,11 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.format.DateTimeFormatter
+import java.util.Objects
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
-import java.util.Objects
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Destination
@@ -92,19 +92,22 @@ fun AddEditTransactionScreen(
     val scope = rememberCoroutineScope()
 
     val imagePickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia(),
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.PickVisualMedia(),
             onResult = { uri ->
                 uri?.let {
                     viewModel.onEvent(
                         AddEditTransactionEvent.ChangeImagePath(it)
                     )
                 }
-            })
+            }
+        )
 
     val cameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-            if (it)
+            if (it) {
                 viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath(captureImageUri))
+            }
         }
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
@@ -138,9 +141,11 @@ fun AddEditTransactionScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is AddEditTransactionUiEvent.NavigateBack -> {
-                    if (transactionId != 0)
+                    if (transactionId != 0) {
                         navigator.popBackStack("list_transactions", false)
-                    else navigator.popBackStack()
+                    } else {
+                        navigator.popBackStack()
+                    }
                 }
 
                 is AddEditTransactionUiEvent.ShowSnackBar -> {
@@ -277,7 +282,7 @@ fun AddEditTransactionContent(
                                 }
                             }
                         }
-                    },
+                    }
                 )
             }
 
@@ -309,7 +314,7 @@ fun AddEditTransactionContent(
                     ),
                     keyboardActions = KeyboardActions(onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
-                    }),
+                    })
                 )
             }
 
@@ -343,7 +348,7 @@ fun AddEditTransactionContent(
                         ),
                         keyboardActions = KeyboardActions(onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
-                        }),
+                        })
                     )
                 }
             }
@@ -369,7 +374,7 @@ fun AddEditTransactionContent(
                         ),
                         keyboardActions = KeyboardActions(onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
-                        }),
+                        })
                     )
                 }
             }
@@ -435,13 +440,15 @@ fun AddEditTransactionContent(
                 showLoader = showLoader,
                 onCancel = { viewModel.onEvent(AddEditTransactionEvent.CancelTransaction) },
                 onSave = {
-                    if (transactionId == 0)
+                    if (transactionId == 0) {
                         viewModel.onEvent(
                             AddEditTransactionEvent.AddTransactionEvent(context)
                         )
-                    else viewModel.onEvent(
-                        AddEditTransactionEvent.EditTransactionEvent(context)
-                    )
+                    } else {
+                        viewModel.onEvent(
+                            AddEditTransactionEvent.EditTransactionEvent(context)
+                        )
+                    }
                 }
             )
         }

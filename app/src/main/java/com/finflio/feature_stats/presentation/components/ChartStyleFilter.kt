@@ -30,7 +30,6 @@ fun ChartStyleFilter(
     currentlySelectedGraphFilter: GraphFilter.ChartStyle?,
     onClick: (GraphFilter.ChartStyle) -> Unit
 ) {
-
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -44,14 +43,16 @@ fun ChartStyleFilter(
                         onClick(it)
                     }
                     .then(
-                        if (currentlySelectedGraphFilter == it)
+                        if (currentlySelectedGraphFilter == it) {
                             Modifier.background(
                                 Brush.linearGradient(
                                     0.0f to Gold.copy(0.6f),
                                     1.0f to Gold.copy(0.2f)
                                 )
                             )
-                        else Modifier
+                        } else {
+                            Modifier
+                        }
                     )
             )
         }
@@ -74,7 +75,9 @@ fun IconFilter(
             .padding(vertical = 6.dp, horizontal = 10.dp)
     ) {
         Icon(
-            painter = painterResource(id = if (graphFilter == GraphFilter.ChartStyle.BARCHART) R.drawable.ic_bar else R.drawable.ic_line),
+            painter = painterResource(
+                id = if (graphFilter == GraphFilter.ChartStyle.BARCHART) R.drawable.ic_bar else R.drawable.ic_line
+            ),
             contentDescription = "chart style",
             tint = Color.White,
             modifier = Modifier

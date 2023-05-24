@@ -16,7 +16,7 @@ val Shapes = Shapes(
     large = RoundedCornerShape(0.dp)
 )
 
-class DiamondShape(fabSize: Float): Shape {
+class DiamondShape(fabSize: Float) : Shape {
     private val fabRadius = fabSize / 2f
     override fun createOutline(
         size: Size,
@@ -26,7 +26,7 @@ class DiamondShape(fabSize: Float): Shape {
         return Outline.Generic(
             path = Path().apply {
                 reset()
-                moveTo(size.width/2 - fabRadius,size.height/2)
+                moveTo(size.width / 2 - fabRadius, size.height / 2)
                 relativeLineTo(fabRadius, fabRadius)
                 relativeLineTo(fabRadius, -fabRadius)
                 relativeLineTo(-fabRadius, -fabRadius)

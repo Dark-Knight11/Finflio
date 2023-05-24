@@ -13,11 +13,11 @@ import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueForma
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.util.Locale
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class StatsViewModel @Inject constructor(
@@ -41,7 +41,6 @@ class StatsViewModel @Inject constructor(
 
     private val _selectedFilters = mutableStateOf<SelectedChartFilters>(SelectedChartFilters())
     val selectedFilters: State<SelectedChartFilters> = _selectedFilters
-
 
     init {
         generateEntry()

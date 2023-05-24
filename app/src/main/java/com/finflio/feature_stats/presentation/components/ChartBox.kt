@@ -53,10 +53,10 @@ fun ChartBox(
             .padding(horizontal = 16.dp)
             .background(
                 color = Color.Black,
-                shape = RoundedCornerShape(size = 20.dp),
+                shape = RoundedCornerShape(size = 20.dp)
             )
             .padding(16.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         if (chartStyle == null) {
             ProvideChartStyle(rememberChartStyle(listOf(Income), listOf(Expense))) {
@@ -68,10 +68,10 @@ fun ChartBox(
                             LineComponent(
                                 defaultColumn.color,
                                 defaultColumn.thicknessDp,
-                                Shapes.roundedCornerShape(topLeft = 5.dp, topRight = 5.dp),
+                                Shapes.roundedCornerShape(topLeft = 5.dp, topRight = 5.dp)
                             )
                         }
-                    },
+                    }
                 )
                 val lineChart = lineChart(
                     remember(defaultLines) {
@@ -83,8 +83,8 @@ fun ChartBox(
                     },
                     axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(
                         1.2f,
-                        round = true,
-                    ),
+                        round = true
+                    )
 //                    spacing = 10.dp
 //                        persistentMarkers = mapOf(-1f to marker)
                 )
@@ -106,14 +106,17 @@ fun ChartBox(
                 GraphFilter.ChartStyle.LINECHART -> {
                     ProvideChartStyle(
                         rememberChartStyle(
-                            if (typeFilter == GraphFilter.Type.EXPENSE) listOf(Expense)
-                            else listOf(Income)
+                            if (typeFilter == GraphFilter.Type.EXPENSE) {
+                                listOf(Expense)
+                            } else {
+                                listOf(Income)
+                            }
                         )
                     ) {
                         val lineChart = lineChart(
                             axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(
                                 1.2f,
-                                round = true,
+                                round = true
                             ),
                             spacing = 20.dp
                             // persistentMarkers = mapOf(-1f to marker)
@@ -136,8 +139,11 @@ fun ChartBox(
                 GraphFilter.ChartStyle.BARCHART -> {
                     ProvideChartStyle(
                         rememberChartStyle(
-                            if (typeFilter == GraphFilter.Type.EXPENSE) listOf(Expense)
-                            else listOf(Income)
+                            if (typeFilter == GraphFilter.Type.EXPENSE) {
+                                listOf(Expense)
+                            } else {
+                                listOf(Income)
+                            }
                         )
                     ) {
                         val defaultColumns = currentChartStyle.columnChart.columns
@@ -147,10 +153,10 @@ fun ChartBox(
                                     LineComponent(
                                         defaultColumn.color,
                                         defaultColumn.thicknessDp,
-                                        Shapes.roundedCornerShape(topLeft = 5.dp, topRight = 5.dp),
+                                        Shapes.roundedCornerShape(topLeft = 5.dp, topRight = 5.dp)
                                     )
                                 }
-                            },
+                            }
                         )
                         Chart(
                             chart = columnChart,

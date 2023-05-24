@@ -7,11 +7,11 @@ import com.finflio.core.data.mapper.toTransaction
 import com.finflio.core.data.mapper.toTransactionEntity
 import com.finflio.core.domain.model.Transaction
 import com.finflio.core.domain.repository.TransactionsRepository
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class TransactionsRepositoryImpl @Inject constructor(
     private val dao: TransactionDao

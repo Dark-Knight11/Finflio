@@ -80,7 +80,6 @@ fun OptionsDrawer(
     )
 }
 
-
 @Composable
 fun OptionsDrawerContent(
     type: String,
@@ -93,8 +92,11 @@ fun OptionsDrawerContent(
         modifier = Modifier.background(
             brush = Brush.verticalGradient(
                 0.0f to MainBackground,
-                1.0f to if (type == "Expense") ExpenseBG.copy(0.9f)
-                else IncomeBG.copy(0.9f)
+                1.0f to if (type == "Expense") {
+                    ExpenseBG.copy(0.9f)
+                } else {
+                    IncomeBG.copy(0.9f)
+                }
             )
         )
     ) {

@@ -53,7 +53,7 @@ fun UnsettledTransactions(
         UnsettledTransactionTopAppBar() {
             navigator.popBackStack()
         }
-        if (unsettledTransactions.isEmpty())
+        if (unsettledTransactions.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -63,7 +63,7 @@ fun UnsettledTransactions(
                     contentDescription = "empty"
                 )
             }
-        else
+        } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 contentPadding = PaddingValues(
@@ -83,9 +83,14 @@ fun UnsettledTransactions(
                         type = transaction.type,
                         to = transaction.to
                     ) {
-                        navigator.navigate(TransactionInfoScreenDestination(transactionId = transaction.transactionId))
+                        navigator.navigate(
+                            TransactionInfoScreenDestination(
+                                transactionId = transaction.transactionId
+                            )
+                        )
                     }
                 }
             }
+        }
     }
 }

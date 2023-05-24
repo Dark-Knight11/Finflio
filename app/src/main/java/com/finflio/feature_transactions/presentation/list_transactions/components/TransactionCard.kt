@@ -23,8 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finflio.core.presentation.components.CategoryFab
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
-import com.finflio.feature_transactions.presentation.transaction_info.components.CategoryFab
 import com.finflio.ui.theme.DMSans
 import com.finflio.ui.theme.Expense
 import com.finflio.ui.theme.GreenGradient
@@ -45,18 +45,27 @@ fun TransactionCard(
     type: String,
     onClick: () -> Unit
 ) {
-    val formatter = if (type == "Unsettled") DateTimeFormatter.ofPattern("MMM dd, K:mm a")
-    else DateTimeFormatter.ofPattern("K:mm a")
+    val formatter = if (type == "Unsettled") {
+        DateTimeFormatter.ofPattern("MMM dd, K:mm a")
+    } else {
+        DateTimeFormatter.ofPattern("K:mm a")
+    }
     val formattedDateTime = time.format(formatter)
     val titleField = when (type) {
         "Income" -> {
-            if (from.isNullOrBlank()) category.category
-            else from
+            if (from.isNullOrBlank()) {
+                category.category
+            } else {
+                from
+            }
         }
 
         "Expense" -> {
-            if (to.isNullOrBlank()) category.category
-            else to
+            if (to.isNullOrBlank()) {
+                category.category
+            } else {
+                to
+            }
         }
 
         else -> if (from.isNullOrBlank()) to else from

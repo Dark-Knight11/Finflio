@@ -76,10 +76,14 @@ fun BaseScreen(navigator: DestinationsNavigator) {
         bottomBar = {
             AnimatedVisibility(
                 visible = bottomBarVisibility,
-                enter = slideInVertically(animationSpec = tween(),
-                    initialOffsetY = { it }) + fadeIn(),
-                exit = slideOutVertically(animationSpec = tween(),
-                    targetOffsetY = { it }) + fadeOut()
+                enter = slideInVertically(
+                    animationSpec = tween(),
+                    initialOffsetY = { it }
+                ) + fadeIn(),
+                exit = slideOutVertically(
+                    animationSpec = tween(),
+                    targetOffsetY = { it }
+                ) + fadeOut()
             ) {
                 BottomAppBar(
                     modifier = Modifier
@@ -99,10 +103,14 @@ fun BaseScreen(navigator: DestinationsNavigator) {
         floatingActionButton = {
             AnimatedVisibility(
                 visible = bottomBarVisibility,
-                enter = slideInVertically(animationSpec = tween(),
-                    initialOffsetY = { it }) + fadeIn(),
-                exit = slideOutVertically(animationSpec = tween(),
-                    targetOffsetY = { it }) + fadeOut()
+                enter = slideInVertically(
+                    animationSpec = tween(),
+                    initialOffsetY = { it }
+                ) + fadeIn(),
+                exit = slideOutVertically(
+                    animationSpec = tween(),
+                    targetOffsetY = { it }
+                ) + fadeOut()
             ) {
                 DiamondFab(
                     modifier = Modifier.rotate(button),
@@ -119,7 +127,7 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                 )
             }
         },
-        backgroundColor = Color.Black,
+        backgroundColor = Color.Black
     ) {
         Box {
             Column(
@@ -163,13 +171,13 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                     enter = slideIn(
                         animationSpec = tween(300),
                         initialOffset = {
-                            IntOffset(0,0)
+                            IntOffset(0, 0)
                         }
                     ) + scaleIn(),
                     exit = slideOut(
                         animationSpec = tween(),
                         targetOffset = {
-                            IntOffset(0,0)
+                            IntOffset(0, 0)
                         }
                     ) + scaleOut()
                 ) {
@@ -182,7 +190,11 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                 clip = true
                             }
                             .background(TransferBlue),
-                        onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Unsettled")) }
+                        onClick = {
+                            navigator.navigate(
+                                AddEditTransactionScreenDestination(type = "Unsettled")
+                            )
+                        }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_transfer),
@@ -225,7 +237,11 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                     clip = true
                                 }
                                 .background(Income),
-                            onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Income")) }
+                            onClick = {
+                                navigator.navigate(
+                                    AddEditTransactionScreenDestination(type = "Income")
+                                )
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_income),
@@ -258,7 +274,11 @@ fun BaseScreen(navigator: DestinationsNavigator) {
                                     clip = true
                                 }
                                 .background(Expense),
-                            onClick = { navigator.navigate(AddEditTransactionScreenDestination(type = "Expense")) }
+                            onClick = {
+                                navigator.navigate(
+                                    AddEditTransactionScreenDestination(type = "Expense")
+                                )
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_expense),

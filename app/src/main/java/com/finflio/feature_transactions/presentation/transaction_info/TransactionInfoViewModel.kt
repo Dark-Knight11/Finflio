@@ -9,8 +9,8 @@ import com.finflio.core.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.presentation.transaction_info.util.TransactionInfoEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class TransactionInfoViewModel @Inject constructor(
@@ -34,8 +34,9 @@ class TransactionInfoViewModel @Inject constructor(
             is TransactionInfoEvent.DeleteTransaction -> {
                 viewModelScope.launch {
                     useCase.deleteTransactionUseCase(event.transaction ?: return@launch)
-                    if(!event.transaction.attachment.isNullOrBlank())
+                    if (!event.transaction.attachment.isNullOrBlank()) {
                         useCase.deleteImageUseCase(event.transaction.attachment)
+                    }
                 }
             }
         }

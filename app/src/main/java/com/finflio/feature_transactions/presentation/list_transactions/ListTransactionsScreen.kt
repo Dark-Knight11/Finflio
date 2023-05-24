@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListTransactions(
     navigator: DestinationsNavigator,
-    viewModel: ListTransactionViewModel = hiltViewModel(),
+    viewModel: ListTransactionsViewModel = hiltViewModel(),
     resultRecipient: ResultRecipient<TransactionInfoScreenDestination, Transaction>
 ) {
     val transactions = viewModel.transactions.value
@@ -79,7 +79,7 @@ fun ListTransactions(
     }
     CommonSnackBar(
         snackBarHostState = snackbarHostState,
-        modifier = Modifier.padding(bottom = 130.dp),
+        modifier = Modifier.padding(bottom = 130.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -137,7 +137,11 @@ fun ListTransactions(
                                     to = transaction.to,
                                     from = transaction.from,
                                     type = transaction.type
-                                ) { navigator.navigate(TransactionInfoScreenDestination(transaction.transactionId)) }
+                                ) {
+                                    navigator.navigate(
+                                        TransactionInfoScreenDestination(transaction.transactionId)
+                                    )
+                                }
                             }
                         }
                     }

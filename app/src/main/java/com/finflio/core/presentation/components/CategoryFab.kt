@@ -1,4 +1,4 @@
-package com.finflio.feature_transactions.presentation.transaction_info.components
+package com.finflio.core.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -28,7 +28,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 @Destination
 @Composable
 fun ShowStats(viewModel: StatsViewModel = hiltViewModel()) {
-
     val expenseChartEntry = viewModel.expenseChartEntry.value
     val incomeChartEntry = viewModel.incomeChartEntry.value
     val bottomAxisFormatter = viewModel.bottomAxisFormatter.value
@@ -47,8 +46,11 @@ fun ShowStats(viewModel: StatsViewModel = hiltViewModel()) {
     ) {
         TypeFilter(currentlySelectedFilter = selectedFilter.type) {
             viewModel.changeFilter(it)
-            currentlySelectedGraphFilter = if (it == GraphFilter.Type.COMBINED) null
-            else GraphFilter.ChartStyle.LINECHART
+            currentlySelectedGraphFilter = if (it == GraphFilter.Type.COMBINED) {
+                null
+            } else {
+                GraphFilter.ChartStyle.LINECHART
+            }
         }
         Row(
             modifier = Modifier
@@ -57,8 +59,9 @@ fun ShowStats(viewModel: StatsViewModel = hiltViewModel()) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             ChartStyleFilter(currentlySelectedGraphFilter = currentlySelectedGraphFilter) {
-                if (selectedFilter.type != GraphFilter.Type.COMBINED)
+                if (selectedFilter.type != GraphFilter.Type.COMBINED) {
                     currentlySelectedGraphFilter = it
+                }
             }
 //            CustomRangeFilter() {
 //            }

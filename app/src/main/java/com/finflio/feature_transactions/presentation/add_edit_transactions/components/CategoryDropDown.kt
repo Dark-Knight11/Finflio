@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finflio.core.presentation.components.CategoryFab
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
-import com.finflio.feature_transactions.presentation.transaction_info.components.CategoryFab
 import com.finflio.ui.theme.DMSans
 import com.finflio.ui.theme.GoldIcon
 import com.finflio.ui.theme.TransactionCardBg
@@ -38,7 +38,7 @@ fun CategoryDropDown(
 
     val customTextSelectionColors = TextSelectionColors(
         handleColor = Transparent,
-        backgroundColor = Transparent,
+        backgroundColor = Transparent
     )
     Box(
         modifier = Modifier
@@ -64,7 +64,9 @@ fun CategoryDropDown(
                 expanded = expanded,
                 onExpandedChange = { }
             ) {
-                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                CompositionLocalProvider(
+                    LocalTextSelectionColors provides customTextSelectionColors
+                ) {
                     CustomTextField(
                         value = category.category,
                         readOnly = true,
@@ -105,7 +107,7 @@ fun CategoryDropDown(
                             focusedIndicatorColor = GoldIcon,
                             cursorColor = Transparent,
                             backgroundColor = Transparent,
-                            textColor = White,
+                            textColor = White
                         ),
                         interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
                             LaunchedEffect(interactionSource) {
@@ -115,14 +117,14 @@ fun CategoryDropDown(
                                     }
                                 }
                             }
-                        },
+                        }
                     )
                 }
                 MaterialTheme(
                     colors = MaterialTheme.colors.copy(
                         background = TransactionCardBg,
                         surface = TransactionCardBg,
-                        onBackground = TransactionCardBg,
+                        onBackground = TransactionCardBg
                     )
                 ) {
                     DropdownMenu(
@@ -147,7 +149,7 @@ fun CategoryDropDown(
                                 text = category.category,
                                 color = White,
                                 fontFamily = DMSans,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                         Text(
@@ -177,7 +179,8 @@ fun CategoryDropDown(
                                 CategoryFab(
                                     icon = it.icon,
                                     modifier = Modifier.clickable(
-                                        remember { MutableInteractionSource() }, null
+                                        remember { MutableInteractionSource() },
+                                        null
                                     ) {
                                         onSelect(it)
                                         expanded = !expanded
@@ -191,7 +194,8 @@ fun CategoryDropDown(
                                     fontWeight = FontWeight.Bold,
                                     color = White,
                                     modifier = Modifier.clickable(
-                                        remember { MutableInteractionSource() }, null
+                                        remember { MutableInteractionSource() },
+                                        null
                                     ) {
                                         onSelect(it)
                                         expanded = !expanded

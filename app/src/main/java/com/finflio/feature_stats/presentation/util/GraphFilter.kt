@@ -1,8 +1,8 @@
 package com.finflio.feature_stats.presentation.util
 
 enum class GraphFilter {
+    DUMMY
     ;
-
     enum class YMW {
         WEEKLY,
         MONTHLY,

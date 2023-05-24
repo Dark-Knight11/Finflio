@@ -9,16 +9,16 @@ import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ListTransactionViewModel @Inject constructor(
+class ListTransactionsViewModel @Inject constructor(
     private val useCases: TransactionUseCases
 ) : ViewModel() {
     private val _transactions = mutableStateOf<List<TransactionDisplay>>(emptyList())

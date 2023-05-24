@@ -13,7 +13,11 @@ import com.finflio.ui.theme.MainBackground
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CommonSnackBar(snackBarHostState: SnackbarHostState, modifier: Modifier, content: @Composable () -> Unit) {
+fun CommonSnackBar(
+    snackBarHostState: SnackbarHostState,
+    modifier: Modifier,
+    content: @Composable () -> Unit
+) {
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackBarHostState) {
