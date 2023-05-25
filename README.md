@@ -24,7 +24,7 @@ To help you visualize your spending habits, Finflio comes with a range of charts
 
 ## Conclusion
 
-Finflio is the perfect app for anyone who wants to take control of their finances. With its powerful features and intuitive interface, Finflio makes it easy to track your expenses, income, and unsettled transactions. So why wait? Download Finflio today and start managing your money like a pro!
+Finflio is the perfect app for anyone who wants to take control of their finances. With its powerful features and intuitive interface, Finflio makes it easy to track your expenses, income, and unsettled transactions. So why wait? [Download](https://github.com/Dark-Knight11/Finflio/releases/download/v0.1.0/finflio.apk) Finflio today and start managing your money like a pro!
 
 
 ## Built With 🛠
