@@ -8,6 +8,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
     kotlin("android")
     kotlin("kapt")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
 }
 
 android {
@@ -133,10 +134,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    implementation("androidx.activity:activity-compose:1.7.1")
-    implementation("androidx.activity:activity:1.7.1")
+    // don't remove the specified version else android preview won't work
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity:1.7.2")
     implementation("androidx.compose.ui:ui-util:1.4.3")
 
     // Lifecycle
@@ -194,5 +196,13 @@ dependencies {
     // For zoomable images
     implementation("de.mr-pine.utils:zoomables:1.1.2")
 
+    // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("io.github.osipxd:security-crypto-datastore-preferences:1.0.0-beta01")
 }

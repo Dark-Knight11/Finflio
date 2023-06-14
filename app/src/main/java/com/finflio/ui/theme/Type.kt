@@ -46,3 +46,13 @@ val Poppins = FontFamily(
         Font(R.font.poppins_medium, FontWeight.Medium)
     )
 )
+
+val Syne = FontFamily(
+    listOf(
+        Font(R.font.syne_regular, FontWeight.Normal),
+        Font(R.font.syne_bold, FontWeight.Bold),
+        Font(R.font.syne_extrabold, FontWeight.ExtraBold),
+        Font(R.font.syne_medium, FontWeight.Medium),
+        Font(R.font.syne_semibold, FontWeight.SemiBold)
+    )
+)

@@ -36,11 +36,9 @@ import com.finflio.ui.theme.*
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@RootNavGraph(true)
 @Destination()
 @Composable
 fun BaseScreen(navigator: DestinationsNavigator) {
