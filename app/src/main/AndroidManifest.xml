@@ -12,7 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Finflio"
+        android:theme="@style/Theme.Finflio.Splash"
         tools:targetApi="33">
         <activity
             android:name=".MainActivity"
