@@ -14,3 +14,7 @@ annotation class HomeNavGraph(val start: Boolean = false)
 @MainNavGraph
 @NavGraph
 annotation class StatsNavGraph(val start: Boolean = false)
+
+@RootNavGraph(start = true)
+@NavGraph
+annotation class AuthNavGraph(val start: Boolean = false)

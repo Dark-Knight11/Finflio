@@ -45,7 +45,11 @@ android {
                 "CLOUDINARY_URL",
                 "\"${project.property("CLOUDINARY_URL")}\""
             )
-
+            buildConfigField(
+                "String",
+                "API_URL",
+                "\"${project.property("API_URL")}\""
+            )
             isMinifyEnabled = false
             isShrinkResources = false
             proguardFiles(
@@ -70,7 +74,11 @@ android {
                 "CLOUDINARY_URL",
                 "\"${project.property("CLOUDINARY_URL")}\""
             )
-
+            buildConfigField(
+                "String",
+                "API_URL",
+                "\"${project.property("API_URL")}\""
+            )
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -205,4 +213,9 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("io.github.osipxd:security-crypto-datastore-preferences:1.0.0-beta01")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
 }

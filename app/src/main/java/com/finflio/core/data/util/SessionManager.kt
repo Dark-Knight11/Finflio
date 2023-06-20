@@ -1,11 +1,14 @@
 package com.finflio.core.data.util
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.finflio.core.data.model.UserSettings
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
@@ -13,8 +16,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import java.io.IOException
-import javax.inject.Inject
 
 class SessionManager @Inject constructor(
     private val dataStore: DataStore<Preferences>
@@ -52,7 +53,7 @@ class SessionManager @Inject constructor(
                             it
                         )
                     } catch (e: SerializationException) {
-                        println(e.message)
+                        Log.e("SessionManager", e.message.toString())
                         e.printStackTrace()
                         UserSettings()
                     }
