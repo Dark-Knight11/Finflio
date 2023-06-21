@@ -2,9 +2,9 @@ package com.finflio.core.data.di
 
 import android.content.Context
 import com.finflio.BuildConfig
-import com.finflio.core.data.network.UtilityMethods
 import com.finflio.core.data.network.interceptor.TokenInterceptor
 import com.finflio.core.data.util.SessionManager
+import com.finflio.core.data.util.UtilityMethods
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides

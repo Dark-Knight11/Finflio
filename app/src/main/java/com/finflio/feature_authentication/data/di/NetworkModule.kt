@@ -1,6 +1,6 @@
 package com.finflio.feature_authentication.data.di
 
-import com.finflio.core.data.network.UtilityMethods
+import com.finflio.core.data.util.UtilityMethods
 import com.finflio.feature_authentication.data.network.AuthApiClient
 import com.finflio.feature_authentication.data.network.AuthApiService
 import dagger.Module

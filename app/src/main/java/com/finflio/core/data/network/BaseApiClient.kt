@@ -1,12 +1,10 @@
 package com.finflio.core.data.network
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.util.Log
 import com.finflio.BuildConfig
 import com.finflio.core.data.model.CommonErrorResponse
 import com.finflio.core.data.network.resource.Resource
+import com.finflio.core.data.util.UtilityMethods
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import retrofit2.Response
@@ -70,26 +68,5 @@ open class BaseApiClient constructor(
                 Resource.error("Check your internet connection!")
             }
         }
-    }
-}
-
-class UtilityMethods constructor(
-    private val context: Context
-) {
-    fun checkNet(): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                return true
-            }
-        }
-        return false
     }
 }

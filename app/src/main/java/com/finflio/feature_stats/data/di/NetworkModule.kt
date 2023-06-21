@@ -1,6 +1,6 @@
 package com.finflio.feature_stats.data.di
 
-import com.finflio.core.data.network.UtilityMethods
+import com.finflio.core.data.util.UtilityMethods
 import com.finflio.feature_stats.data.network.StatsApiClient
 import com.finflio.feature_stats.data.network.StatsApiService
 import dagger.Module

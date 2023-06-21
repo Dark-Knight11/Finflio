@@ -1,7 +1,7 @@
 package com.finflio.feature_authentication.data.network
 
 import com.finflio.core.data.network.BaseApiClient
-import com.finflio.core.data.network.UtilityMethods
+import com.finflio.core.data.util.UtilityMethods
 
 class AuthApiClient(
     private val authApiService: AuthApiService,
