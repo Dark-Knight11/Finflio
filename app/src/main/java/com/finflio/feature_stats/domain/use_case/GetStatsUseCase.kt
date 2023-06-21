@@ -5,14 +5,17 @@ import com.finflio.core.data.network.resource.Resource
 import com.finflio.feature_stats.domain.mapper.toStatsData
 import com.finflio.feature_stats.domain.model.StatsData
 import com.finflio.feature_stats.domain.repository.StatsRepository
-import javax.inject.Inject
+import com.finflio.feature_stats.presentation.util.StatsUiEvent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 class GetStatsUseCase @Inject constructor(
     private val repository: StatsRepository
 ) {
+    val eventFlow = MutableSharedFlow<StatsUiEvent>()
     suspend operator fun invoke(): Flow<StatsData?> {
         return channelFlow {
             repository.getStats().collectLatest { res ->
@@ -23,6 +26,7 @@ class GetStatsUseCase @Inject constructor(
                     }
 
                     Resource.Status.ERROR -> {
+                        eventFlow.emit(StatsUiEvent.ShowSnackbar(res.message.toString()))
                         Log.i(this.toString(), res.message.toString())
                         close()
                     }

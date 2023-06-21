@@ -27,6 +27,7 @@ class StatsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val statsData: MutableState<StatsData?> = mutableStateOf(null)
+    val eventFlow = getStatsUseCase.eventFlow
     private val _incomeChartEntry =
         mutableStateOf(ChartEntryModelProducer())
     val incomeChartEntry: State<ChartEntryModelProducer> = _incomeChartEntry

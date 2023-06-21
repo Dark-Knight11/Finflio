@@ -16,6 +16,7 @@ import com.finflio.ui.theme.MainBackground
 fun CommonSnackBar(
     snackBarHostState: SnackbarHostState,
     modifier: Modifier,
+    backgroundColor: Color = MainBackground,
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -23,7 +24,7 @@ fun CommonSnackBar(
             SnackbarHost(snackBarHostState) {
                 Snackbar(
                     contentColor = Color.White,
-                    backgroundColor = MainBackground,
+                    backgroundColor = backgroundColor,
                     actionColor = Gold,
                     modifier = modifier,
                     snackbarData = it
