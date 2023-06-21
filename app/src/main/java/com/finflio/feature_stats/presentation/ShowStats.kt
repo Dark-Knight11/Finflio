@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.finflio.core.presentation.navigation.StatsNavGraph
 import com.finflio.feature_stats.presentation.components.ChartBox
 import com.finflio.feature_stats.presentation.components.ChartStyleFilter
+import com.finflio.feature_stats.presentation.components.RefreshButton
 import com.finflio.feature_stats.presentation.components.TypeFilter
 import com.finflio.feature_stats.presentation.components.YMWFilter
 import com.finflio.feature_stats.presentation.util.GraphFilter
@@ -62,6 +63,9 @@ fun ShowStats(viewModel: StatsViewModel = hiltViewModel()) {
                 if (selectedFilter.type != GraphFilter.Type.COMBINED) {
                     currentlySelectedGraphFilter = it
                 }
+            }
+            RefreshButton() {
+                viewModel.refreshData()
             }
 //            CustomRangeFilter() {
 //            }
