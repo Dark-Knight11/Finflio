@@ -9,6 +9,7 @@ import com.finflio.BuildConfig
 import com.finflio.core.data.data_source.FinflioDb
 import com.finflio.core.data.mapper.toTransactionEntity
 import com.finflio.core.data.repository.BaseRepo
+import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
 import com.finflio.feature_transactions.data.network.TransactionApiClient
@@ -28,8 +29,9 @@ class TransactionsRepositoryImpl @Inject constructor(
     private val finflioDb: FinflioDb
 ) : TransactionsRepository, BaseRepo() {
 
-    val dao = finflioDb.transactionDao
+    private val dao = finflioDb.transactionDao
     private val unsettledDao = finflioDb.unsettledTransactionDao
+    private val monthTotalDao = finflioDb.monthTotalDao
     override fun getTransactions(month: String): Flow<PagingData<Pair<TransactionEntity, Int>>> {
         val pagingSourceFactory = { dao.getTransactions() }
         val remoteMediator = TransactionRemoteMediator(
@@ -43,10 +45,14 @@ class TransactionsRepositoryImpl @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow.map {
             val monthTotal = remoteMediator.monthTotal
-            it.map {
-                it to monthTotal
+            it.map { transactionEntity ->
+                transactionEntity to monthTotal
             }
         }
+    }
+
+    override suspend fun getMonthTotal(month: String): MonthTotalEntity {
+        return monthTotalDao.getMonthTotal(month)
     }
 
     override fun getUnsettledTransaction(): Flow<PagingData<UnsettledTransactionEntity>> {

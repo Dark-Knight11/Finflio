@@ -2,10 +2,12 @@ package com.finflio.core.data.data_source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.finflio.feature_transactions.data.dao.MonthTotalDao
 import com.finflio.feature_transactions.data.dao.TransactionDao
 import com.finflio.feature_transactions.data.dao.TransactionRemoteKeysDao
 import com.finflio.feature_transactions.data.dao.UnsettledTransactionDao
 import com.finflio.feature_transactions.data.dao.UnsettledTransactionRemoteKeysDao
+import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.TransactionRemoteKeys
 import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
@@ -16,9 +18,10 @@ import com.finflio.feature_transactions.data.models.local.UnsettledTransactionRe
         TransactionEntity::class,
         TransactionRemoteKeys::class,
         UnsettledTransactionEntity::class,
-        UnsettledTransactionRemoteKeys::class
+        UnsettledTransactionRemoteKeys::class,
+        MonthTotalEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class FinflioDb() : RoomDatabase() {
@@ -26,4 +29,5 @@ abstract class FinflioDb() : RoomDatabase() {
     abstract val transactionRemoteKeysDao: TransactionRemoteKeysDao
     abstract val unsettledTransactionDao: UnsettledTransactionDao
     abstract val unsettledTransactionRemoteKeysDao: UnsettledTransactionRemoteKeysDao
+    abstract val monthTotalDao: MonthTotalDao
 }

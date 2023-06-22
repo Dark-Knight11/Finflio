@@ -12,6 +12,7 @@ import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
@@ -37,27 +38,39 @@ class ListTransactionsViewModel @Inject constructor(
 
     private val _transactions = MutableStateFlow<PagingData<TransactionModel>>(PagingData.empty())
     val transactions = _transactions
+
+    init {
+        val currentMonth = LocalDateTime.now().month
+        getMonthTotal(currentMonth)
+        paginatedTransactions(currentMonth)
+    }
+
     fun paginatedTransactions(month: Month) {
         viewModelScope.launch {
             useCases.getTransactionsUseCase(month).cachedIn(viewModelScope).collectLatest {
-                _monthTotal.value = useCases.getTransactionsUseCase.getTotal().toFloat()
                 _transactions.value = it
             }
         }
     }
 
-    init {
-        paginatedTransactions(LocalDate.now().month)
+    private fun getMonthTotal(month: Month) {
+        viewModelScope.launch {
+            try {
+                _monthTotal.value = useCases.getMonthTotalUseCase(month).toFloat()
+            } catch (e: NullPointerException) {
+                _monthTotal.value = 0f
+                println(e.message)
+            }
+        }
     }
 
     fun onEvent(event: TransactionEvent) {
         when (event) {
             is TransactionEvent.ChangeMonth -> {
-                viewModelScope.launch {
-                    val month = Month.valueOf(event.month.uppercase())
-                    _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
-                    paginatedTransactions(Month.valueOf(event.month.uppercase()))
-                }
+                val month = Month.valueOf(event.month.uppercase())
+                _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+                paginatedTransactions(month)
+                getMonthTotal(month)
             }
 
             is TransactionEvent.RestoreTransaction -> {

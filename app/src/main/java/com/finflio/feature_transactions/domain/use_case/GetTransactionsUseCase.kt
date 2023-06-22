@@ -20,14 +20,11 @@ import kotlinx.coroutines.flow.map
 class GetTransactionsUseCase @Inject constructor(
     private val transactionRepo: TransactionsRepository
 ) {
-    var monthTotal = 0
-    fun getTotal() = monthTotal
     operator fun invoke(month: Month): Flow<PagingData<TransactionModel>> {
         val calendar = Calendar.getInstance()
         val currentDate = LocalDate.now()
         return transactionRepo.getTransactions(month.name).map { pagingData ->
             pagingData.map {
-                monthTotal = it.second
                 TransactionModel.TransactionItem(it.first.toTransaction())
             }
         }.map { pagingData ->

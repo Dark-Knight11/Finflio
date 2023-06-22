@@ -8,5 +8,6 @@ data class TransactionUseCases(
     val deleteTransactionUseCase: DeleteTransactionUseCase,
     val getImagePathUseCase: GetImagePathUseCase,
     val deleteImageUseCase: DeleteImageUseCase,
-    val getUnsettledTransactionsUseCase: GetUnsettledTransactionsUseCase
+    val getUnsettledTransactionsUseCase: GetUnsettledTransactionsUseCase,
+    val getMonthTotalUseCase: GetMonthTotalUseCase
 )

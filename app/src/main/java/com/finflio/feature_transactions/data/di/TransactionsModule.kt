@@ -27,6 +27,7 @@ object TransactionsModule {
             deleteTransactionUseCase = DeleteTransactionUseCase(repository),
             deleteImageUseCase = DeleteImageUseCase(repository),
             getUnsettledTransactionsUseCase = GetUnsettledTransactionsUseCase(repository),
+            getMonthTotalUseCase = GetMonthTotalUseCase(repository),
             getImagePathUseCase = GetImagePathUseCase(uriPathFinder)
         )
     }

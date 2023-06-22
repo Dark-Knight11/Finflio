@@ -7,6 +7,7 @@ import androidx.room.withTransaction
 import com.finflio.core.data.data_source.FinflioDb
 import com.finflio.core.data.network.resource.Resource
 import com.finflio.feature_transactions.data.mapper.toTransactionEntity
+import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.TransactionRemoteKeys
 import com.finflio.feature_transactions.data.network.TransactionApiClient
@@ -21,6 +22,7 @@ class TransactionRemoteMediator(
 
     private val transactionDao = finflioDb.transactionDao
     private val transactionRemoteKeysDao = finflioDb.transactionRemoteKeysDao
+    private val monthTotalDao = finflioDb.monthTotalDao
     var monthTotal = 0
     var shouldUpdate = true
 
@@ -68,6 +70,12 @@ class TransactionRemoteMediator(
                                 if (loadType == LoadType.REFRESH) {
                                     transactionDao.deleteAllTransactions()
                                     transactionRemoteKeysDao.deleteAllRemoteKeys()
+                                    monthTotalDao.addData(
+                                        MonthTotalEntity(
+                                            month,
+                                            monthTotal
+                                        )
+                                    )
                                 }
                                 val keys = response.data.transactions.map { transactionDTO ->
                                     TransactionRemoteKeys(
