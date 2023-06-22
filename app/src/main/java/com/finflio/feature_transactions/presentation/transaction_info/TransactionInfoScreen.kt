@@ -23,11 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.finflio.core.domain.model.Transaction
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.DeleteConfirmationDestination
+import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.add_edit_transactions.components.OpenableImage
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
@@ -50,7 +50,8 @@ fun TransactionInfoScreen(
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Transaction>,
     viewModel: TransactionInfoViewModel = hiltViewModel(),
-    transactionId: Int,
+    transactionId: String,
+    unsettled: Boolean = false,
     resultRecipient: ResultRecipient<DeleteConfirmationDestination, Boolean>
 ) {
     val scrollState = rememberScrollState()

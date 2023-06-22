@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finflio.core.domain.model.Transaction
+import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.presentation.transaction_info.util.TransactionInfoEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class TransactionInfoViewModel @Inject constructor(
@@ -22,9 +22,10 @@ class TransactionInfoViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            savedStateHandle.get<Int>("transactionId")?.let {
-                _transaction.value = useCase.getTransactionUseCase(it)
-                println("Transaction Value: ${transaction.value}")
+            val transactionId = savedStateHandle.get<String>("transactionId")
+            val unsettled = savedStateHandle.get<Boolean>("unsettled")
+            _transaction.value = transactionId?.let {
+                useCase.getTransactionUseCase(it, unsettled ?: false)
             }
         }
     }

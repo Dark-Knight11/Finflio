@@ -73,7 +73,7 @@ import kotlinx.coroutines.launch
 fun AddEditTransactionScreen(
     navigator: DestinationsNavigator,
     type: String,
-    transactionId: Int = 0,
+    transactionId: String = "",
     viewModel: AddEditTransactionViewModel = hiltViewModel()
 ) {
     var showLoader by rememberSaveable { mutableStateOf(false) }
@@ -141,7 +141,7 @@ fun AddEditTransactionScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is AddEditTransactionUiEvent.NavigateBack -> {
-                    if (transactionId != 0) {
+                    if (transactionId != "") {
                         navigator.popBackStack("list_transactions", false)
                     } else {
                         navigator.popBackStack()
@@ -206,7 +206,7 @@ fun AddEditTransactionScreen(
 
 @Composable
 fun AddEditTransactionContent(
-    transactionId: Int,
+    transactionId: String,
     type: String,
     showLoader: Boolean,
     context: Context,
@@ -440,7 +440,7 @@ fun AddEditTransactionContent(
                 showLoader = showLoader,
                 onCancel = { viewModel.onEvent(AddEditTransactionEvent.CancelTransaction) },
                 onSave = {
-                    if (transactionId == 0) {
+                    if (transactionId == "") {
                         viewModel.onEvent(
                             AddEditTransactionEvent.AddTransactionEvent(context)
                         )

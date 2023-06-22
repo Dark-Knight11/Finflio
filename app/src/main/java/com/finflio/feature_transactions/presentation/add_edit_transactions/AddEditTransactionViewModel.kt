@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.finflio.core.domain.model.Transaction
+import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionEvent
@@ -19,10 +19,10 @@ import com.finflio.feature_transactions.presentation.add_edit_transactions.util.
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.PaymentMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDateTime
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import javax.inject.Inject
 
 @HiltViewModel
 class AddEditTransactionViewModel @Inject constructor(
@@ -30,8 +30,8 @@ class AddEditTransactionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _transactionId = mutableStateOf<Int>(0)
-    val transactionId: State<Int> = _transactionId
+    private val _transactionId = mutableStateOf<String>("")
+    val transactionId: State<String> = _transactionId
 
     private val _timestamp = mutableStateOf<LocalDateTime>(LocalDateTime.now())
     val timestamp: State<LocalDateTime> = _timestamp
@@ -70,11 +70,11 @@ class AddEditTransactionViewModel @Inject constructor(
             savedStateHandle.get<String>("type")?.let {
                 _type.value = it
             }
-            savedStateHandle.get<Int>("transactionId")?.let {
+            savedStateHandle.get<String>("transactionId")?.let {
                 _transactionId.value = it
             }
-            if (transactionId.value != 0) {
-                useCase.getTransactionUseCase(transactionId.value).also {
+            if (transactionId.value != "") {
+                useCase.getTransactionUseCase(transactionId.value, type.value == "Unsettled").also {
                     _type.value = it.type
                     _amount.value = it.amount.toString()
                     _paymentMethod.value = PaymentMethods.valueOf(it.paymentMethod)
@@ -253,7 +253,9 @@ class AddEditTransactionViewModel @Inject constructor(
             amount = amount.value.toFloat(),
             to = to.value,
             from = from.value,
-            attachment = if (imgUrl.isNullOrBlank()) null else imgUrl
+            attachment = if (imgUrl.isNullOrBlank()) null else imgUrl,
+            userId = "",
+            transactionId = ""
         )
         when (event) {
             is AddEditTransactionEvent.AddTransactionEvent -> {
