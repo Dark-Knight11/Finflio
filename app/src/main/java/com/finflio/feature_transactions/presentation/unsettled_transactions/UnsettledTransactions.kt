@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.finflio.R
 import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.destinations.TransactionInfoScreenDestination
@@ -35,7 +35,7 @@ fun UnsettledTransactions(
     navigator: DestinationsNavigator,
     viewModel: UnsettledTransactionsViewModel = hiltViewModel()
 ) {
-    val unsettledTransactions = viewModel.unsettledTransactions.value
+    val unsettledTransactions = viewModel.unsettledTransactions.collectAsLazyPagingItems()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +53,7 @@ fun UnsettledTransactions(
         UnsettledTransactionTopAppBar() {
             navigator.popBackStack()
         }
-        if (unsettledTransactions.isEmpty()) {
+        if (unsettledTransactions.itemCount == 0) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -74,20 +74,24 @@ fun UnsettledTransactions(
                 ),
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(unsettledTransactions) { transaction ->
-                    TransactionCard(
-                        category = Categories.valueOf(transaction.category),
-                        time = transaction.timestamp,
-                        amount = transaction.amount,
-                        from = transaction.from,
-                        type = transaction.type,
-                        to = transaction.to
-                    ) {
-                        navigator.navigate(
-                            TransactionInfoScreenDestination(
-                                transactionId = transaction.transactionId
+                items(unsettledTransactions.itemCount) { index ->
+                    val transaction = unsettledTransactions[index]
+                    transaction?.let {
+                        TransactionCard(
+                            category = Categories.valueOf(transaction.category),
+                            time = transaction.timestamp,
+                            amount = transaction.amount,
+                            from = transaction.from,
+                            type = transaction.type,
+                            to = transaction.to
+                        ) {
+                            navigator.navigate(
+                                TransactionInfoScreenDestination(
+                                    transactionId = transaction.transactionId,
+                                    unsettled = true
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

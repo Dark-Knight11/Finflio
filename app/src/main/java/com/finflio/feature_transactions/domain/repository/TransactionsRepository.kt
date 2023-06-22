@@ -2,6 +2,7 @@ package com.finflio.feature_transactions.domain.repository
 
 import androidx.paging.PagingData
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
+import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
 import com.finflio.feature_transactions.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
 
@@ -9,7 +10,11 @@ interface TransactionsRepository {
 
     fun getTransactions(month: String): Flow<PagingData<Pair<TransactionEntity, Int>>>
 
+    fun getUnsettledTransaction(): Flow<PagingData<UnsettledTransactionEntity>>
+
     suspend fun getTransaction(id: String): Transaction
+
+    suspend fun getUnsettledTransaction(id: String): Transaction
 
     suspend fun deleteTransaction(transaction: Transaction)
 

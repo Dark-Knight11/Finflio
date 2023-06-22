@@ -10,16 +10,18 @@ import com.finflio.core.data.data_source.FinflioDb
 import com.finflio.core.data.mapper.toTransactionEntity
 import com.finflio.core.data.repository.BaseRepo
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
+import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
 import com.finflio.feature_transactions.data.network.TransactionApiClient
 import com.finflio.feature_transactions.data.paging.TransactionRemoteMediator
+import com.finflio.feature_transactions.data.paging.UnsettledTransactionsRemoteMediator
 import com.finflio.feature_transactions.domain.mapper.toTransaction
 import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.repository.TransactionsRepository
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class TransactionsRepositoryImpl @Inject constructor(
     private val apiClient: TransactionApiClient,
@@ -27,6 +29,7 @@ class TransactionsRepositoryImpl @Inject constructor(
 ) : TransactionsRepository, BaseRepo() {
 
     val dao = finflioDb.transactionDao
+    private val unsettledDao = finflioDb.unsettledTransactionDao
     override fun getTransactions(month: String): Flow<PagingData<Pair<TransactionEntity, Int>>> {
         val pagingSourceFactory = { dao.getTransactions() }
         val remoteMediator = TransactionRemoteMediator(
@@ -46,8 +49,23 @@ class TransactionsRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getUnsettledTransaction(): Flow<PagingData<UnsettledTransactionEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            remoteMediator = UnsettledTransactionsRemoteMediator(
+                apiClient = apiClient,
+                finflioDb = finflioDb
+            ),
+            pagingSourceFactory = { unsettledDao.getUnsettledTransactions() }
+        ).flow
+    }
+
     override suspend fun getTransaction(id: String): Transaction {
         return dao.getTransaction(id).toTransaction()
+    }
+
+    override suspend fun getUnsettledTransaction(id: String): Transaction {
+        return unsettledDao.getUnsettledTransaction(id).toTransaction()
     }
 
     override suspend fun deleteTransaction(transaction: Transaction) {

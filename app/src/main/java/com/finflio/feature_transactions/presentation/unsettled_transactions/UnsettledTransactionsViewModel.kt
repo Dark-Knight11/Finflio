@@ -1,26 +1,29 @@
 package com.finflio.feature_transactions.presentation.unsettled_transactions
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finflio.core.domain.model.Transaction
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class UnsettledTransactionsViewModel @Inject constructor(
     private val useCases: TransactionUseCases
 ) : ViewModel() {
-    private val _unsettledTransactions = mutableStateOf<List<Transaction>>(emptyList())
-    val unsettledTransactions: State<List<Transaction>> = _unsettledTransactions
+
+    private val _unsettledTransactions =
+        MutableStateFlow<PagingData<Transaction>>(PagingData.empty())
+    val unsettledTransactions = _unsettledTransactions
 
     init {
         viewModelScope.launch {
-            useCases.getUnsettledTransactionsUseCase().collectLatest {
+            useCases.getUnsettledTransactionsUseCase().cachedIn(viewModelScope).collectLatest {
                 _unsettledTransactions.value = it
             }
         }

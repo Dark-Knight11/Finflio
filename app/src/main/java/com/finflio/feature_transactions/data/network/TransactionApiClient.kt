@@ -12,4 +12,8 @@ class TransactionApiClient @Inject constructor(
     suspend fun getTransactions(page: Int, month: String) = getResult {
         apiService.getTransactions(page, month)
     }
+
+    suspend fun getUnsettledTransactions(page: Int) = getResult {
+        apiService.getUnsettledTransactions(page)
+    }
 }

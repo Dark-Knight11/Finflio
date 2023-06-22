@@ -12,4 +12,9 @@ interface TransactionApiService {
         @Query("page") page: Int,
         @Query("month") month: String
     ): Response<TransactionResponse>
+
+    @GET("transaction/unsettled")
+    suspend fun getUnsettledTransactions(
+        @Query("page") page: Int
+    ): Response<TransactionResponse>
 }
