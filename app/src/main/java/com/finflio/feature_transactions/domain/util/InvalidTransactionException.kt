@@ -1,6 +1,6 @@
 package com.finflio.feature_transactions.domain.util
 
-import com.finflio.core.domain.model.Transaction
+import com.finflio.feature_transactions.domain.model.Transaction
 
 class InvalidTransactionException(message: String) : Exception(message)
 

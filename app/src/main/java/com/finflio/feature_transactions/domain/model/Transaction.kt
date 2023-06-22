@@ -1,4 +1,4 @@
-package com.finflio.core.domain.model
+package com.finflio.feature_transactions.domain.model
 
 import android.os.Parcelable
 import java.time.LocalDateTime
@@ -6,7 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Transaction(
-    val transactionId: Int = 0,
+    val transactionId: String,
+    val userId: String,
     val timestamp: LocalDateTime,
     val type: String,
     val category: String,
