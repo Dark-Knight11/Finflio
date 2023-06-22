@@ -10,12 +10,9 @@ import androidx.room.Room
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKeys
 import com.finflio.core.data.data_source.FinflioDb
-import com.finflio.core.data.data_source.TransactionDao
-import com.finflio.core.data.repository.TransactionsRepositoryImpl
-import com.finflio.core.data.util.Converters
 import com.finflio.core.data.util.SessionManager
-import com.finflio.core.domain.repository.TransactionsRepository
 import com.finflio.core.presentation.util.UriPathFinder
+import com.finflio.feature_transactions.data.dao.TransactionDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,13 +28,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFinflioDatabase(app: Application): FinflioDb {
-        val converters = Converters()
         return Room.databaseBuilder(
             context = app,
             klass = FinflioDb::class.java,
             name = "FinflioDB"
         )
-            .addTypeConverter(converters)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -46,12 +41,6 @@ object AppModule {
     @Singleton
     fun provideTransactionDao(finflioDb: FinflioDb): TransactionDao {
         return finflioDb.transactionDao
-    }
-
-    @Provides
-    @Singleton
-    fun provideTransactionRepo(transactionDao: TransactionDao): TransactionsRepository {
-        return TransactionsRepositoryImpl(transactionDao)
     }
 
     @Provides

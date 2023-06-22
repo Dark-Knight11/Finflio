@@ -21,6 +21,7 @@ allprojects {
                 "-opt-in=com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi",
                 "-opt-in=com.google.accompanist.permissions.ExperimentalPermissionsApi",
                 "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+                "-opt-in=androidx.paging.ExperimentalPagingApi"
             )
         }
     }

@@ -1,21 +1,22 @@
-package com.finflio.core.data.mapper
+package com.finflio.feature_transactions.domain.mapper
 
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.domain.model.Transaction
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-fun Transaction.toTransactionEntity(): TransactionEntity {
-    return TransactionEntity(
-        transactionId = transactionId,
-        timestamp = timestamp.toEpochSecond(ZoneOffset.UTC).times(1000),
+fun TransactionEntity.toTransaction(): Transaction {
+    return Transaction(
+        transactionId,
+        userId,
+        timestamp = LocalDateTime.ofEpochSecond(timestamp / 1000, 0, ZoneOffset.UTC),
         type = type,
         category = category,
         paymentMethod = paymentMethod,
         description = description,
         amount = amount,
         attachment = attachment,
-        from = from,
         to = to,
-        userId = userId
+        from = from
     )
 }

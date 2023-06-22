@@ -1,64 +1,80 @@
 package com.finflio.feature_transactions.domain.use_case
 
-import com.finflio.feature_transactions.domain.model.TransactionDisplay
+import androidx.paging.PagingData
+import androidx.paging.filter
+import androidx.paging.insertSeparators
+import androidx.paging.map
+import com.finflio.feature_transactions.domain.mapper.toTransaction
+import com.finflio.feature_transactions.domain.model.TransactionModel
 import com.finflio.feature_transactions.domain.repository.TransactionsRepository
 import com.finflio.feature_transactions.domain.util.getDayOfMonthSuffix
-import com.patrykandpatrick.vico.core.extension.sumByFloat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Month
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 
 class GetTransactionsUseCase @Inject constructor(
-    private val repo: TransactionsRepository
+    private val transactionRepo: TransactionsRepository
 ) {
-    operator fun invoke(month: Month): Flow<Pair<Float, List<TransactionDisplay>>> {
+    var monthTotal = 0
+    fun getTotal() = monthTotal
+    operator fun invoke(month: Month): Flow<PagingData<TransactionModel>> {
         val calendar = Calendar.getInstance()
         val currentDate = LocalDate.now()
-        return channelFlow {
-            launch(Dispatchers.IO) {
-                repo.getTransactions().collectLatest { transactionList ->
-                    val (total, list) = transactionList.asSequence().filter {
-                        (it.type == "Expense" || it.type == "Income") && (it.timestamp.month == month && it.timestamp.year == currentDate.year)
-                    }
-                        .sortedByDescending { it.timestamp.dayOfMonth }
-                        .groupBy { it.timestamp.dayOfMonth }.map { (dayOfMonth, transactions) ->
-                            val dateFormat = SimpleDateFormat(
-                                /* pattern = */ "EEEE - d'${getDayOfMonthSuffix(dayOfMonth)}' MMM",
-                                /* locale = */ Locale.getDefault()
-                            )
-                            calendar.set(Calendar.MONTH, transactions[0].timestamp.monthValue - 1)
-                            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                            val day = when (dayOfMonth) {
-                                currentDate.dayOfMonth -> if (currentDate.month == transactions[0].timestamp.month) {
-                                    "Today"
-                                } else {
-                                    dateFormat.format(calendar.time)
-                                }
-
-                                currentDate.minusDays(1).dayOfMonth -> if (currentDate.month == transactions[0].timestamp.month) {
-                                    "Yesterday"
-                                } else {
-                                    dateFormat.format(calendar.time)
-                                }
-
-                                else -> dateFormat.format(calendar.time)
-                            }
-                            transactions.filter { it.type == "Expense" }.sumByFloat { it.amount } to
-                                TransactionDisplay(
-                                    day = day,
-                                    transactions = transactions.sortedBy { it.timestamp }
-                                )
-                        }.unzip()
-
-                    send(total.sum() to list)
+        return transactionRepo.getTransactions(month.name).map { pagingData ->
+            pagingData.map {
+                monthTotal = it.second
+                TransactionModel.TransactionItem(it.first.toTransaction())
+            }
+        }.map { pagingData ->
+            pagingData.filter { it.transaction.type != "Unsettled" }
+        }.map {
+            it.insertSeparators { before, after ->
+                // TODO If network is down then first data grp doesn't have any separator
+                if (after == null) return@insertSeparators null
+                val dateOfAfterItem = after.transaction.timestamp.toLocalDate()
+                if (before == null) {
+                    val dateFormat = SimpleDateFormat(
+                        /* pattern = */ "EEEE - d'${
+                        getDayOfMonthSuffix(
+                            dateOfAfterItem.dayOfMonth
+                        )
+                        }' MMM",
+                        /* locale = */ Locale.getDefault()
+                    )
+                    calendar.set(Calendar.MONTH, dateOfAfterItem.monthValue - 1)
+                    calendar.set(Calendar.DAY_OF_MONTH, dateOfAfterItem.dayOfMonth)
+                    return@insertSeparators TransactionModel.SeparatorItem(
+                        when (dateOfAfterItem) {
+                            currentDate -> "Today"
+                            currentDate.minusDays(1) -> "Yesterday"
+                            else -> dateFormat.format(calendar.time)
+                        }
+                    )
+                }
+                val dateOfBeforeItem = before.transaction.timestamp.toLocalDate()
+                if (dateOfAfterItem != dateOfBeforeItem) {
+                    val dateFormat = SimpleDateFormat(
+                        /* pattern = */ "EEEE - d'${
+                        getDayOfMonthSuffix(dateOfAfterItem.dayOfMonth)
+                        }' MMM",
+                        /* locale = */ Locale.getDefault()
+                    )
+                    calendar.set(Calendar.MONTH, dateOfAfterItem.monthValue - 1)
+                    calendar.set(Calendar.DAY_OF_MONTH, dateOfAfterItem.dayOfMonth)
+                    return@insertSeparators TransactionModel.SeparatorItem(
+                        when (dateOfAfterItem) {
+                            currentDate -> "Today"
+                            currentDate.minusDays(1) -> "Yesterday"
+                            else -> dateFormat.format(calendar.time)
+                        }
+                    )
+                } else {
+                    null
                 }
             }
         }

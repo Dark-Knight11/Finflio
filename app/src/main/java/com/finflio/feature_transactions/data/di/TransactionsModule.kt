@@ -1,7 +1,7 @@
 package com.finflio.feature_transactions.data.di
 
-import com.finflio.core.domain.repository.TransactionsRepository
 import com.finflio.core.presentation.util.UriPathFinder
+import com.finflio.feature_transactions.domain.repository.TransactionsRepository
 import com.finflio.feature_transactions.domain.use_case.*
 import dagger.Module
 import dagger.Provides

@@ -4,25 +4,28 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finflio.feature_transactions.domain.model.TransactionDisplay
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.finflio.feature_transactions.domain.model.TransactionModel
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.TextStyle
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ListTransactionsViewModel @Inject constructor(
     private val useCases: TransactionUseCases
 ) : ViewModel() {
-    private val _transactions = mutableStateOf<List<TransactionDisplay>>(emptyList())
-    val transactions: State<List<TransactionDisplay>> = _transactions
+
+    val isRefreshing = mutableStateOf<Boolean>(true)
 
     private val _monthTotal = mutableStateOf(0f)
     val monthTotal: State<Float> = _monthTotal
@@ -32,14 +35,19 @@ class ListTransactionsViewModel @Inject constructor(
     )
     val month: State<String> = _month
 
-    init {
+    private val _transactions = MutableStateFlow<PagingData<TransactionModel>>(PagingData.empty())
+    val transactions = _transactions
+    fun paginatedTransactions(month: Month) {
         viewModelScope.launch {
-            useCases.getTransactionsUseCase(LocalDate.now().month)
-                .collectLatest { (total, transactions) ->
-                    _transactions.value = transactions
-                    _monthTotal.value = total
-                }
+            useCases.getTransactionsUseCase(month).cachedIn(viewModelScope).collectLatest {
+                _monthTotal.value = useCases.getTransactionsUseCase.getTotal().toFloat()
+                _transactions.value = it
+            }
         }
+    }
+
+    init {
+        paginatedTransactions(LocalDate.now().month)
     }
 
     fun onEvent(event: TransactionEvent) {
@@ -48,13 +56,10 @@ class ListTransactionsViewModel @Inject constructor(
                 viewModelScope.launch {
                     val month = Month.valueOf(event.month.uppercase())
                     _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
-                    useCases.getTransactionsUseCase(month)
-                        .collectLatest { (total, transactions) ->
-                            _transactions.value = transactions
-                            _monthTotal.value = total
-                        }
+                    paginatedTransactions(Month.valueOf(event.month.uppercase()))
                 }
             }
+
             is TransactionEvent.RestoreTransaction -> {
                 viewModelScope.launch {
                     try {

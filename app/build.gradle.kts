@@ -183,12 +183,12 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.45")
     // hilt navigation compose
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-
     // Room
-    val roomVersion = "2.5.0"
+    val roomVersion = "2.5.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+    implementation("androidx.room:room-paging:$roomVersion")
 
     // material dialogs
     implementation("io.github.vanpra.compose-material-dialogs:core:0.9.0")
@@ -218,4 +218,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+
+    // Paging 3.0
+    implementation("androidx.paging:paging-compose:3.2.0-beta01")
 }

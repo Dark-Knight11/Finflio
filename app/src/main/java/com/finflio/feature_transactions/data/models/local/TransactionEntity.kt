@@ -1,14 +1,14 @@
-package com.finflio.core.data.model
+package com.finflio.feature_transactions.data.models.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true)
-    var transactionId: Int = 0,
-    val timestamp: LocalDateTime,
+    @PrimaryKey
+    val transactionId: String,
+    val userId: String,
+    val timestamp: Long,
     val type: String,
     val category: String,
     val paymentMethod: String,

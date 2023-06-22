@@ -2,16 +2,20 @@ package com.finflio.core.data.data_source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.finflio.core.data.model.TransactionEntity
-import com.finflio.core.data.util.Converters
+import com.finflio.feature_transactions.data.dao.TransactionDao
+import com.finflio.feature_transactions.data.dao.TransactionRemoteKeysDao
+import com.finflio.feature_transactions.data.models.local.TransactionEntity
+import com.finflio.feature_transactions.data.models.local.TransactionRemoteKeys
 
 @Database(
-    entities = [TransactionEntity::class],
+    entities = [
+        TransactionEntity::class,
+        TransactionRemoteKeys::class
+    ],
     version = 1,
     exportSchema = true
 )
-@TypeConverters(Converters::class)
 abstract class FinflioDb() : RoomDatabase() {
     abstract val transactionDao: TransactionDao
+    abstract val transactionRemoteKeysDao: TransactionRemoteKeysDao
 }
