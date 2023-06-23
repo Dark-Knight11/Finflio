@@ -26,9 +26,13 @@ open class BaseApiClient constructor(
                     Resource.error("Server response error")
                 }
             } else {
-                Resource.error(
-                    "${response.code()} ${response.message()} ${response.body()}"
+                val jObjError: String = JSONObject(response.errorBody()?.string() ?: "").toString()
+                val errorString = Json.decodeFromString(
+                    CommonErrorResponse.serializer(),
+                    jObjError
                 )
+                Log.d("BaseApiClient", errorString.toString())
+                Resource.error(errorString.message)
             }
         } catch (e: Exception) {
             val errorMessage = e.message ?: e.toString()

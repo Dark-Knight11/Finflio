@@ -41,7 +41,6 @@ class ListTransactionsViewModel @Inject constructor(
 
     init {
         val currentMonth = LocalDateTime.now().month
-        getMonthTotal(currentMonth)
         paginatedTransactions(currentMonth)
     }
 
@@ -49,18 +48,17 @@ class ListTransactionsViewModel @Inject constructor(
         viewModelScope.launch {
             useCases.getTransactionsUseCase(month).cachedIn(viewModelScope).collectLatest {
                 _transactions.value = it
+                getMonthTotal(month)
             }
         }
     }
 
-    private fun getMonthTotal(month: Month) {
-        viewModelScope.launch {
-            try {
-                _monthTotal.value = useCases.getMonthTotalUseCase(month).toFloat()
-            } catch (e: NullPointerException) {
-                _monthTotal.value = 0f
-                println(e.message)
-            }
+    private suspend fun getMonthTotal(month: Month) {
+        try {
+            _monthTotal.value = useCases.getMonthTotalUseCase(month).toFloat()
+        } catch (e: NullPointerException) {
+            _monthTotal.value = 0f
+            println(e.message)
         }
     }
 
@@ -70,13 +68,12 @@ class ListTransactionsViewModel @Inject constructor(
                 val month = Month.valueOf(event.month.uppercase())
                 _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
                 paginatedTransactions(month)
-                getMonthTotal(month)
             }
 
             is TransactionEvent.RestoreTransaction -> {
                 viewModelScope.launch {
                     try {
-                        useCases.addTransactionUseCase(event.transaction)
+//                        useCases.addTransactionUseCase(event.transaction)
                     } catch (e: InvalidTransactionException) {
                         println(e.message)
                     }

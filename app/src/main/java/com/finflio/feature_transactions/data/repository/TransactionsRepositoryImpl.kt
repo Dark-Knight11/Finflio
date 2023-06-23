@@ -12,6 +12,7 @@ import com.finflio.core.data.repository.BaseRepo
 import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
+import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
 import com.finflio.feature_transactions.data.network.TransactionApiClient
 import com.finflio.feature_transactions.data.paging.TransactionRemoteMediator
 import com.finflio.feature_transactions.data.paging.UnsettledTransactionsRemoteMediator
@@ -82,8 +83,8 @@ class TransactionsRepositoryImpl @Inject constructor(
         dao.updateTransaction(transaction.toTransactionEntity())
     }
 
-    override suspend fun addTransaction(transaction: Transaction) {
-        dao.addTransaction(transaction.toTransactionEntity())
+    override suspend fun addTransaction(transactionPostRequest: TransactionPostRequest) = makeRequest {
+        apiClient.createTransaction(transactionPostRequest)
     }
 
     override suspend fun deleteImage(imageID: String?) {

@@ -1,9 +1,12 @@
 package com.finflio.feature_transactions.domain.repository
 
 import androidx.paging.PagingData
+import com.finflio.core.data.network.resource.Resource
 import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
+import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
+import com.finflio.feature_transactions.data.models.remote.TransactionPostResponse
 import com.finflio.feature_transactions.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
 
@@ -23,7 +26,7 @@ interface TransactionsRepository {
 
     suspend fun updateTransaction(transaction: Transaction)
 
-    suspend fun addTransaction(transaction: Transaction)
+    suspend fun addTransaction(transactionPostRequest: TransactionPostRequest): Flow<Resource<TransactionPostResponse>>
 
     suspend fun deleteImage(imageID: String?)
 }

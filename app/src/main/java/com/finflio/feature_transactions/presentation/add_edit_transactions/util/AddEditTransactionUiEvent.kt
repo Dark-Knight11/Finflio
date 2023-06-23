@@ -5,4 +5,5 @@ sealed class AddEditTransactionUiEvent {
     object NavigateBack : AddEditTransactionUiEvent()
     object ShowLoader : AddEditTransactionUiEvent()
     object HideLoader : AddEditTransactionUiEvent()
+    object RefreshData : AddEditTransactionUiEvent()
 }

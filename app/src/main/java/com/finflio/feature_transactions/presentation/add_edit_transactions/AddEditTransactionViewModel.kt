@@ -11,7 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.finflio.feature_transactions.domain.model.Transaction
+import com.finflio.core.data.network.resource.Resource
+import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.AddEditTransactionEvent
@@ -20,8 +21,10 @@ import com.finflio.feature_transactions.presentation.add_edit_transactions.util.
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.PaymentMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -244,8 +247,8 @@ class AddEditTransactionViewModel @Inject constructor(
     }
 
     private fun addTransaction(event: AddEditTransactionEvent, imgUrl: String? = null) {
-        val transaction = Transaction(
-            timestamp = timestamp.value,
+        val transactionPostRequest = TransactionPostRequest(
+            timestamp = timestamp.value.toEpochSecond(ZoneOffset.UTC).times(1000),
             type = type.value,
             category = category.value.category,
             paymentMethod = paymentMethod.value.method,
@@ -253,16 +256,33 @@ class AddEditTransactionViewModel @Inject constructor(
             amount = amount.value.toFloat(),
             to = to.value,
             from = from.value,
-            attachment = if (imgUrl.isNullOrBlank()) null else imgUrl,
-            userId = "",
-            transactionId = ""
+            attachment = if (imgUrl.isNullOrBlank()) null else imgUrl
         )
         when (event) {
             is AddEditTransactionEvent.AddTransactionEvent -> {
                 viewModelScope.launch {
                     try {
-                        if (useCase.addTransactionUseCase(transaction)) {
-                            eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                        useCase.addTransactionUseCase(transactionPostRequest).collectLatest {
+                            when (it.status) {
+                                Resource.Status.SUCCESS -> {
+                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                    eventFlow.emit(AddEditTransactionUiEvent.RefreshData)
+                                }
+
+                                Resource.Status.ERROR -> {
+                                    Log.i(this.toString(), it.message.toString())
+                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                    eventFlow.emit(
+                                        AddEditTransactionUiEvent.ShowSnackBar(
+                                            it.message.toString()
+                                        )
+                                    )
+                                }
+
+                                Resource.Status.LOADING -> {
+                                    eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
+                                }
+                            }
                         }
                     } catch (e: InvalidTransactionException) {
                         if (!imgUrl.isNullOrBlank()) useCase.deleteImageUseCase(imgUrl)
@@ -275,30 +295,30 @@ class AddEditTransactionViewModel @Inject constructor(
                 }
             }
 
-            is AddEditTransactionEvent.EditTransactionEvent -> {
-                viewModelScope.launch {
-                    try {
-                        if (useCase.updateTransactionUseCase(
-                                transaction.copy(transactionId = transactionId.value)
-                            )
-                        ) {
-                            eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
-                        }
-                    } catch (e: InvalidTransactionException) {
-                        eventFlow.emit(
-                            AddEditTransactionUiEvent.ShowSnackBar(
-                                e.message ?: "Unexpected Error Occurred. Please Try Again"
-                            )
-                        )
-                        if (
-                            (!imgUrl.isNullOrBlank() && attachment.value.isNullOrBlank()) ||
-                            (imgUrl != attachment.value && !attachment.value.isNullOrBlank())
-                        ) {
-                            useCase.deleteImageUseCase(imgUrl)
-                        }
-                    }
-                }
-            }
+//            is AddEditTransactionEvent.EditTransactionEvent -> {
+//                viewModelScope.launch {
+//                    try {
+//                        if (useCase.updateTransactionUseCase(
+//                                transaction.copy(transactionId = transactionId.value)
+//                            )
+//                        ) {
+//                            eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+//                        }
+//                    } catch (e: InvalidTransactionException) {
+//                        eventFlow.emit(
+//                            AddEditTransactionUiEvent.ShowSnackBar(
+//                                e.message ?: "Unexpected Error Occurred. Please Try Again"
+//                            )
+//                        )
+//                        if (
+//                            (!imgUrl.isNullOrBlank() && attachment.value.isNullOrBlank()) ||
+//                            (imgUrl != attachment.value && !attachment.value.isNullOrBlank())
+//                        ) {
+//                            useCase.deleteImageUseCase(imgUrl)
+//                        }
+//                    }
+//                }
+//            }
 
             else -> {}
         }

@@ -58,6 +58,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.format.DateTimeFormatter
@@ -72,6 +73,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddEditTransactionScreen(
     navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<Boolean>,
     type: String,
     transactionId: String = "",
     viewModel: AddEditTransactionViewModel = hiltViewModel()
@@ -158,6 +160,10 @@ fun AddEditTransactionScreen(
 
                 is AddEditTransactionUiEvent.ShowLoader -> {
                     showLoader = true
+                }
+
+                is AddEditTransactionUiEvent.RefreshData -> {
+                    resultNavigator.navigateBack(result = true)
                 }
             }
         }

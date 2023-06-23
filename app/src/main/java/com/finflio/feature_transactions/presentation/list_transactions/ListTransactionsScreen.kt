@@ -32,6 +32,7 @@ import com.finflio.R
 import com.finflio.core.presentation.components.CommonSnackBar
 import com.finflio.core.presentation.components.PullRefresh
 import com.finflio.core.presentation.navigation.HomeNavGraph
+import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.TransactionInfoScreenDestination
 import com.finflio.destinations.UnsettledTransactionsDestination
 import com.finflio.feature_transactions.domain.model.Transaction
@@ -58,7 +59,8 @@ import kotlinx.coroutines.launch
 fun ListTransactions(
     navigator: DestinationsNavigator,
     viewModel: ListTransactionsViewModel = hiltViewModel(),
-    resultRecipient: ResultRecipient<TransactionInfoScreenDestination, Transaction>
+    addEditTransactionScreenResultRecipient: ResultRecipient<AddEditTransactionScreenDestination, Boolean>,
+    transactionInfoScreenResultRecipient: ResultRecipient<TransactionInfoScreenDestination, Transaction>
 ) {
     val transactions = viewModel.transactions.collectAsLazyPagingItems()
     val isRefreshing = viewModel.isRefreshing.value
@@ -67,7 +69,21 @@ fun ListTransactions(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    resultRecipient.onNavResult { result ->
+    // TODO FIX not getting called
+    addEditTransactionScreenResultRecipient.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> println("No result!!")
+            is NavResult.Value -> {
+                if (result.value) {
+                    viewModel.paginatedTransactions(
+                        Month.valueOf(month.uppercase())
+                    )
+                }
+            }
+        }
+    }
+
+    transactionInfoScreenResultRecipient.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> println("No result!!")
             is NavResult.Value -> {
@@ -84,6 +100,7 @@ fun ListTransactions(
             }
         }
     }
+
     CommonSnackBar(
         snackBarHostState = snackbarHostState,
         modifier = Modifier.padding(bottom = 130.dp)
@@ -95,7 +112,7 @@ fun ListTransactions(
                     Month.valueOf(month.uppercase())
                 )
             },
-            enabled = false
+            enabled = true
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Header(monthTotal, month) {
