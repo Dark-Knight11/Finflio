@@ -25,7 +25,10 @@ interface TransactionsRepository {
 
     suspend fun deleteTransaction(transactionId: String): Flow<Resource<DeleteTransactionResponse>>
 
-    suspend fun updateTransaction(transaction: Transaction)
+    suspend fun updateTransaction(
+        transactionId: String,
+        transactionPostRequest: TransactionPostRequest
+    ): Flow<Resource<TransactionPostResponse>>
 
     suspend fun addTransaction(transactionPostRequest: TransactionPostRequest): Flow<Resource<TransactionPostResponse>>
 

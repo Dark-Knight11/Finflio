@@ -7,7 +7,6 @@ import androidx.paging.map
 import com.cloudinary.Cloudinary
 import com.finflio.BuildConfig
 import com.finflio.core.data.data_source.FinflioDb
-import com.finflio.core.data.mapper.toTransactionEntity
 import com.finflio.core.data.repository.BaseRepo
 import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
@@ -79,13 +78,17 @@ class TransactionsRepositoryImpl @Inject constructor(
         apiClient.deleteTransaction(transactionId)
     }
 
-    override suspend fun updateTransaction(transaction: Transaction) {
-        dao.updateTransaction(transaction.toTransactionEntity())
+    override suspend fun updateTransaction(
+        transactionId: String,
+        transactionPostRequest: TransactionPostRequest
+    ) = makeRequest {
+        apiClient.updateTransaction(transactionId, transactionPostRequest)
     }
 
-    override suspend fun addTransaction(transactionPostRequest: TransactionPostRequest) = makeRequest {
-        apiClient.createTransaction(transactionPostRequest)
-    }
+    override suspend fun addTransaction(transactionPostRequest: TransactionPostRequest) =
+        makeRequest {
+            apiClient.createTransaction(transactionPostRequest)
+        }
 
     override suspend fun deleteImage(imageID: String?) {
         val cloudinary = Cloudinary(BuildConfig.CLOUDINARY_URL)

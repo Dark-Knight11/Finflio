@@ -19,13 +19,27 @@ class TransactionApiClient @Inject constructor(
         apiService.getUnsettledTransactions(page)
     }
 
-    suspend fun createTransaction(transactionPostRequest: TransactionPostRequest) = makePostRequest {
-        apiService.createTransaction(
-            Json.encodeToJsonElement(TransactionPostRequest.serializer(), transactionPostRequest)
-        )
-    }
+    suspend fun createTransaction(transactionPostRequest: TransactionPostRequest) =
+        makePostRequest {
+            apiService.createTransaction(
+                Json.encodeToJsonElement(
+                    TransactionPostRequest.serializer(),
+                    transactionPostRequest
+                )
+            )
+        }
 
     suspend fun deleteTransaction(transactionId: String) = getResult {
         apiService.deleteTransaction(transactionId)
+    }
+
+    suspend fun updateTransaction(
+        transactionId: String,
+        transactionPostRequest: TransactionPostRequest
+    ) = makePostRequest {
+        apiService.updateTransaction(
+            transactionId,
+            Json.encodeToJsonElement(TransactionPostRequest.serializer(), transactionPostRequest)
+        )
     }
 }

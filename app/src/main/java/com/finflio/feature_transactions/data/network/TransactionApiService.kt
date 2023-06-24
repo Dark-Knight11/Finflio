@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 interface TransactionApiService {
@@ -33,4 +34,10 @@ interface TransactionApiService {
     suspend fun deleteTransaction(
         @Query("id") transactionId: String
     ): Response<DeleteTransactionResponse>
+
+    @PUT("transaction")
+    suspend fun updateTransaction(
+        @Query("id") transactionId: String,
+        @Body transaction: JsonElement
+    ): Response<TransactionPostResponse>
 }

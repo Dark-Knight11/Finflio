@@ -295,30 +295,49 @@ class AddEditTransactionViewModel @Inject constructor(
                 }
             }
 
-//            is AddEditTransactionEvent.EditTransactionEvent -> {
-//                viewModelScope.launch {
-//                    try {
-//                        if (useCase.updateTransactionUseCase(
-//                                transaction.copy(transactionId = transactionId.value)
-//                            )
-//                        ) {
-//                            eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
-//                        }
-//                    } catch (e: InvalidTransactionException) {
-//                        eventFlow.emit(
-//                            AddEditTransactionUiEvent.ShowSnackBar(
-//                                e.message ?: "Unexpected Error Occurred. Please Try Again"
-//                            )
-//                        )
-//                        if (
-//                            (!imgUrl.isNullOrBlank() && attachment.value.isNullOrBlank()) ||
-//                            (imgUrl != attachment.value && !attachment.value.isNullOrBlank())
-//                        ) {
-//                            useCase.deleteImageUseCase(imgUrl)
-//                        }
-//                    }
-//                }
-//            }
+            is AddEditTransactionEvent.EditTransactionEvent -> {
+                viewModelScope.launch {
+                    try {
+                        useCase.updateTransactionUseCase(
+                            transactionId.value,
+                            transactionPostRequest
+                        ).collectLatest {
+                            when (it.status) {
+                                Resource.Status.SUCCESS -> {
+                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                    eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                                }
+
+                                Resource.Status.ERROR -> {
+                                    Log.i(this.toString(), it.message.toString())
+                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                    eventFlow.emit(
+                                        AddEditTransactionUiEvent.ShowSnackBar(
+                                            it.message.toString()
+                                        )
+                                    )
+                                }
+
+                                Resource.Status.LOADING -> {
+                                    eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
+                                }
+                            }
+                        }
+                    } catch (e: InvalidTransactionException) {
+                        eventFlow.emit(
+                            AddEditTransactionUiEvent.ShowSnackBar(
+                                e.message ?: "Unexpected Error Occurred. Please Try Again"
+                            )
+                        )
+                        if (
+                            (!imgUrl.isNullOrBlank() && attachment.value.isNullOrBlank()) ||
+                            (imgUrl != attachment.value && !attachment.value.isNullOrBlank())
+                        ) {
+                            useCase.deleteImageUseCase(imgUrl)
+                        }
+                    }
+                }
+            }
 
             else -> {}
         }
