@@ -1,5 +1,6 @@
 package com.finflio.feature_transactions.presentation.unsettled_transactions
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -20,6 +21,8 @@ class UnsettledTransactionsViewModel @Inject constructor(
     private val _unsettledTransactions =
         MutableStateFlow<PagingData<Transaction>>(PagingData.empty())
     val unsettledTransactions = _unsettledTransactions
+
+    val refreshing = mutableStateOf(true)
 
     init {
         refreshData()

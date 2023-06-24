@@ -92,7 +92,6 @@ class UnsettledTransactionsRemoteMediator(
                     }
 
                     Resource.Status.ERROR -> {
-                        println(response.message)
                         if (response.message == "No Transactions") {
                             finflioDb.withTransaction {
                                 unsettledTransactionDao.deleteAllUnsettledTransaction()
