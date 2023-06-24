@@ -5,6 +5,7 @@ import com.finflio.core.data.network.resource.Resource
 import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.UnsettledTransactionEntity
+import com.finflio.feature_transactions.data.models.remote.DeleteTransactionResponse
 import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
 import com.finflio.feature_transactions.data.models.remote.TransactionPostResponse
 import com.finflio.feature_transactions.domain.model.Transaction
@@ -22,7 +23,7 @@ interface TransactionsRepository {
 
     suspend fun getUnsettledTransaction(id: String): Transaction
 
-    suspend fun deleteTransaction(transaction: Transaction)
+    suspend fun deleteTransaction(transactionId: String): Flow<Resource<DeleteTransactionResponse>>
 
     suspend fun updateTransaction(transaction: Transaction)
 

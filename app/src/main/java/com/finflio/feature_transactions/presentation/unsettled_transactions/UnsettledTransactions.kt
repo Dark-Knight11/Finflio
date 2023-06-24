@@ -26,6 +26,8 @@ import com.finflio.ui.theme.TransactionCardBg
 import com.finflio.ui.theme.gradientBackground
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @HomeNavGraph
@@ -33,9 +35,18 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun UnsettledTransactions(
     navigator: DestinationsNavigator,
-    viewModel: UnsettledTransactionsViewModel = hiltViewModel()
+    viewModel: UnsettledTransactionsViewModel = hiltViewModel(),
+    resultRecipient: ResultRecipient<TransactionInfoScreenDestination, Boolean>
 ) {
     val unsettledTransactions = viewModel.unsettledTransactions.collectAsLazyPagingItems()
+    resultRecipient.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> println("No result!!")
+            is NavResult.Value -> {
+                viewModel.refreshData()
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()

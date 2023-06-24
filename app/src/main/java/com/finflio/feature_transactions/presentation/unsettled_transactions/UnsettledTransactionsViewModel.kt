@@ -22,6 +22,10 @@ class UnsettledTransactionsViewModel @Inject constructor(
     val unsettledTransactions = _unsettledTransactions
 
     init {
+        refreshData()
+    }
+
+    fun refreshData() {
         viewModelScope.launch {
             useCases.getUnsettledTransactionsUseCase().cachedIn(viewModelScope).collectLatest {
                 _unsettledTransactions.value = it

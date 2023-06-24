@@ -27,13 +27,13 @@ import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.core.presentation.util.toPx
 import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.DeleteConfirmationDestination
-import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.presentation.add_edit_transactions.components.OpenableImage
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.transaction_info.components.EditButton
 import com.finflio.feature_transactions.presentation.transaction_info.components.Header
 import com.finflio.feature_transactions.presentation.transaction_info.components.TopAppBar
 import com.finflio.feature_transactions.presentation.transaction_info.util.TransactionInfoEvent
+import com.finflio.feature_transactions.presentation.transaction_info.util.TransactionInfoUiEvent
 import com.finflio.ui.theme.*
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -41,6 +41,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import java.time.LocalDateTime
+import kotlinx.coroutines.flow.collectLatest
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -48,7 +49,7 @@ import java.time.LocalDateTime
 @HomeNavGraph
 fun TransactionInfoScreen(
     navigator: DestinationsNavigator,
-    resultNavigator: ResultBackNavigator<Transaction>,
+    resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: TransactionInfoViewModel = hiltViewModel(),
     transactionId: String,
     unsettled: Boolean = false,
@@ -68,12 +69,21 @@ fun TransactionInfoScreen(
         infoBarPositionOffset
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest {
+            when (it) {
+                TransactionInfoUiEvent.NavigateBack -> {
+                    resultNavigator.navigateBack(result = true)
+                }
+            }
+        }
+    }
+
     resultRecipient.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> println("canceled!!")
             is NavResult.Value -> if (result.value) {
                 viewModel.onEvent(TransactionInfoEvent.DeleteTransaction(transaction))
-                transaction?.let { resultNavigator.navigateBack(it) }
             }
         }
     }

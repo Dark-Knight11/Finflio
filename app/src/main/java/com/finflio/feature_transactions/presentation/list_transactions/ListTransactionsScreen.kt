@@ -10,9 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
-import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -35,7 +33,6 @@ import com.finflio.core.presentation.navigation.HomeNavGraph
 import com.finflio.destinations.AddEditTransactionScreenDestination
 import com.finflio.destinations.TransactionInfoScreenDestination
 import com.finflio.destinations.UnsettledTransactionsDestination
-import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.model.TransactionModel
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.list_transactions.components.Header
@@ -50,7 +47,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import java.time.Month
-import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @HomeNavGraph(start = true)
@@ -60,13 +56,12 @@ fun ListTransactions(
     navigator: DestinationsNavigator,
     viewModel: ListTransactionsViewModel = hiltViewModel(),
     addEditTransactionScreenResultRecipient: ResultRecipient<AddEditTransactionScreenDestination, Boolean>,
-    transactionInfoScreenResultRecipient: ResultRecipient<TransactionInfoScreenDestination, Transaction>
+    transactionInfoScreenResultRecipient: ResultRecipient<TransactionInfoScreenDestination, Boolean>
 ) {
     val transactions = viewModel.transactions.collectAsLazyPagingItems()
     val isRefreshing = viewModel.isRefreshing.value
     val monthTotal = viewModel.monthTotal.value
     val month = viewModel.month.value
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     // TODO FIX not getting called
@@ -87,15 +82,8 @@ fun ListTransactions(
         when (result) {
             is NavResult.Canceled -> println("No result!!")
             is NavResult.Value -> {
-                scope.launch {
-                    val undo = snackbarHostState.showSnackbar(
-                        message = "Note Deleted Successfully",
-                        actionLabel = "Undo",
-                        duration = SnackbarDuration.Short
-                    )
-                    if (undo == SnackbarResult.ActionPerformed) {
-                        viewModel.onEvent(TransactionEvent.RestoreTransaction(result.value))
-                    }
+                if (result.value) {
+                    viewModel.paginatedTransactions(Month.valueOf(month.uppercase()))
                 }
             }
         }

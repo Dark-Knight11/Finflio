@@ -75,8 +75,8 @@ class TransactionsRepositoryImpl @Inject constructor(
         return unsettledDao.getUnsettledTransaction(id).toTransaction()
     }
 
-    override suspend fun deleteTransaction(transaction: Transaction) {
-        dao.deleteTransaction(transaction.toTransactionEntity())
+    override suspend fun deleteTransaction(transactionId: String) = makeRequest {
+        apiClient.deleteTransaction(transactionId)
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {

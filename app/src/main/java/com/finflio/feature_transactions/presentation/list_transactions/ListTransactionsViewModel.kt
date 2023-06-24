@@ -8,7 +8,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.finflio.feature_transactions.domain.model.TransactionModel
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
-import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
@@ -68,16 +67,6 @@ class ListTransactionsViewModel @Inject constructor(
                 val month = Month.valueOf(event.month.uppercase())
                 _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
                 paginatedTransactions(month)
-            }
-
-            is TransactionEvent.RestoreTransaction -> {
-                viewModelScope.launch {
-                    try {
-//                        useCases.addTransactionUseCase(event.transaction)
-                    } catch (e: InvalidTransactionException) {
-                        println(e.message)
-                    }
-                }
             }
         }
     }

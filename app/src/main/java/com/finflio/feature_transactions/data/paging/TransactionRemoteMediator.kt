@@ -99,7 +99,7 @@ class TransactionRemoteMediator(
                     }
 
                     Resource.Status.ERROR -> {
-                        if (response.message?.contains("404 Not Found") == true) {
+                        if (response.message == "No Transactions") {
                             finflioDb.withTransaction {
                                 transactionDao.deleteAllTransactions()
                                 transactionRemoteKeysDao.deleteAllRemoteKeys()

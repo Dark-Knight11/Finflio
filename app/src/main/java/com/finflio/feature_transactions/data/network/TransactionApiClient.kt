@@ -24,4 +24,8 @@ class TransactionApiClient @Inject constructor(
             Json.encodeToJsonElement(TransactionPostRequest.serializer(), transactionPostRequest)
         )
     }
+
+    suspend fun deleteTransaction(transactionId: String) = getResult {
+        apiService.deleteTransaction(transactionId)
+    }
 }
