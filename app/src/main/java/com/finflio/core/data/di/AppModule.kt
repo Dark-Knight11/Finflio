@@ -12,7 +12,6 @@ import androidx.security.crypto.MasterKeys
 import com.finflio.core.data.data_source.FinflioDb
 import com.finflio.core.data.util.SessionManager
 import com.finflio.core.presentation.util.UriPathFinder
-import com.finflio.feature_transactions.data.dao.TransactionDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,12 +34,6 @@ object AppModule {
         )
             .fallbackToDestructiveMigration()
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideTransactionDao(finflioDb: FinflioDb): TransactionDao {
-        return finflioDb.transactionDao
     }
 
     @Provides
