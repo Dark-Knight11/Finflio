@@ -38,6 +38,7 @@ import com.finflio.feature_transactions.presentation.add_edit_transactions.util.
 import com.finflio.feature_transactions.presentation.list_transactions.components.Header
 import com.finflio.feature_transactions.presentation.list_transactions.components.TransactionCard
 import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionEvent
+import com.finflio.feature_transactions.presentation.list_transactions.util.TransactionUiEvent
 import com.finflio.ui.theme.DMSans
 import com.finflio.ui.theme.Poppins
 import com.finflio.ui.theme.TransactionsLazyCol
@@ -46,6 +47,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.Month
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -62,6 +65,7 @@ fun ListTransactions(
     val isRefreshing = viewModel.isRefreshing.value
     val monthTotal = viewModel.monthTotal.value
     val month = viewModel.month.value
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     // TODO FIX not getting called
@@ -89,6 +93,16 @@ fun ListTransactions(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest {
+            when (it) {
+                is TransactionUiEvent.ShowSnackbar -> {
+                    scope.launch { snackbarHostState.showSnackbar(it.message) }
+                }
+            }
+        }
+    }
+
     CommonSnackBar(
         snackBarHostState = snackbarHostState,
         modifier = Modifier.padding(bottom = 130.dp)
@@ -103,35 +117,45 @@ fun ListTransactions(
             enabled = true
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Header(monthTotal, month) {
-                    viewModel.onEvent(TransactionEvent.ChangeMonth(it))
-                }
+                Header(
+                    total = monthTotal,
+                    month = month,
+                    onSelect = {
+                        viewModel.onEvent(TransactionEvent.ChangeMonth(it))
+                    },
+                    onClick = { viewModel.logout() }
+                )
                 Box(modifier = Modifier.background(TransactionsLazyCol)) {
-                    if (transactions.itemCount == 0) {
-                        viewModel.isRefreshing.value = false
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_add_transaction_state),
-                                contentDescription = "empty",
-                                modifier = Modifier.padding(bottom = 100.dp)
-                            )
-                        }
-                    } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            contentPadding = PaddingValues(
-                                top = 15.dp,
-                                bottom = 140.dp,
-                                start = 15.dp,
-                                end = 15.dp
-                            ),
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(TransactionsLazyCol)
-                        ) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(
+                            top = 15.dp,
+                            bottom = 140.dp,
+                            start = 15.dp,
+                            end = 15.dp
+                        ),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(TransactionsLazyCol)
+                    ) {
+                        if (transactions.itemCount == 0) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillParentMaxSize()
+                                        .padding(top = 50.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(
+                                            id = R.drawable.ic_add_transaction_state
+                                        ),
+                                        contentDescription = "empty",
+                                        modifier = Modifier.padding(bottom = 100.dp)
+                                    )
+                                }
+                            }
+                        } else {
                             items(transactions.itemCount) {
                                 when (val transactionModel = transactions[it]) {
                                     is TransactionModel.TransactionItem -> {
@@ -170,36 +194,42 @@ fun ListTransactions(
                                     null -> {}
                                 }
                             }
-                            item {
-                                if (transactions.loadState.append is LoadState.Loading) {
-                                    CircularProgressIndicator()
+                        }
+                        transactions.apply {
+                            when {
+                                loadState.refresh is LoadState.Loading -> {
+                                    viewModel.isRefreshing.value = true
                                 }
-                            }
-                            transactions.apply {
-                                when {
-                                    loadState.refresh is LoadState.Loading -> {
-                                        viewModel.isRefreshing.value = true
-                                    }
 
-                                    loadState.refresh is LoadState.NotLoading -> {
-                                        viewModel.isRefreshing.value = false
-                                    }
+                                loadState.refresh is LoadState.NotLoading -> {
+                                    viewModel.isRefreshing.value = false
+                                }
 
-                                    loadState.append is LoadState.Loading -> {
-                                        item { CircularProgressIndicator() }
-                                    }
+                                loadState.append is LoadState.Loading -> {
+                                    item { CircularProgressIndicator() }
+                                }
 
-                                    loadState.refresh is LoadState.Error -> {
-                                        viewModel.isRefreshing.value = false
-                                        val e = transactions.loadState.refresh as LoadState.Error
-                                        Log.i("List Transaction Screen", e.toString())
-                                    }
+                                loadState.refresh is LoadState.Error -> {
+                                    viewModel.isRefreshing.value = false
+                                    val e = transactions.loadState.refresh as LoadState.Error
+                                    Log.i("List Transaction Screen", e.toString())
+//                                    if (!e.toString().contains("failed to connect")) {
+//                                        viewModel.onUiEvent(
+//                                            TransactionUiEvent.ShowSnackbar(
+//                                                e.error.message.toString()
+//                                            )
+//                                        )
+//                                    } else {
+//                                        viewModel.onUiEvent(
+//                                            TransactionUiEvent.ShowSnackbar("Something went wrong")
+//                                        )
+//                                    }
+                                }
 
-                                    loadState.append is LoadState.Error -> {
-                                        viewModel.isRefreshing.value = false
-                                        val e = transactions.loadState.append as LoadState.Error
-                                        Log.i("List Transaction Screen", e.toString())
-                                    }
+                                loadState.append is LoadState.Error -> {
+                                    viewModel.isRefreshing.value = false
+                                    val e = transactions.loadState.append as LoadState.Error
+                                    Log.i("List Transaction Screen", e.toString())
                                 }
                             }
                         }
