@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomDrawerState
 import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomDrawerState
@@ -348,6 +349,22 @@ fun AddEditTransactionContent(
                                 AddEditTransactionEvent.ChangeTo(it)
                             )
                         },
+                        trailingIcon = {
+                            if (to.isNotEmpty()) {
+                                IconButton(onClick = {
+                                    viewModel.onEvent(
+                                        AddEditTransactionEvent.ChangeTo("")
+                                    )
+                                }) {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = R.drawable.baseline_cancel_24
+                                        ),
+                                        contentDescription = "clear text"
+                                    )
+                                }
+                            }
+                        },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -374,6 +391,22 @@ fun AddEditTransactionContent(
                                 AddEditTransactionEvent.ChangeFrom(it)
                             )
                         },
+                        trailingIcon = {
+                            if (from.isNotEmpty()) {
+                                IconButton(onClick = {
+                                    viewModel.onEvent(
+                                        AddEditTransactionEvent.ChangeFrom("")
+                                    )
+                                }) {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = R.drawable.baseline_cancel_24
+                                        ),
+                                        contentDescription = "clear text"
+                                    )
+                                }
+                            }
+                        },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -399,6 +432,20 @@ fun AddEditTransactionContent(
                         viewModel.onEvent(
                             AddEditTransactionEvent.ChangeDescription(it)
                         )
+                    },
+                    trailingIcon = {
+                        if (description.isNotEmpty()) {
+                            IconButton(onClick = {
+                                viewModel.onEvent(
+                                    AddEditTransactionEvent.ChangeDescription("")
+                                )
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.baseline_cancel_24),
+                                    contentDescription = "clear text"
+                                )
+                            }
+                        }
                     },
                     singleLine = false
                 )
