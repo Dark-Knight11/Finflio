@@ -272,11 +272,19 @@ class AddEditTransactionViewModel @Inject constructor(
                                 Resource.Status.ERROR -> {
                                     Log.i(this.toString(), it.message.toString())
                                     eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                    eventFlow.emit(
-                                        AddEditTransactionUiEvent.ShowSnackBar(
-                                            it.message.toString()
+                                    if (it.message?.contains("Internet connection") == true) {
+                                        eventFlow.emit(
+                                            AddEditTransactionUiEvent.ShowSnackBar(
+                                                it.message.toString()
+                                            )
                                         )
-                                    )
+                                    } else {
+                                        eventFlow.emit(
+                                            AddEditTransactionUiEvent.ShowSnackBar(
+                                                "Something went wrong. Please try again"
+                                            )
+                                        )
+                                    }
                                 }
 
                                 Resource.Status.LOADING -> {

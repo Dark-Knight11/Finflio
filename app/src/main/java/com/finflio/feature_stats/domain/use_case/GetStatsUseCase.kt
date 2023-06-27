@@ -28,6 +28,8 @@ class GetStatsUseCase @Inject constructor(
                     Resource.Status.ERROR -> {
                         if (res.message == "Check your internet connection!") {
                             eventFlow.emit(StatsUiEvent.ShowSnackbar(res.message))
+                        } else {
+                            eventFlow.emit(StatsUiEvent.ShowSnackbar("Something went wrong"))
                         }
                         Log.i(this.toString(), res.message.toString())
                         close()
