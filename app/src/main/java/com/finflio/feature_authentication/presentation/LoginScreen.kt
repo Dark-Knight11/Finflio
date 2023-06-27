@@ -99,6 +99,8 @@ fun LoginScreen(
                 is AuthUiEvents.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(event.message)
                 }
+
+                else -> {}
             }
         }
     }

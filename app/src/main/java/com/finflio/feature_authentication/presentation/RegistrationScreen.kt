@@ -102,6 +102,11 @@ fun RegisterScreen(
                 is AuthUiEvents.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(event.message)
                 }
+
+                is AuthUiEvents.NavigateBack -> {
+                    navigator.popBackStack()
+                    navigator.navigate(LoginScreenDestination)
+                }
             }
         }
     }

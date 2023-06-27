@@ -68,6 +68,7 @@ class AuthViewModel @Inject constructor(
                             when (it.status) {
                                 Resource.Status.SUCCESS -> {
                                     Log.i(TAG, it.data.toString())
+                                    eventFlow.emit(AuthUiEvents.NavigateBack)
                                 }
 
                                 Resource.Status.ERROR -> {
