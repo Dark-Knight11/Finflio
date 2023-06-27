@@ -6,6 +6,7 @@ import com.finflio.feature_transactions.data.models.remote.TransactionPostRespon
 import com.finflio.feature_transactions.domain.repository.TransactionsRepository
 import com.finflio.feature_transactions.domain.util.InvalidTransactionException
 import com.finflio.feature_transactions.domain.util.errors
+import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -13,8 +14,8 @@ class AddTransactionUseCase @Inject constructor(
     private val repository: TransactionsRepository
 ) {
     @Throws(InvalidTransactionException::class)
-    suspend operator fun invoke(transactionPostRequest: TransactionPostRequest): Flow<Resource<TransactionPostResponse>> {
+    suspend operator fun invoke(transactionPostRequest: TransactionPostRequest, file: File? = null): Flow<Resource<TransactionPostResponse>> {
         errors(transactionPostRequest)
-        return repository.addTransaction(transactionPostRequest)
+        return repository.addTransaction(transactionPostRequest, file)
     }
 }

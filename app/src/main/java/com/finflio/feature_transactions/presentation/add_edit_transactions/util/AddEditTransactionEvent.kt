@@ -2,6 +2,7 @@ package com.finflio.feature_transactions.presentation.add_edit_transactions.util
 
 import android.content.Context
 import android.net.Uri
+import java.io.File
 import java.time.LocalDateTime
 
 sealed class AddEditTransactionEvent {
@@ -16,4 +17,5 @@ sealed class AddEditTransactionEvent {
     data class ChangeDescription(val description: String) : AddEditTransactionEvent()
     data class ChangePaymentMethod(val paymentMethods: PaymentMethods) : AddEditTransactionEvent()
     data class ChangeImagePath(val imgUri: Uri?) : AddEditTransactionEvent()
+    data class ChangeFile(val file: File?) : AddEditTransactionEvent()
 }

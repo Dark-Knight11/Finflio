@@ -9,6 +9,7 @@ import com.finflio.feature_transactions.data.models.remote.DeleteTransactionResp
 import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
 import com.finflio.feature_transactions.data.models.remote.TransactionPostResponse
 import com.finflio.feature_transactions.domain.model.Transaction
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionsRepository {
@@ -27,10 +28,11 @@ interface TransactionsRepository {
 
     suspend fun updateTransaction(
         transactionId: String,
-        transactionPostRequest: TransactionPostRequest
+        transactionPostRequest: TransactionPostRequest,
+        file: File?
     ): Flow<Resource<TransactionPostResponse>>
 
-    suspend fun addTransaction(transactionPostRequest: TransactionPostRequest): Flow<Resource<TransactionPostResponse>>
+    suspend fun addTransaction(transactionPostRequest: TransactionPostRequest, file: File?): Flow<Resource<TransactionPostResponse>>
 
     suspend fun deleteImage(imageID: String?)
 }

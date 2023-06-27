@@ -4,7 +4,11 @@ import com.finflio.core.data.network.BaseApiClient
 import com.finflio.core.data.util.UtilityMethods
 import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
 import javax.inject.Inject
-import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 class TransactionApiClient @Inject constructor(
     private val apiService: TransactionApiService,
@@ -19,13 +23,27 @@ class TransactionApiClient @Inject constructor(
         apiService.getUnsettledTransactions(page)
     }
 
-    suspend fun createTransaction(transactionPostRequest: TransactionPostRequest) =
+    suspend fun createTransaction(transactionPostRequest: TransactionPostRequest, file: File?) =
         makePostRequest {
             apiService.createTransaction(
-                Json.encodeToJsonElement(
-                    TransactionPostRequest.serializer(),
-                    transactionPostRequest
-                )
+                amount = transactionPostRequest.amount.toString().toRequestBody(MultipartBody.FORM),
+                category = transactionPostRequest.category.toRequestBody(MultipartBody.FORM),
+                description = transactionPostRequest.description.toRequestBody(MultipartBody.FORM),
+                paymentMethod = transactionPostRequest.paymentMethod
+                    .toRequestBody(MultipartBody.FORM),
+                timestamp = transactionPostRequest.timestamp.toString()
+                    .toRequestBody(MultipartBody.FORM),
+                type = transactionPostRequest.type.toRequestBody(MultipartBody.FORM),
+                to = transactionPostRequest.to?.toRequestBody(MultipartBody.FORM),
+                from = transactionPostRequest.from?.toRequestBody(MultipartBody.FORM),
+                attachment = transactionPostRequest.attachment?.toRequestBody(MultipartBody.FORM),
+                file = file?.let {
+                    MultipartBody.Part.createFormData(
+                        name = "image",
+                        filename = file.name,
+                        file.asRequestBody("image/jpeg".toMediaType())
+                    )
+                }
             )
         }
 
@@ -35,11 +53,29 @@ class TransactionApiClient @Inject constructor(
 
     suspend fun updateTransaction(
         transactionId: String,
-        transactionPostRequest: TransactionPostRequest
+        transactionPostRequest: TransactionPostRequest,
+        file: File?
     ) = makePostRequest {
         apiService.updateTransaction(
             transactionId,
-            Json.encodeToJsonElement(TransactionPostRequest.serializer(), transactionPostRequest)
+            amount = transactionPostRequest.amount.toString().toRequestBody(MultipartBody.FORM),
+            category = transactionPostRequest.category.toRequestBody(MultipartBody.FORM),
+            description = transactionPostRequest.description.toRequestBody(MultipartBody.FORM),
+            paymentMethod = transactionPostRequest.paymentMethod
+                .toRequestBody(MultipartBody.FORM),
+            timestamp = transactionPostRequest.timestamp.toString()
+                .toRequestBody(MultipartBody.FORM),
+            type = transactionPostRequest.type.toRequestBody(MultipartBody.FORM),
+            to = transactionPostRequest.to?.toRequestBody(MultipartBody.FORM),
+            from = transactionPostRequest.from?.toRequestBody(MultipartBody.FORM),
+            attachment = transactionPostRequest.attachment?.toRequestBody(MultipartBody.FORM),
+            file = file?.let {
+                MultipartBody.Part.createFormData(
+                    name = "image",
+                    filename = file.name,
+                    file.asRequestBody("image/jpeg".toMediaType())
+                )
+            }
         )
     }
 }

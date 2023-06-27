@@ -8,9 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cloudinary.android.MediaManager
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
 import com.finflio.core.data.network.resource.Resource
 import com.finflio.feature_transactions.data.models.remote.TransactionPostRequest
 import com.finflio.feature_transactions.domain.use_case.TransactionUseCases
@@ -20,6 +17,7 @@ import com.finflio.feature_transactions.presentation.add_edit_transactions.util.
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.Categories
 import com.finflio.feature_transactions.presentation.add_edit_transactions.util.PaymentMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.File
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
@@ -60,6 +58,9 @@ class AddEditTransactionViewModel @Inject constructor(
     private val _imgUri = mutableStateOf<Uri?>(null)
     val imgUri: State<Uri?> = _imgUri
 
+    private val _file = mutableStateOf<File?>(null)
+    val file: State<File?> = _file
+
     private val _attachment = mutableStateOf<String?>(null)
     val attachment: State<String?> = _attachment
 
@@ -88,6 +89,7 @@ class AddEditTransactionViewModel @Inject constructor(
                     _timestamp.value = it.timestamp
                     _attachment.value = it.attachment
                 }
+                println(attachment)
             }
         }
     }
@@ -123,6 +125,10 @@ class AddEditTransactionViewModel @Inject constructor(
                 _imgUri.value = event.imgUri
             }
 
+            is AddEditTransactionEvent.ChangeFile -> {
+                _file.value = event.file
+            }
+
             is AddEditTransactionEvent.ChangePaymentMethod -> {
                 _paymentMethod.value = event.paymentMethods
             }
@@ -142,18 +148,43 @@ class AddEditTransactionViewModel @Inject constructor(
                 // cloud but not from database and this causes issue
                 // Hopefully this will be fixed once separate backend is integrated
                 if (amount.value.isNotBlank()) {
+                    val transactionPostRequest = TransactionPostRequest(
+                        timestamp = timestamp.value.toEpochSecond(ZoneOffset.UTC).times(1000),
+                        type = type.value,
+                        category = category.value.category,
+                        paymentMethod = paymentMethod.value.method,
+                        description = description.value,
+                        amount = amount.value.toFloat(),
+                        to = to.value,
+                        from = from.value
+                    )
                     viewModelScope.launch {
                         if (imgUri.value != null && attachment.value.isNullOrBlank()) {
-                            uploadImage(imgUri.value, event.context, event)
-                        } else if (imgUri.value != null && imgUri.value != Uri.EMPTY && !attachment.value.isNullOrBlank()) {
+                            updateTransaction(
+                                transactionId.value,
+                                transactionPostRequest,
+                                file.value
+                            )
+                        } else if (imgUri.value != null && !attachment.value.isNullOrBlank()) {
                             useCase.deleteImageUseCase(attachment.value)
-                            uploadImage(imgUri.value, event.context, event)
+                            updateTransaction(
+                                transactionId.value,
+                                transactionPostRequest,
+                                file.value
+                            )
                         } else {
                             if (imgUri.value == Uri.EMPTY && !attachment.value.isNullOrBlank()) {
                                 useCase.deleteImageUseCase(attachment.value)
-                                addTransaction(event)
+                                updateTransaction(
+                                    transactionId.value,
+                                    transactionPostRequest,
+                                    file.value
+                                )
                             } else {
-                                addTransaction(event, attachment.value)
+                                val postReq = transactionPostRequest.copy(
+                                    attachment = attachment.value
+                                )
+                                updateTransaction(transactionId.value, postReq, file.value)
                             }
                         }
                     }
@@ -170,10 +201,56 @@ class AddEditTransactionViewModel @Inject constructor(
 
             is AddEditTransactionEvent.AddTransactionEvent -> {
                 if (amount.value.isNotBlank()) {
-                    if (imgUri.value != null) {
-                        uploadImage(imgUri.value, event.context, event)
-                    } else {
-                        addTransaction(event)
+                    val transactionPostRequest = TransactionPostRequest(
+                        timestamp = timestamp.value.toEpochSecond(ZoneOffset.UTC).times(1000),
+                        type = type.value,
+                        category = category.value.category,
+                        paymentMethod = paymentMethod.value.method,
+                        description = description.value,
+                        amount = amount.value.toFloat(),
+                        to = to.value,
+                        from = from.value
+                    )
+                    viewModelScope.launch {
+                        try {
+                            useCase.addTransactionUseCase(transactionPostRequest, file.value)
+                                .collectLatest {
+                                    when (it.status) {
+                                        Resource.Status.SUCCESS -> {
+                                            eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                            eventFlow.emit(AddEditTransactionUiEvent.RefreshData)
+                                        }
+
+                                        Resource.Status.ERROR -> {
+                                            Log.i(this.toString(), it.message.toString())
+                                            eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                                            if (it.message?.contains("Internet connection") == true) {
+                                                eventFlow.emit(
+                                                    AddEditTransactionUiEvent.ShowSnackBar(
+                                                        it.message.toString()
+                                                    )
+                                                )
+                                            } else {
+                                                eventFlow.emit(
+                                                    AddEditTransactionUiEvent.ShowSnackBar(
+                                                        "Something went wrong. Please try again"
+                                                    )
+                                                )
+                                            }
+                                        }
+
+                                        Resource.Status.LOADING -> {
+                                            eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
+                                        }
+                                    }
+                                }
+                        } catch (e: InvalidTransactionException) {
+                            eventFlow.emit(
+                                AddEditTransactionUiEvent.ShowSnackBar(
+                                    e.message ?: "Unexpected Error Occurred. Please Try Again"
+                                )
+                            )
+                        }
                     }
                 } else {
                     viewModelScope.launch {
@@ -188,166 +265,48 @@ class AddEditTransactionViewModel @Inject constructor(
         }
     }
 
-    private fun uploadImage(uri: Uri?, context: Context, event: AddEditTransactionEvent) {
-        viewModelScope.launch {
-            MediaManager.get()
-                .upload(uri)
-                .option("folder", "finflio")
-                .callback(
-                    object : UploadCallback {
-                        override fun onStart(requestId: String?) {
-                            viewModelScope.launch {
-                                eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
-                            }
-                        }
+    private suspend fun updateTransaction(
+        transactionId: String,
+        transactionPostRequest: TransactionPostRequest,
+        file: File? = null
+    ) {
+        useCase.updateTransactionUseCase(transactionId, transactionPostRequest, file)
+            .collectLatest {
+                when (it.status) {
+                    Resource.Status.SUCCESS -> {
+                        eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                        eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
+                    }
 
-                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                            Log.i(
-                                "AddEditTransactionViewModel",
-                                "Cloudinary Image Upload Progress: $bytes/$totalBytes"
+                    Resource.Status.ERROR -> {
+                        Log.i(this.toString(), it.message.toString())
+                        eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
+                        if (it.message?.contains("Internet connection") == true) {
+                            eventFlow.emit(
+                                AddEditTransactionUiEvent.ShowSnackBar(
+                                    it.message.toString()
+                                )
                             )
-                        }
-
-                        override fun onSuccess(
-                            requestId: String?,
-                            resultData: MutableMap<Any?, Any?>?
-                        ) {
-                            viewModelScope.launch {
-                                eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                            }
-                            addTransaction(event, resultData?.get("secure_url").toString())
-                        }
-
-                        override fun onError(requestId: String?, error: ErrorInfo?) {
-                            viewModelScope.launch {
-                                eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                eventFlow.emit(
-                                    AddEditTransactionUiEvent.ShowSnackBar(
-                                        error?.description
-                                            ?: "Unexpected Error Occurred. Please Try Again"
-                                    )
+                        } else {
+                            eventFlow.emit(
+                                AddEditTransactionUiEvent.ShowSnackBar(
+                                    "Something went wrong. Please try again"
                                 )
-                            }
-                        }
-
-                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                            viewModelScope.launch {
-                                eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                eventFlow.emit(
-                                    AddEditTransactionUiEvent.ShowSnackBar(
-                                        error?.description
-                                            ?: "Unexpected Error Occurred. Please Try Again"
-                                    )
-                                )
-                            }
+                            )
                         }
                     }
-                ).startNow(context)
-        }
-    }
 
-    private fun addTransaction(event: AddEditTransactionEvent, imgUrl: String? = null) {
-        val transactionPostRequest = TransactionPostRequest(
-            timestamp = timestamp.value.toEpochSecond(ZoneOffset.UTC).times(1000),
-            type = type.value,
-            category = category.value.category,
-            paymentMethod = paymentMethod.value.method,
-            description = description.value,
-            amount = amount.value.toFloat(),
-            to = to.value,
-            from = from.value,
-            attachment = if (imgUrl.isNullOrBlank()) null else imgUrl
-        )
-        when (event) {
-            is AddEditTransactionEvent.AddTransactionEvent -> {
-                viewModelScope.launch {
-                    try {
-                        useCase.addTransactionUseCase(transactionPostRequest).collectLatest {
-                            when (it.status) {
-                                Resource.Status.SUCCESS -> {
-                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                    eventFlow.emit(AddEditTransactionUiEvent.RefreshData)
-                                }
-
-                                Resource.Status.ERROR -> {
-                                    Log.i(this.toString(), it.message.toString())
-                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                    if (it.message?.contains("Internet connection") == true) {
-                                        eventFlow.emit(
-                                            AddEditTransactionUiEvent.ShowSnackBar(
-                                                it.message.toString()
-                                            )
-                                        )
-                                    } else {
-                                        eventFlow.emit(
-                                            AddEditTransactionUiEvent.ShowSnackBar(
-                                                "Something went wrong. Please try again"
-                                            )
-                                        )
-                                    }
-                                }
-
-                                Resource.Status.LOADING -> {
-                                    eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
-                                }
-                            }
-                        }
-                    } catch (e: InvalidTransactionException) {
-                        if (!imgUrl.isNullOrBlank()) useCase.deleteImageUseCase(imgUrl)
-                        eventFlow.emit(
-                            AddEditTransactionUiEvent.ShowSnackBar(
-                                e.message ?: "Unexpected Error Occurred. Please Try Again"
-                            )
-                        )
+                    Resource.Status.LOADING -> {
+                        eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
                     }
                 }
             }
-
-            is AddEditTransactionEvent.EditTransactionEvent -> {
-                viewModelScope.launch {
-                    try {
-                        useCase.updateTransactionUseCase(
-                            transactionId.value,
-                            transactionPostRequest
-                        ).collectLatest {
-                            when (it.status) {
-                                Resource.Status.SUCCESS -> {
-                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                    eventFlow.emit(AddEditTransactionUiEvent.NavigateBack)
-                                }
-
-                                Resource.Status.ERROR -> {
-                                    Log.i(this.toString(), it.message.toString())
-                                    eventFlow.emit(AddEditTransactionUiEvent.HideLoader)
-                                    eventFlow.emit(
-                                        AddEditTransactionUiEvent.ShowSnackBar(
-                                            it.message.toString()
-                                        )
-                                    )
-                                }
-
-                                Resource.Status.LOADING -> {
-                                    eventFlow.emit(AddEditTransactionUiEvent.ShowLoader)
-                                }
-                            }
-                        }
-                    } catch (e: InvalidTransactionException) {
-                        eventFlow.emit(
-                            AddEditTransactionUiEvent.ShowSnackBar(
-                                e.message ?: "Unexpected Error Occurred. Please Try Again"
-                            )
-                        )
-                        if (
-                            (!imgUrl.isNullOrBlank() && attachment.value.isNullOrBlank()) ||
-                            (imgUrl != attachment.value && !attachment.value.isNullOrBlank())
-                        ) {
-                            useCase.deleteImageUseCase(imgUrl)
-                        }
-                    }
-                }
-            }
-
-            else -> {}
-        }
     }
+
+    private fun changeUriToPath(uris: Uri, context: Context) = useCase.getImagePathUseCase(
+        uris,
+        context
+    )
+
+    fun onFilePathsListChange(list: Uri, context: Context): String? = changeUriToPath(list, context)
 }

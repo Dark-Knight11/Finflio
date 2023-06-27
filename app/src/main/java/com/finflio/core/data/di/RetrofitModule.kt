@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -26,6 +27,8 @@ object RetrofitModule {
     fun provideOkHttpClient(sessionManager: SessionManager): OkHttpClient {
         val interceptor = TokenInterceptor(sessionManager)
         return OkHttpClient.Builder()
+            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
             .addInterceptor(
                 HttpLoggingInterceptor().apply {

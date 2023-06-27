@@ -62,6 +62,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.time.format.DateTimeFormatter
 import java.util.Objects
 import kotlinx.coroutines.CoroutineScope
@@ -83,6 +86,7 @@ fun AddEditTransactionScreen(
     val dateTimePicker = rememberMaterialDialogState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    var imgURL by remember { mutableStateOf<String?>(null) }
 
     val file = context.createImageFile()
     val captureImageUri = FileProvider.getUriForFile(
@@ -99,6 +103,7 @@ fun AddEditTransactionScreen(
             ActivityResultContracts.PickVisualMedia(),
             onResult = { uri ->
                 uri?.let {
+                    imgURL = viewModel.onFilePathsListChange(uri, context)
                     viewModel.onEvent(
                         AddEditTransactionEvent.ChangeImagePath(it)
                     )
@@ -110,16 +115,29 @@ fun AddEditTransactionScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
             if (it) {
                 viewModel.onEvent(AddEditTransactionEvent.ChangeImagePath(captureImageUri))
+                viewModel.onEvent(AddEditTransactionEvent.ChangeFile(file))
             }
         }
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
-    ) {
-        if (it) cameraLauncher.launch(captureImageUri)
-    }
+    ) { if (it) cameraLauncher.launch(captureImageUri) }
+
     var showPermissionDialog by remember {
         mutableStateOf(false)
     }
+
+    var showStoragePermissionDialog by remember {
+        mutableStateOf(false)
+    }
+
+    val permissionState =
+        rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE) {
+            if (it) {
+                imagePickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+        }
 
     if (showPermissionDialog) {
         PermissionDialog(
@@ -128,6 +146,16 @@ fun AddEditTransactionScreen(
             type = type,
             onDismiss = {
                 showPermissionDialog = !showPermissionDialog
+            }
+        )
+    }
+    if (showStoragePermissionDialog) {
+        PermissionDialog(
+            permissionState = permissionState,
+            context = context,
+            type = type,
+            onDismiss = {
+                showStoragePermissionDialog = !showStoragePermissionDialog
             }
         )
     }
@@ -181,9 +209,13 @@ fun AddEditTransactionScreen(
                 scope.launch {
                     optionsDrawerState.close()
                 }
-                imagePickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
+                if (permissionState.status.isGranted) {
+                    imagePickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                } else {
+                    showStoragePermissionDialog = true
+                }
             },
             onCameraClicked = {
                 scope.launch {
@@ -205,7 +237,26 @@ fun AddEditTransactionScreen(
                 dateTimePicker = dateTimePicker,
                 optionsDrawerState = optionsDrawerState,
                 viewModel = viewModel,
-                onBackClick = { navigator.popBackStack() }
+                onBackClick = { navigator.popBackStack() },
+                onUpload = {
+                    imgURL?.let {
+                        if (permissionState.status.isGranted) {
+                            val filesDir = context.cacheDir
+                            val resolver = context.contentResolver.openFileDescriptor(
+                                Uri.fromFile(File(it)),
+                                "r"
+                            )
+                            val inputStream = FileInputStream(resolver?.fileDescriptor)
+                            inputStream.use {
+                                val tempFile = File(filesDir, "image.jpg")
+                                val outputStream = FileOutputStream(tempFile)
+                                inputStream.copyTo(outputStream)
+                                viewModel.onEvent(AddEditTransactionEvent.ChangeFile(tempFile))
+                                resolver?.close()
+                            }
+                        }
+                    }
+                }
             )
         }
     }
@@ -221,7 +272,8 @@ fun AddEditTransactionContent(
     dateTimePicker: MaterialDialogState,
     optionsDrawerState: BottomDrawerState,
     viewModel: AddEditTransactionViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onUpload: () -> Unit
 ) {
     val formatter = DateTimeFormatter.ofPattern("K:mm a - MMM d, yyyy")
     val formattedDateTime = viewModel.timestamp.value.format(formatter)
@@ -493,6 +545,7 @@ fun AddEditTransactionContent(
                 showLoader = showLoader,
                 onCancel = { viewModel.onEvent(AddEditTransactionEvent.CancelTransaction) },
                 onSave = {
+                    onUpload()
                     if (transactionId == "") {
                         viewModel.onEvent(
                             AddEditTransactionEvent.AddTransactionEvent(context)

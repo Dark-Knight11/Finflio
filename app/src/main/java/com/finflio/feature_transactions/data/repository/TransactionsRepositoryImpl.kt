@@ -18,6 +18,7 @@ import com.finflio.feature_transactions.data.paging.UnsettledTransactionsRemoteM
 import com.finflio.feature_transactions.domain.mapper.toTransaction
 import com.finflio.feature_transactions.domain.model.Transaction
 import com.finflio.feature_transactions.domain.repository.TransactionsRepository
+import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -80,14 +81,15 @@ class TransactionsRepositoryImpl @Inject constructor(
 
     override suspend fun updateTransaction(
         transactionId: String,
-        transactionPostRequest: TransactionPostRequest
+        transactionPostRequest: TransactionPostRequest,
+        file: File?
     ) = makeRequest {
-        apiClient.updateTransaction(transactionId, transactionPostRequest)
+        apiClient.updateTransaction(transactionId, transactionPostRequest, file)
     }
 
-    override suspend fun addTransaction(transactionPostRequest: TransactionPostRequest) =
+    override suspend fun addTransaction(transactionPostRequest: TransactionPostRequest, file: File?) =
         makeRequest {
-            apiClient.createTransaction(transactionPostRequest)
+            apiClient.createTransaction(transactionPostRequest, file)
         }
 
     override suspend fun deleteImage(imageID: String?) {
