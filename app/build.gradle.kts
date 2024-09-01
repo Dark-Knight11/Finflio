@@ -3,22 +3,22 @@
 plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp") version "1.8.21-1.0.11"
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
     id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
     kotlin("android")
     kotlin("kapt")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 android {
     namespace = "com.finflio"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.finflio"
         minSdk = 27
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -98,7 +98,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     packaging {
         resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -135,7 +135,7 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
 
 dependencies {
     // Compose BOM
-    val composeBom = platform("androidx.compose:compose-bom:2023.05.01")
+    val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
@@ -144,14 +144,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // don't remove the specified version else android preview won't work
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.activity:activity:1.7.2")
-    implementation("androidx.compose.ui:ui-util:1.4.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.compose.ui:ui-util:1.5.4")
 
     // Lifecycle
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
     // Tests
     testImplementation("junit:junit:4.13.2")
@@ -159,8 +159,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
     // Cloudy
     implementation("com.github.skydoves:cloudy:0.1.2")
@@ -175,16 +175,16 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
 
     // Compose Destinations
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.41-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.41-beta")
+    implementation("io.github.raamcosta.compose-destinations:animations-core:1.9.62")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.62")
 
     // dagger hilt
-    implementation("com.google.dagger:hilt-android:2.45")
-    kapt("com.google.dagger:hilt-compiler:2.45")
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-compiler:2.48")
     // hilt navigation compose
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     // Room
-    val roomVersion = "2.5.1"
+    val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
@@ -208,7 +208,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Kotlin Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -220,5 +220,5 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
 
     // Paging 3.0
-    implementation("androidx.paging:paging-compose:3.2.0-beta01")
+    implementation("androidx.paging:paging-compose:3.2.1")
 }

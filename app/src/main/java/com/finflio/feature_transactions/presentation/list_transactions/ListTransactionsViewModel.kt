@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
+import java.time.Year
 import java.time.format.TextStyle
 import java.util.Locale
 import javax.inject.Inject
@@ -41,19 +42,26 @@ class ListTransactionsViewModel @Inject constructor(
     )
     val month: State<String> = _month
 
+    private val _year = mutableStateOf<Int>(
+        LocalDate.now().year
+    )
+    val year: State<Int> = _year
+
     private val _transactions = MutableStateFlow<PagingData<TransactionModel>>(PagingData.empty())
     val transactions = _transactions
 
     init {
-        val currentMonth = LocalDateTime.now().month
-        paginatedTransactions(currentMonth)
+        val current = LocalDate.now()
+        val currentMonth = current.month
+        val currentYear = current.year
+        paginatedTransactions(currentMonth, Year.of(currentYear))
     }
 
-    fun paginatedTransactions(month: Month) {
+    fun paginatedTransactions(month: Month, year: Year) {
         viewModelScope.launch {
-            useCases.getTransactionsUseCase(month).cachedIn(viewModelScope).collectLatest {
+            useCases.getTransactionsUseCase(month, year).cachedIn(viewModelScope).collectLatest {
                 _transactions.value = it
-                getMonthTotal(month)
+                getMonthTotal(month, year)
             }
         }
     }
@@ -64,9 +72,9 @@ class ListTransactionsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMonthTotal(month: Month) {
+    private suspend fun getMonthTotal(month: Month, year: Year) {
         try {
-            _monthTotal.value = useCases.getMonthTotalUseCase(month).toFloat()
+            _monthTotal.value = useCases.getMonthTotalUseCase(month, year).toFloat()
         } catch (e: NullPointerException) {
             _monthTotal.value = 0f
             println(e.message)
@@ -78,7 +86,8 @@ class ListTransactionsViewModel @Inject constructor(
             is TransactionEvent.ChangeMonth -> {
                 val month = Month.valueOf(event.month.uppercase())
                 _month.value = month.getDisplayName(TextStyle.FULL, Locale.getDefault())
-                paginatedTransactions(month)
+                _year.value = event.year
+                paginatedTransactions(month, Year.of(event.year))
             }
         }
     }

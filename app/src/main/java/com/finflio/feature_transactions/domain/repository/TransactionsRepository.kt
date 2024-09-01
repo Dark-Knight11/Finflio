@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface TransactionsRepository {
 
-    fun getTransactions(month: String): Flow<PagingData<Pair<TransactionEntity, Int>>>
+    fun getTransactions(month: String, year: Int?): Flow<PagingData<Pair<TransactionEntity, Int>>>
 
-    suspend fun getMonthTotal(month: String): MonthTotalEntity
+    suspend fun getMonthTotal(month: String, year: Int): MonthTotalEntity
 
     fun getUnsettledTransaction(): Flow<PagingData<UnsettledTransactionEntity>>
 

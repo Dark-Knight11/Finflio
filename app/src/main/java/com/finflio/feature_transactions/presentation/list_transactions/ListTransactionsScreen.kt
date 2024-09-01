@@ -47,9 +47,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import java.time.Month
+import java.time.Year
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.time.Month
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @HomeNavGraph(start = true)
@@ -65,6 +66,7 @@ fun ListTransactions(
     val isRefreshing = viewModel.isRefreshing.value
     val monthTotal = viewModel.monthTotal.value
     val month = viewModel.month.value
+    val year = viewModel.year.value
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -75,7 +77,8 @@ fun ListTransactions(
             is NavResult.Value -> {
                 if (result.value) {
                     viewModel.paginatedTransactions(
-                        Month.valueOf(month.uppercase())
+                        Month.valueOf(month.uppercase()),
+                        Year.of(year)
                     )
                 }
             }
@@ -86,14 +89,18 @@ fun ListTransactions(
         when (result) {
             is NavResult.Canceled -> println("No result!!")
             is NavResult.Value -> {
-                if (result.value) {
-                    viewModel.paginatedTransactions(Month.valueOf(month.uppercase()))
-                }
+//                if (result.value) {
+//                    viewModel.paginatedTransactions(Month.valueOf(month.uppercase()), Year.of(year))
+//                }
             }
         }
     }
 
     LaunchedEffect(Unit) {
+        viewModel.paginatedTransactions(
+            Month.valueOf(month.uppercase()),
+            Year.of(year)
+        )
         viewModel.eventFlow.collectLatest {
             when (it) {
                 is TransactionUiEvent.ShowSnackbar -> {
@@ -111,7 +118,8 @@ fun ListTransactions(
             refreshing = isRefreshing,
             onRefresh = {
                 viewModel.paginatedTransactions(
-                    Month.valueOf(month.uppercase())
+                    Month.valueOf(month.uppercase()),
+                    Year.of(year)
                 )
             },
             enabled = true
@@ -120,8 +128,9 @@ fun ListTransactions(
                 Header(
                     total = monthTotal,
                     month = month,
-                    onSelect = {
-                        viewModel.onEvent(TransactionEvent.ChangeMonth(it))
+                    year = year,
+                    onSelect = { month, year ->
+                        viewModel.onEvent(TransactionEvent.ChangeMonth(month, year))
                     },
                     onClick = { viewModel.logout() }
                 )

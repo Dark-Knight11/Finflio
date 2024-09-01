@@ -11,13 +11,15 @@ import com.finflio.feature_transactions.data.models.local.MonthTotalEntity
 import com.finflio.feature_transactions.data.models.local.TransactionEntity
 import com.finflio.feature_transactions.data.models.local.TransactionRemoteKeys
 import com.finflio.feature_transactions.data.network.TransactionApiClient
+import java.time.LocalDate
 import okio.IOException
 import retrofit2.HttpException
 
 class TransactionRemoteMediator(
     private val apiClient: TransactionApiClient,
     private val finflioDb: FinflioDb,
-    private val month: String
+    private val month: String,
+    private val year: Int?
 ) : RemoteMediator<Int, TransactionEntity>() {
 
     private val transactionDao = finflioDb.transactionDao
@@ -56,7 +58,7 @@ class TransactionRemoteMediator(
                         nextPage
                     }
                 }
-                val response = apiClient.getTransactions(currentPage, month)
+                val response = apiClient.getTransactions(currentPage, month, year)
                 when (response.status) {
                     Resource.Status.SUCCESS -> {
                         if (response.data != null) {
@@ -73,7 +75,8 @@ class TransactionRemoteMediator(
                                     monthTotalDao.addData(
                                         MonthTotalEntity(
                                             month,
-                                            monthTotal
+                                            monthTotal,
+                                            year ?: LocalDate.now().year
                                         )
                                     )
                                 }

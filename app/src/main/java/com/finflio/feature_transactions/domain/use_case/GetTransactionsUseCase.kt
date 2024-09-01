@@ -11,6 +11,7 @@ import com.finflio.feature_transactions.domain.util.getDayOfMonthSuffix
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Month
+import java.time.Year
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
@@ -20,10 +21,10 @@ import kotlinx.coroutines.flow.map
 class GetTransactionsUseCase @Inject constructor(
     private val transactionRepo: TransactionsRepository
 ) {
-    operator fun invoke(month: Month): Flow<PagingData<TransactionModel>> {
+    operator fun invoke(month: Month, year: Year): Flow<PagingData<TransactionModel>> {
         val calendar = Calendar.getInstance()
         val currentDate = LocalDate.now()
-        return transactionRepo.getTransactions(month.name).map { pagingData ->
+        return transactionRepo.getTransactions(month.name, year.value).map { pagingData ->
             pagingData.map {
                 TransactionModel.TransactionItem(it.first.toTransaction())
             }
