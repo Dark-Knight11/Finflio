@@ -63,12 +63,11 @@ import com.finflio.ui.theme.GoldIcon
 import com.finflio.ui.theme.OrangeRed
 import com.finflio.ui.theme.TransactionCardBg
 import com.finflio.ui.theme.screenSize
-import java.text.DateFormatSymbols
-import java.time.LocalDate
-import java.time.Year
-import java.util.Locale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.DateFormatSymbols
+import java.time.LocalDate
+import java.util.Locale
 
 @Composable
 fun MonthDropDown(
@@ -211,9 +210,14 @@ fun MonthPicker(
     val months = DateFormatSymbols.getInstance(Locale.getDefault()).shortMonths.toList()
     var displayMonth = month
     var displayYear = year
+    var slice = if (month == "September") {
+        month.slice(0..3)
+    } else {
+        month.slice(0..2)
+    }
 
     var selectedMonth by remember {
-        mutableStateOf(months[months.indexOf(month.slice(0..2))])
+        mutableStateOf(months[months.indexOf(slice)])
     }
     var selectedYear by remember {
         mutableIntStateOf(year)
